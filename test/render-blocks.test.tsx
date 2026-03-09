@@ -91,4 +91,26 @@ describe("Velomark block rendering", () => {
     expect(paragraphs[1]?.textContent).toBe("Second quoted paragraph");
     expect(host.querySelector("blockquote br")).toBeNull();
   });
+
+  it("renders task list items with disabled checkboxes", () => {
+    const host = document.createElement("div");
+    document.body.append(host);
+
+    const dispose = render(
+      () => <Velomark markdown={["- [ ] Todo", "- [x] Done"].join("\n")} />,
+      host
+    );
+    mountedRoots.push(dispose);
+
+    const checkboxes = Array.from(
+      host.querySelectorAll('ul input[type="checkbox"]')
+    ) as HTMLInputElement[];
+    expect(checkboxes).toHaveLength(2);
+    expect(checkboxes[0]?.disabled).toBe(true);
+    expect(checkboxes[0]?.checked).toBe(false);
+    expect(checkboxes[1]?.disabled).toBe(true);
+    expect(checkboxes[1]?.checked).toBe(true);
+    expect(host.textContent).toContain("Todo");
+    expect(host.textContent).toContain("Done");
+  });
 });

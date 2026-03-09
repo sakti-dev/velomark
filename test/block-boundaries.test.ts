@@ -50,7 +50,7 @@ describe("parseBlockBoundaries", () => {
     });
     expect(blocks[3]?.data).toMatchObject({
       ordered: false,
-      items: ["First item", "Second item"],
+      items: [{ text: "First item" }, { text: "Second item" }],
     });
     expect(blocks[4]?.data).toMatchObject({
       language: "ts",
@@ -72,7 +72,7 @@ describe("parseBlockBoundaries", () => {
     expect(blocks[0]?.kind).toBe("list");
     expect(blocks[0]?.data).toMatchObject({
       ordered: true,
-      items: ["One", "Two"],
+      items: [{ text: "One" }, { text: "Two" }],
     });
   });
 
@@ -94,6 +94,20 @@ describe("parseBlockBoundaries", () => {
     expect(blocks[0]?.data).toMatchObject({
       paragraphs: ["First quoted paragraph", "Second quoted paragraph"],
       text: "First quoted paragraph\n\nSecond quoted paragraph",
+    });
+  });
+
+  it("parses task list item state", () => {
+    const blocks = parseBlockBoundaries(["- [ ] Todo", "- [x] Done"].join("\n"));
+
+    expect(blocks).toHaveLength(1);
+    expect(blocks[0]?.kind).toBe("list");
+    expect(blocks[0]?.data).toMatchObject({
+      ordered: false,
+      items: [
+        { checked: false, text: "Todo" },
+        { checked: true, text: "Done" },
+      ],
     });
   });
 });

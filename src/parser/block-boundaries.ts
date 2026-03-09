@@ -9,6 +9,7 @@ import {
   matchFence,
   matchHeading,
   matchOrderedList,
+  matchTaskListItem,
   matchUnorderedList,
 } from "./context";
 
@@ -26,8 +27,13 @@ export interface BlockquoteBlockData {
   text: string;
 }
 
+export interface ListItemData {
+  checked?: boolean;
+  text: string;
+}
+
 export interface ListBlockData {
-  items: string[];
+  items: ListItemData[];
   ordered: boolean;
 }
 
@@ -237,7 +243,7 @@ export function parseBlockBoundaries(
     if (orderedListMatch || unorderedListMatch) {
       const ordered = Boolean(orderedListMatch);
       const sourceStart = line.start;
-      const items: string[] = [];
+      const items: ListItemData[] = [];
       let scanIndex = lineIndex;
       let sourceEnd = line.end;
 
@@ -252,7 +258,18 @@ export function parseBlockBoundaries(
         if (!match) {
           break;
         }
-        items.push(match[1] ?? "");
+        const itemText = match[1] ?? "";
+        const taskItem = matchTaskListItem(itemText);
+        items.push(
+          taskItem
+            ? {
+                checked: taskItem.checked,
+                text: taskItem.text,
+              }
+            : {
+                text: itemText,
+              }
+        );
         sourceEnd = scanLine.end;
         scanIndex += 1;
       }
@@ -263,7 +280,11 @@ export function parseBlockBoundaries(
           sourceStart,
           sourceEnd,
           scanIndex >= lines.length,
-          `list:${ordered ? "ordered" : "unordered"}:${items.join("|")}`,
+          `list:${ordered ? "ordered" : "unordered"}:${items
+            .map((item) =>
+              item.checked === undefined ? item.text : `${item.checked ? "x" : " "}:${item.text}`
+            )
+            .join("|")}`,
           { ordered, items }
         )
       );

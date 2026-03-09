@@ -23,7 +23,16 @@ export const ListBlock: Component<{
         <For each={items()}>
           {(item) => (
             <li>
-              <RenderInline text={item} />
+              {item.checked === undefined ? (
+                <RenderInline text={item.text} />
+              ) : (
+                <label>
+                  <input checked={item.checked} disabled type="checkbox" />
+                  <span>
+                    <RenderInline text={item.text} />
+                  </span>
+                </label>
+              )}
             </li>
           )}
         </For>
@@ -36,7 +45,16 @@ export const ListBlock: Component<{
       <For each={items()}>
         {(item) => (
           <li>
-            <RenderInline text={item} />
+            {item.checked === undefined ? (
+              <RenderInline text={item.text} />
+            ) : (
+              <label>
+                <input checked={item.checked} disabled type="checkbox" />
+                <span>
+                  <RenderInline text={item.text} />
+                </span>
+              </label>
+            )}
           </li>
         )}
       </For>

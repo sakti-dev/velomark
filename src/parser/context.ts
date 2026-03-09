@@ -2,6 +2,7 @@ const HEADING_RE = /^(#{1,6})\s+(.*)$/;
 const BLOCKQUOTE_RE = /^>\s?(.*)$/;
 const ORDERED_LIST_RE = /^\s*\d+\.\s+(.*)$/;
 const UNORDERED_LIST_RE = /^\s*[-*+]\s+(.*)$/;
+const TASK_LIST_RE = /^\[( |x|X)\]\s+(.*)$/;
 const FENCE_RE = /^```([A-Za-z0-9_-]+)?\s*$/;
 const THEMATIC_BREAK_RE = /^(?:-{3,}|\*{3,}|_{3,})\s*$/;
 
@@ -27,6 +28,19 @@ export function matchUnorderedList(line: string): RegExpMatchArray | null {
 
 export function matchFence(line: string): RegExpMatchArray | null {
   return line.match(FENCE_RE);
+}
+
+export function matchTaskListItem(
+  text: string
+): { checked: boolean; text: string } | null {
+  const match = text.match(TASK_LIST_RE);
+  if (!match) {
+    return null;
+  }
+  return {
+    checked: (match[1] ?? " ") !== " ",
+    text: match[2] ?? "",
+  };
 }
 
 export function isThematicBreak(line: string): boolean {
