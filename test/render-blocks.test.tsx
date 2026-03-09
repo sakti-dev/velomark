@@ -113,4 +113,39 @@ describe("Velomark block rendering", () => {
     expect(host.textContent).toContain("Todo");
     expect(host.textContent).toContain("Done");
   });
+
+  it("renders code blocks with a generic shell and language label", () => {
+    const host = document.createElement("div");
+    document.body.append(host);
+
+    const dispose = render(
+      () => <Velomark markdown={"```ts\nconst answer = 42;\n```"} />,
+      host
+    );
+    mountedRoots.push(dispose);
+
+    const shell = host.querySelector('[data-velomark-block-kind="code"]');
+    expect(shell?.tagName).toBe("DIV");
+    expect(shell?.querySelector('[data-velomark-code-language]')?.textContent).toBe(
+      "ts"
+    );
+    expect(shell?.querySelector("pre > code")?.textContent).toBe(
+      "const answer = 42;"
+    );
+  });
+
+  it("omits the language label for unlabeled code fences", () => {
+    const host = document.createElement("div");
+    document.body.append(host);
+
+    const dispose = render(
+      () => <Velomark markdown={"```\nplain text\n```"} />,
+      host
+    );
+    mountedRoots.push(dispose);
+
+    const shell = host.querySelector('[data-velomark-block-kind="code"]');
+    expect(shell?.querySelector('[data-velomark-code-language]')).toBeNull();
+    expect(shell?.querySelector("pre > code")?.textContent).toBe("plain text");
+  });
 });
