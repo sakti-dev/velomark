@@ -1,9 +1,11 @@
 import { createSignal, onCleanup, type Component } from "solid-js";
+import { BenchmarkPanel } from "./components/benchmark-panel";
 import { InputPanel } from "./components/input-panel";
 import { PlaygroundShell } from "./components/playground-shell";
 import { RendererPanel } from "./components/renderer-panel";
 import { StreamControlsPanel } from "./components/stream-controls-panel";
 import { playgroundPresets } from "./fixtures/presets";
+import { usePlaygroundMetrics } from "./hooks/use-playground-metrics";
 import { createStreamSimulator } from "./hooks/use-stream-simulator";
 import type { PlaygroundPreset } from "./types/playground";
 
@@ -24,6 +26,10 @@ const App: Component = () => {
   const [renderedMarkdown, setRenderedMarkdown] = createSignal(markdown());
   const [isStreaming, setIsStreaming] = createSignal(false);
   const [streamControls, setStreamControls] = createSignal(DEFAULT_STREAM_CONTROLS);
+  const { benchmarkState, runBenchmark } = usePlaygroundMetrics({
+    chunkSize: () => streamControls().chunkSize,
+    markdown,
+  });
   let activeTimer: ReturnType<typeof setTimeout> | undefined;
 
   const clearStreaming = () => {
@@ -127,6 +133,8 @@ const App: Component = () => {
             onReset={handleReset}
             onSimulateStream={handleSimulateStream}
           />
+
+          <BenchmarkPanel benchmarkState={benchmarkState()} onRunBenchmark={runBenchmark} />
         </div>
       }
       renderer={<RendererPanel markdown={renderedMarkdown()} />}
