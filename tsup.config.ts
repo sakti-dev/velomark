@@ -31,8 +31,22 @@ export default defineConfig(config => {
 
   if (!watching && !CI) {
     const package_fields = preset.generatePackageExports(parsed_options)
+    const rootExport = package_fields.exports as {
+      solid?: {
+        development?: string
+        import?: string
+      }
+    }
+    const normalizedRootExport = {
+      ...rootExport,
+      solid: {
+        ...rootExport.solid,
+        development: './dist/dev.js',
+        import: './dist/index.js',
+      },
+    }
     const normalized_exports = {
-      '.': package_fields.exports,
+      '.': normalizedRootExport,
       './styles.css': './dist/styles.css',
     }
     const package_fields_with_styles = {
