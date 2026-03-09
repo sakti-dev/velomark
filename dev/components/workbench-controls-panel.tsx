@@ -21,6 +21,7 @@ export interface WorkbenchControlsPanelProps {
   onSimulateStream: () => void;
   presets: PlaygroundPreset[];
   probeState: SelectionProbeState;
+  selectionProbeEnabled: boolean;
 }
 
 const STREAM_MODES: Array<{ label: string; value: PlaygroundStreamMode }> = [
@@ -120,7 +121,11 @@ export const WorkbenchControlsPanel: Component<WorkbenchControlsPanelProps> = (p
         <button onClick={props.onReset} type="button">
           Reset
         </button>
-        <button onClick={props.onProbeSelection} type="button">
+        <button
+          disabled={!props.selectionProbeEnabled}
+          onClick={props.onProbeSelection}
+          type="button"
+        >
           Probe selection
         </button>
         <button disabled={props.benchmarkState.isRunning} onClick={props.onRunBenchmark} type="button">
@@ -129,7 +134,11 @@ export const WorkbenchControlsPanel: Component<WorkbenchControlsPanelProps> = (p
       </div>
 
       <div class="workbench-summary">
-        <span class="benchmark-status">{props.probeState.statusMessage}</span>
+        <span class="benchmark-status">
+          {props.selectionProbeEnabled
+            ? props.probeState.statusMessage
+            : "Selection probe unavailable"}
+        </span>
         <span class="benchmark-status">
           <Show
             fallback={`Completed ${props.benchmarkState.completedRuns} / ${props.benchmarkState.totalRuns}`}

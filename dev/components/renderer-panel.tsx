@@ -22,7 +22,7 @@ export const RendererPanel: Component<RendererPanelProps> = (props) => {
         }}
       >
         <Velomark
-          debug={true}
+          debug={false}
           markdown={props.markdown}
           onDebugMetrics={props.onDebugMetrics}
         />

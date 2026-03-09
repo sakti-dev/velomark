@@ -16,6 +16,7 @@ const DEFAULT_STREAM_CONTROLS = {
   intervalMs: 40,
   mode: "append",
 } as const;
+const PLAYGROUND_DEBUG = false;
 const EMPTY_DEBUG_METRICS: VelomarkDebugMetrics = {
   appendedBlockCount: 0,
   blockCount: 0,
@@ -135,6 +136,7 @@ const App: Component = () => {
             onSimulateStream={handleSimulateStream}
             presets={playgroundPresets}
             probeState={selectionProbeState()}
+            selectionProbeEnabled={PLAYGROUND_DEBUG}
           />
         </div>
       }
