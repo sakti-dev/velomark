@@ -10,6 +10,39 @@ export type RenderBlockKind =
 
 export type RenderBlockStatus = "streaming" | "complete";
 
+export interface InlineCodeToken {
+  text: string;
+  type: "code";
+}
+
+export interface InlineEmphasisToken {
+  children: InlineToken[];
+  type: "emphasis";
+}
+
+export interface InlineLinkToken {
+  children: InlineToken[];
+  href: string;
+  type: "link";
+}
+
+export interface InlineStrongToken {
+  children: InlineToken[];
+  type: "strong";
+}
+
+export interface InlineTextToken {
+  text: string;
+  type: "text";
+}
+
+export type InlineToken =
+  | InlineCodeToken
+  | InlineEmphasisToken
+  | InlineLinkToken
+  | InlineStrongToken
+  | InlineTextToken;
+
 export interface RenderBlock<TData = unknown> {
   data: TData;
   fingerprint: string;
