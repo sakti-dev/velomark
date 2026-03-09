@@ -6,3 +6,9 @@ export interface PlaygroundPreset {
 }
 
 export type PlaygroundStreamMode = "append" | "rewrite-tail";
+
+export interface PlaygroundStreamControls {
+  chunkSize: number;
+  intervalMs: number;
+  mode: PlaygroundStreamMode;
+}

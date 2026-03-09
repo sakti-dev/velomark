@@ -77,6 +77,24 @@ textarea {
   gap: 0.75rem;
 }
 
+.stream-control-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
+.field-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  min-width: 0;
+}
+
+.field-group span {
+  color: #a6b4c5;
+  font-size: 0.9rem;
+}
+
 .control-actions button,
 .preset-button {
   padding: 0.65rem 0.95rem;
@@ -87,17 +105,30 @@ textarea {
   cursor: pointer;
 }
 
+.control-actions button:disabled {
+  cursor: default;
+  opacity: 0.68;
+}
+
 .preset-button-active {
   background: linear-gradient(180deg, #4a7db9 0%, #2b4e7a 100%);
 }
 
-.markdown-input {
+.markdown-input,
+.stream-field {
   min-height: 16rem;
   padding: 0.85rem 1rem;
   color: #f2f7ff;
   background: rgba(10, 14, 20, 0.88);
   border: 1px solid rgba(123, 144, 170, 0.18);
   border-radius: 12px;
+}
+
+.stream-field {
+  min-height: auto;
+}
+
+.markdown-input {
   resize: vertical;
 }
 
@@ -110,6 +141,10 @@ textarea {
 
 @media (max-width: 960px) {
   .playground-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .stream-control-grid {
     grid-template-columns: 1fr;
   }
 }

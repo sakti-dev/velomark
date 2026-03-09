@@ -1,11 +1,18 @@
-import { createSignal, type Component } from "solid-js";
+import { createSignal, onCleanup, type Component } from "solid-js";
 import { InputPanel } from "./components/input-panel";
 import { PlaygroundShell } from "./components/playground-shell";
 import { RendererPanel } from "./components/renderer-panel";
+import { StreamControlsPanel } from "./components/stream-controls-panel";
 import { playgroundPresets } from "./fixtures/presets";
+import { createStreamSimulator } from "./hooks/use-stream-simulator";
 import type { PlaygroundPreset } from "./types/playground";
 
 const initialPreset = playgroundPresets[0];
+const DEFAULT_STREAM_CONTROLS = {
+  chunkSize: 8,
+  intervalMs: 40,
+  mode: "append",
+} as const;
 
 const App: Component = () => {
   const [activePresetId, setActivePresetId] = createSignal<PlaygroundPreset["id"]>(
@@ -14,11 +21,91 @@ const App: Component = () => {
   const [markdown, setMarkdown] = createSignal(
     initialPreset?.markdown ?? "# Velomark Playground"
   );
+  const [renderedMarkdown, setRenderedMarkdown] = createSignal(markdown());
+  const [isStreaming, setIsStreaming] = createSignal(false);
+  const [streamControls, setStreamControls] = createSignal(DEFAULT_STREAM_CONTROLS);
+  let activeTimer: ReturnType<typeof setTimeout> | undefined;
+
+  const clearStreaming = () => {
+    if (activeTimer !== undefined) {
+      clearTimeout(activeTimer);
+      activeTimer = undefined;
+    }
+    setIsStreaming(false);
+  };
 
   const handlePresetSelect = (preset: PlaygroundPreset) => {
+    clearStreaming();
     setActivePresetId(preset.id);
     setMarkdown(preset.markdown);
+    setRenderedMarkdown(preset.markdown);
   };
+
+  const handleMarkdownChange = (value: string) => {
+    clearStreaming();
+    setMarkdown(value);
+    setRenderedMarkdown(value);
+  };
+
+  const handleRenderOnce = () => {
+    clearStreaming();
+    setRenderedMarkdown(markdown());
+  };
+
+  const handleReset = () => {
+    clearStreaming();
+    const preset = playgroundPresets.find((entry) => entry.id === activePresetId()) ?? initialPreset;
+    const nextMarkdown = preset?.markdown ?? "# Velomark Playground";
+
+    setMarkdown(nextMarkdown);
+    setRenderedMarkdown(nextMarkdown);
+  };
+
+  const handleSimulateStream = () => {
+    clearStreaming();
+
+    const simulator = createStreamSimulator({
+      chunkSize: streamControls().chunkSize,
+      content: markdown(),
+      mode: streamControls().mode,
+    });
+    const snapshots = simulator.snapshots;
+
+    if (snapshots.length === 0) {
+      setRenderedMarkdown("");
+      return;
+    }
+
+    setRenderedMarkdown("");
+    setIsStreaming(true);
+
+    const pump = (index: number) => {
+      const snapshot = snapshots[index];
+      if (snapshot === undefined) {
+        clearStreaming();
+        return;
+      }
+
+      setRenderedMarkdown(snapshot);
+
+      if (index >= snapshots.length - 1) {
+        clearStreaming();
+        return;
+      }
+
+      activeTimer = setTimeout(() => {
+        pump(index + 1);
+      }, streamControls().intervalMs);
+    };
+
+    activeTimer = setTimeout(() => {
+      pump(0);
+    }, 0);
+  };
+
+  onCleanup(() => {
+    clearStreaming();
+  });
 
   return (
     <PlaygroundShell
@@ -27,25 +114,22 @@ const App: Component = () => {
           <InputPanel
             activePresetId={activePresetId()}
             markdown={markdown()}
-            onMarkdownChange={setMarkdown}
+            onMarkdownChange={handleMarkdownChange}
             onPresetSelect={handlePresetSelect}
             presets={playgroundPresets}
           />
 
-          <section class="controls-panel">
-            <header class="panel-header">
-              <h2>Stream Controls</h2>
-              <p>Basic shell controls. Streaming behavior gets wired in later tasks.</p>
-            </header>
-            <div class="control-actions">
-              <button type="button">Render once</button>
-              <button type="button">Simulate stream</button>
-              <button type="button">Reset</button>
-            </div>
-          </section>
+          <StreamControlsPanel
+            controls={streamControls()}
+            isStreaming={isStreaming()}
+            onControlsChange={setStreamControls}
+            onRenderOnce={handleRenderOnce}
+            onReset={handleReset}
+            onSimulateStream={handleSimulateStream}
+          />
         </div>
       }
-      renderer={<RendererPanel markdown={markdown()} />}
+      renderer={<RendererPanel markdown={renderedMarkdown()} />}
     />
   );
 };
