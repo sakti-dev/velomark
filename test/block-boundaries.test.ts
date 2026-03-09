@@ -58,6 +58,7 @@ describe("parseBlockBoundaries", () => {
     });
     expect(blocks[5]?.data).toMatchObject({});
     expect(blocks[6]?.data).toMatchObject({
+      align: ["left", "left"],
       rows: [
         ["Name", "Value"],
         ["A", "1"],
@@ -107,6 +108,26 @@ describe("parseBlockBoundaries", () => {
       items: [
         { checked: false, text: "Todo" },
         { checked: true, text: "Done" },
+      ],
+    });
+  });
+
+  it("parses table column alignment from the separator row", () => {
+    const blocks = parseBlockBoundaries(
+      [
+        "| Left | Center | Right |",
+        "| :--- | :----: | ---: |",
+        "| A | B | C |",
+      ].join("\n")
+    );
+
+    expect(blocks).toHaveLength(1);
+    expect(blocks[0]?.kind).toBe("table");
+    expect(blocks[0]?.data).toMatchObject({
+      align: ["left", "center", "right"],
+      rows: [
+        ["Left", "Center", "Right"],
+        ["A", "B", "C"],
       ],
     });
   });

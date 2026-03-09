@@ -148,4 +148,37 @@ describe("Velomark block rendering", () => {
     expect(shell?.querySelector('[data-velomark-code-language]')).toBeNull();
     expect(shell?.querySelector("pre > code")?.textContent).toBe("plain text");
   });
+
+  it("renders tables with a generic wrapper and column alignment", () => {
+    const host = document.createElement("div");
+    document.body.append(host);
+
+    const dispose = render(
+      () =>
+        <Velomark
+          markdown={[
+            "| Left | Center | Right |",
+            "| :--- | :----: | ---: |",
+            "| A | B | C |",
+          ].join("\n")}
+        />,
+      host
+    );
+    mountedRoots.push(dispose);
+
+    const wrapper = host.querySelector('[data-velomark-table-wrapper]');
+    expect(wrapper).not.toBeNull();
+
+    const headers = Array.from(host.querySelectorAll("thead th"));
+    expect(headers).toHaveLength(3);
+    expect(headers[0]?.getAttribute("data-velomark-align")).toBe("left");
+    expect(headers[1]?.getAttribute("data-velomark-align")).toBe("center");
+    expect(headers[2]?.getAttribute("data-velomark-align")).toBe("right");
+
+    const cells = Array.from(host.querySelectorAll("tbody td"));
+    expect(cells).toHaveLength(3);
+    expect(cells[0]?.getAttribute("data-velomark-align")).toBe("left");
+    expect(cells[1]?.getAttribute("data-velomark-align")).toBe("center");
+    expect(cells[2]?.getAttribute("data-velomark-align")).toBe("right");
+  });
 });

@@ -44,7 +44,10 @@ export interface CodeBlockData {
 
 export interface ThematicBreakBlockData {}
 
+export type TableColumnAlign = "center" | "left" | "right";
+
 export interface TableBlockData {
+  align: TableColumnAlign[];
   rows: string[][];
 }
 
@@ -84,6 +87,27 @@ function buildLineInfos(markdown: string): LineInfo[] {
   }
 
   return lines;
+}
+
+function parseTableAlignments(separatorLine: string): TableColumnAlign[] {
+  return separatorLine
+    .trim()
+    .replace(/^\|/, "")
+    .replace(/\|$/, "")
+    .split("|")
+    .map((segment) => {
+      const trimmed = segment.trim();
+      const startsWithColon = trimmed.startsWith(":");
+      const endsWithColon = trimmed.endsWith(":");
+
+      if (startsWithColon && endsWithColon) {
+        return "center";
+      }
+      if (endsWithColon) {
+        return "right";
+      }
+      return "left";
+    });
 }
 
 function buildBlock<TData extends ParsedBlockData>(
@@ -314,6 +338,7 @@ export function parseBlockBoundaries(
       isTableSeparator(nextLine.text)
     ) {
       const sourceStart = line.start;
+      const align = parseTableAlignments(nextLine.text);
       const rows: string[][] = [
         line.text
           .split("|")
@@ -345,7 +370,10 @@ export function parseBlockBoundaries(
           sourceEnd,
           scanIndex >= lines.length,
           `table:${rows.map((row) => row.join("|")).join("||")}`,
-          { rows }
+          {
+            align,
+            rows,
+          }
         )
       );
       lineIndex = scanIndex;
