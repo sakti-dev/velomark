@@ -7,12 +7,6 @@
   --velomark-block-gap: 1rem;
   --velomark-radius: 0.5rem;
   --velomark-line-height: 1.6;
-  color: var(--velomark-color-text);
-  line-height: var(--velomark-line-height);
-}
-
-.velomark > * + * {
-  margin-top: var(--velomark-block-gap);
 }
 
 .velomark code {

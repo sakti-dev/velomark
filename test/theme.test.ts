@@ -32,5 +32,7 @@ describe("velomark theme surface", () => {
     expect(css).toContain(".velomark");
     expect(css).toContain("--velomark-color-text");
     expect(css).toContain("--velomark-block-gap");
+    expect(css).not.toContain(".velomark > * + *");
+    expect(css).not.toContain("line-height: var(--velomark-line-height)");
   });
 });
