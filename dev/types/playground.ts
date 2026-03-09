@@ -4,3 +4,5 @@ export interface PlaygroundPreset {
   description: string;
   markdown: string;
 }
+
+export type PlaygroundStreamMode = "append" | "rewrite-tail";
