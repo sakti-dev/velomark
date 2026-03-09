@@ -191,6 +191,7 @@ textarea {
 }
 
 .renderer-surface {
+  min-height: 28rem;
   padding: 1rem;
   background: rgba(10, 14, 20, 0.72);
   border: 1px solid rgba(123, 144, 170, 0.12);

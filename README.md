@@ -22,3 +22,18 @@ pnpm install --ignore-workspace
 pnpm test
 pnpm build
 ```
+
+## Playground
+
+The local dev app is the main place to inspect streamed rendering behavior:
+
+```bash
+pnpm dev
+```
+
+Use the playground to:
+
+- replay append-heavy streaming
+- compare append and rewrite benchmark paths
+- inspect DOM reuse metrics
+- probe whether an existing text selection survives later updates
