@@ -7,7 +7,8 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-button {
+button,
+textarea {
   font: inherit;
 }
 
@@ -47,15 +48,21 @@ button {
 .playground-controls,
 .playground-main,
 .renderer-surface,
+.controls-column,
 .controls-panel {
   min-width: 0;
 }
 
+.controls-column,
 .controls-panel,
 .renderer-panel {
   display: flex;
   flex-direction: column;
   gap: 1rem;
+}
+
+.controls-panel,
+.renderer-panel {
   padding: 1rem;
   background: rgba(16, 22, 32, 0.78);
   border: 1px solid rgba(123, 144, 170, 0.18);
@@ -63,19 +70,35 @@ button {
   backdrop-filter: blur(12px);
 }
 
-.control-actions {
+.control-actions,
+.preset-list {
   display: flex;
   flex-wrap: wrap;
   gap: 0.75rem;
 }
 
-.control-actions button {
+.control-actions button,
+.preset-button {
   padding: 0.65rem 0.95rem;
   color: #f2f7ff;
   background: linear-gradient(180deg, #31537d 0%, #223754 100%);
   border: 0;
   border-radius: 999px;
   cursor: pointer;
+}
+
+.preset-button-active {
+  background: linear-gradient(180deg, #4a7db9 0%, #2b4e7a 100%);
+}
+
+.markdown-input {
+  min-height: 16rem;
+  padding: 0.85rem 1rem;
+  color: #f2f7ff;
+  background: rgba(10, 14, 20, 0.88);
+  border: 1px solid rgba(123, 144, 170, 0.18);
+  border-radius: 12px;
+  resize: vertical;
 }
 
 .renderer-surface {
