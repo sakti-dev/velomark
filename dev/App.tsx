@@ -1,20 +1,29 @@
 import type { Component } from "solid-js";
-import styles from "./App.module.css";
-import { Velomark } from "src";
+import { playgroundPresets } from "./fixtures/presets";
+import { PlaygroundShell } from "./components/playground-shell";
+import { RendererPanel } from "./components/renderer-panel";
 
 const App: Component = () => {
-  const markdown = `# Velomark
-
-Streaming-first markdown rendering for AI responses.`;
+  const initialPreset = playgroundPresets[0];
+  const markdown = initialPreset?.markdown ?? "# Velomark Playground";
 
   return (
-    <div class={styles.App}>
-      <header class={styles.header}>
-        <h1>Velomark</h1>
-        <p>Solid-only markdown rendering tuned for streamed AI output.</p>
-        <Velomark markdown={markdown} />
-      </header>
-    </div>
+    <PlaygroundShell
+      controls={
+        <section class="controls-panel">
+          <header class="panel-header">
+            <h2>Stream Controls</h2>
+            <p>Basic shell controls. Streaming behavior gets wired in later tasks.</p>
+          </header>
+          <div class="control-actions">
+            <button type="button">Render once</button>
+            <button type="button">Simulate stream</button>
+            <button type="button">Reset</button>
+          </div>
+        </section>
+      }
+      renderer={<RendererPanel markdown={markdown} />}
+    />
   );
 };
 
