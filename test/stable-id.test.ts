@@ -115,4 +115,22 @@ describe("assignStableBlockIds", () => {
 
     expect(blocks[0]?.id).not.toBe(blocks[1]?.id);
   });
+
+  it("uses short opaque ids instead of embedding raw fingerprint text", () => {
+    const blocks = assignStableBlockIds([], [
+      createDraftBlock({
+        sourceStart: 30,
+        sourceEnd: 185,
+        fingerprint:
+          "paragraph:This preset is intentionally long and shaped like a coding-agent response.",
+        data: {
+          text: "This preset is intentionally long and shaped like a coding-agent response.",
+        },
+      }),
+    ]);
+
+    expect(blocks[0]?.id).toMatch(/^b_[a-z0-9]{8}$/);
+    expect(blocks[0]?.id).not.toContain("coding-agent");
+    expect(blocks[0]?.id).not.toContain("paragraph:");
+  });
 });

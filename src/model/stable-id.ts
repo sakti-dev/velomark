@@ -2,10 +2,21 @@ import type { RenderBlock } from "../types";
 
 export type DraftRenderBlock<TData = unknown> = Omit<RenderBlock<TData>, "id">;
 
+function hashString(input: string): string {
+  let hash = 2166136261;
+
+  for (let index = 0; index < input.length; index += 1) {
+    hash ^= input.charCodeAt(index);
+    hash = Math.imul(hash, 16777619);
+  }
+
+  return (hash >>> 0).toString(36).padStart(8, "0").slice(0, 8);
+}
+
 function buildDeterministicId<TData>(block: DraftRenderBlock<TData>): string {
-  return [block.kind, block.sourceStart, block.sourceEnd, block.fingerprint].join(
-    ":"
-  );
+  return `b_${hashString(
+    [block.kind, block.sourceStart, block.sourceEnd, block.fingerprint].join(":")
+  )}`;
 }
 
 function isStableMatch<TData>(
