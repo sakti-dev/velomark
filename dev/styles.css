@@ -8,7 +8,8 @@ body {
 }
 
 button,
-textarea {
+select,
+input {
   font: inherit;
 }
 
@@ -49,13 +50,15 @@ textarea {
 .playground-main,
 .renderer-surface,
 .controls-column,
-.controls-panel {
+.controls-panel,
+.renderer-column {
   min-width: 0;
 }
 
 .controls-column,
 .controls-panel,
-.renderer-panel {
+.renderer-panel,
+.renderer-column {
   display: flex;
   flex-direction: column;
   gap: 1rem;
@@ -77,61 +80,42 @@ textarea {
   gap: 0.75rem;
 }
 
-.benchmark-toolbar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.75rem;
-  flex-wrap: wrap;
-}
-
 .benchmark-status {
   color: #a6b4c5;
   font-size: 0.92rem;
 }
 
-.benchmark-results {
+.workbench-summary {
   display: flex;
-  flex-direction: column;
+  flex-wrap: wrap;
   gap: 0.75rem;
 }
 
-.benchmark-card {
-  display: flex;
-  flex-direction: column;
+.diagnostics-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 0.75rem;
-  padding: 0.85rem 1rem;
+}
+
+.diagnostic-pill {
+  min-width: 0;
+  padding: 0.75rem 0.85rem;
   background: rgba(10, 14, 20, 0.72);
   border: 1px solid rgba(123, 144, 170, 0.12);
   border-radius: 12px;
 }
 
-.benchmark-card h3 {
+.diagnostic-pill dt,
+.diagnostic-pill dd {
   margin: 0;
 }
 
-.benchmark-metrics {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 0.75rem;
-  margin: 0;
-}
-
-.benchmark-metrics div {
-  min-width: 0;
-}
-
-.benchmark-metrics dt,
-.benchmark-metrics dd {
-  margin: 0;
-}
-
-.benchmark-metrics dt {
+.diagnostic-pill dt {
   color: #a6b4c5;
   font-size: 0.88rem;
 }
 
-.benchmark-metrics dd {
+.diagnostic-pill dd {
   margin-top: 0.25rem;
 }
 
@@ -172,9 +156,7 @@ textarea {
   background: linear-gradient(180deg, #4a7db9 0%, #2b4e7a 100%);
 }
 
-.markdown-input,
 .stream-field {
-  min-height: 16rem;
   padding: 0.85rem 1rem;
   color: #f2f7ff;
   background: rgba(10, 14, 20, 0.88);
@@ -184,10 +166,6 @@ textarea {
 
 .stream-field {
   min-height: auto;
-}
-
-.markdown-input {
-  resize: vertical;
 }
 
 .renderer-surface {
@@ -207,7 +185,7 @@ textarea {
     grid-template-columns: 1fr;
   }
 
-  .benchmark-metrics {
+  .diagnostics-grid {
     grid-template-columns: 1fr;
   }
 }

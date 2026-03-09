@@ -2,27 +2,32 @@ import { render } from "solid-js/web";
 import { describe, expect, it } from "vitest";
 import App from "../dev/App";
 
-describe("playground dom identity panel", () => {
+describe("playground diagnostics strip", () => {
   it("shows live block metrics from renderer updates", () => {
     const container = document.createElement("div");
     document.body.append(container);
 
     const dispose = render(() => <App />, container);
-    const textarea = container.querySelector("textarea") as HTMLTextAreaElement;
+    const recordedReplayButton = Array.from(container.querySelectorAll("button")).find((button) =>
+      button.textContent?.includes("Recorded Replay")
+    ) as HTMLButtonElement;
 
-    textarea.value = "Alpha\n\nBeta";
-    textarea.dispatchEvent(new Event("input", { bubbles: true }));
+    recordedReplayButton.click();
 
-    expect(container.textContent).toContain("DOM Identity");
+    expect(container.textContent).toContain("Diagnostics");
     expect(container.textContent).toContain("Total Blocks");
-    expect(container.textContent).toContain("2");
+    expect(container.textContent).toContain("18");
+    expect(container.textContent).toContain("Reused");
 
-    textarea.value = "Alpha\n\nBeta\n\nGamma";
-    textarea.dispatchEvent(new Event("input", { bubbles: true }));
+    const codeHeavyButton = Array.from(container.querySelectorAll("button")).find((button) =>
+      button.textContent?.includes("Code Heavy")
+    ) as HTMLButtonElement;
 
-    expect(container.textContent).toContain("3");
-    expect(container.textContent).toContain("Appended Blocks");
-    expect(container.textContent).toContain("1");
+    codeHeavyButton.click();
+
+    expect(container.textContent).toContain("5");
+    expect(container.textContent).toContain("Replaced");
+    expect(container.textContent).toContain("0");
 
     dispose();
     container.remove();

@@ -41,9 +41,7 @@ describe("Velomark", () => {
     expect(container.textContent).toContain("Velomark Playground");
     expect(container.textContent).toContain("Render once");
     expect(container.textContent).toContain("Simulate stream");
-    expect(container.textContent).toContain("Benchmark");
-    expect(container.textContent).toContain("DOM Identity");
-    expect(container.textContent).toContain("Selection Probe");
+    expect(container.textContent).toContain("Diagnostics");
     expect(container.textContent).toContain("Renderer Viewport");
 
     dispose();

@@ -8,10 +8,11 @@ describe("playground selection probe", () => {
     document.body.append(container);
 
     const dispose = render(() => <App />, container);
-    const textarea = container.querySelector("textarea") as HTMLTextAreaElement;
+    const recordedReplayButton = Array.from(container.querySelectorAll("button")).find((button) =>
+      button.textContent?.includes("Recorded Replay")
+    ) as HTMLButtonElement;
 
-    textarea.value = "Alpha\n\nBeta";
-    textarea.dispatchEvent(new Event("input", { bubbles: true }));
+    recordedReplayButton.click();
 
     const firstBlock = container.querySelector(
       '[data-velomark-block-kind="paragraph"]'
@@ -34,14 +35,16 @@ describe("playground selection probe", () => {
     probeButton.click();
 
     expect(container.textContent).toContain("Selection stable");
-    expect(container.textContent).toContain("Anchor Block Replaced");
-    expect(container.textContent).toContain("No");
+    expect(container.textContent).toContain("Selection Stable");
+    expect(container.textContent).toContain("Yes");
 
-    textarea.value = "Alpha\n\nBeta\n\nGamma";
-    textarea.dispatchEvent(new Event("input", { bubbles: true }));
+    const agentReplayButton = Array.from(container.querySelectorAll("button")).find((button) =>
+      button.textContent?.includes("Agent Replay")
+    ) as HTMLButtonElement;
+
+    agentReplayButton.click();
 
     expect(container.textContent).toContain("Selection stable");
-    expect(container.textContent).toContain("Anchor Node Connected");
     expect(container.textContent).toContain("Yes");
 
     dispose();

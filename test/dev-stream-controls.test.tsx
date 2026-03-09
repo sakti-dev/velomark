@@ -14,10 +14,11 @@ describe("playground stream controls", () => {
     document.body.append(container);
 
     const dispose = render(() => <App />, container);
-    const textarea = container.querySelector("textarea") as HTMLTextAreaElement;
+    const codeHeavyButton = Array.from(container.querySelectorAll("button")).find((button) =>
+      button.textContent?.includes("Code Heavy")
+    ) as HTMLButtonElement;
 
-    textarea.value = "# Demo\n\nAlpha Beta Gamma Delta";
-    textarea.dispatchEvent(new Event("input", { bubbles: true }));
+    codeHeavyButton.click();
 
     const simulateButton = Array.from(container.querySelectorAll("button")).find(
       (button) => button.textContent?.includes("Simulate stream")
@@ -27,11 +28,12 @@ describe("playground stream controls", () => {
     simulateButton.click();
 
     await vi.advanceTimersByTimeAsync(1);
-    expect(container.textContent).toContain("Demo");
-    expect(container.textContent).not.toContain("Gamma Delta");
+    expect(container.textContent).toContain("Stream");
+    expect(container.textContent).not.toContain("Tail rewrites should only replace the affected suffix.");
 
-    await vi.advanceTimersByTimeAsync(1_000);
-    expect(container.textContent).toContain("Gamma Delta");
+    await vi.advanceTimersByTimeAsync(3_000);
+    expect(container.textContent).toContain("Streamed Patch Example");
+    expect(container.textContent).toContain("Tail rewrites should only replace the affected suffix.");
 
     dispose();
     container.remove();

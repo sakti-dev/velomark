@@ -1,11 +1,8 @@
 import { createSignal, onCleanup, type Component } from "solid-js";
-import { BenchmarkPanel } from "./components/benchmark-panel";
-import { DomIdentityPanel } from "./components/dom-identity-panel";
-import { InputPanel } from "./components/input-panel";
+import { DiagnosticsStrip } from "./components/diagnostics-strip";
 import { PlaygroundShell } from "./components/playground-shell";
 import { RendererPanel } from "./components/renderer-panel";
-import { SelectionPanel } from "./components/selection-panel";
-import { StreamControlsPanel } from "./components/stream-controls-panel";
+import { WorkbenchControlsPanel } from "./components/workbench-controls-panel";
 import { playgroundPresets } from "./fixtures/presets";
 import { usePlaygroundMetrics } from "./hooks/use-playground-metrics";
 import { useSelectionProbe } from "./hooks/use-selection-probe";
@@ -58,12 +55,6 @@ const App: Component = () => {
     setActivePresetId(preset.id);
     setMarkdown(preset.markdown);
     setRenderedMarkdown(preset.markdown);
-  };
-
-  const handleMarkdownChange = (value: string) => {
-    clearStreaming();
-    setMarkdown(value);
-    setRenderedMarkdown(value);
   };
 
   const handleRenderOnce = () => {
@@ -130,39 +121,41 @@ const App: Component = () => {
     <PlaygroundShell
       controls={
         <div class="controls-column">
-          <InputPanel
+          <WorkbenchControlsPanel
             activePresetId={activePresetId()}
-            markdown={markdown()}
-            onMarkdownChange={handleMarkdownChange}
-            onPresetSelect={handlePresetSelect}
-            presets={playgroundPresets}
-          />
-
-          <StreamControlsPanel
+            benchmarkState={benchmarkState()}
             controls={streamControls()}
             isStreaming={isStreaming()}
             onControlsChange={setStreamControls}
+            onPresetSelect={handlePresetSelect}
+            onProbeSelection={probeSelection}
             onRenderOnce={handleRenderOnce}
             onReset={handleReset}
+            onRunBenchmark={runBenchmark}
             onSimulateStream={handleSimulateStream}
+            presets={playgroundPresets}
+            probeState={selectionProbeState()}
           />
-
-          <BenchmarkPanel benchmarkState={benchmarkState()} onRunBenchmark={runBenchmark} />
-          <DomIdentityPanel metrics={debugMetrics()} />
-          <SelectionPanel onProbeSelection={probeSelection} probeState={selectionProbeState()} />
         </div>
       }
       renderer={
-        <RendererPanel
-          markdown={renderedMarkdown()}
-          onDebugMetrics={(metrics) => {
-            setDebugMetrics(metrics);
-            reevaluateSelection(rendererSurface);
-          }}
-          onSurfaceReady={(element) => {
-            rendererSurface = element;
-          }}
-        />
+        <div class="renderer-column">
+          <DiagnosticsStrip
+            benchmarkState={benchmarkState()}
+            metrics={debugMetrics()}
+            probeState={selectionProbeState()}
+          />
+          <RendererPanel
+            markdown={renderedMarkdown()}
+            onDebugMetrics={(metrics) => {
+              setDebugMetrics(metrics);
+              reevaluateSelection(rendererSurface);
+            }}
+            onSurfaceReady={(element) => {
+              rendererSurface = element;
+            }}
+          />
+        </div>
       }
     />
   );

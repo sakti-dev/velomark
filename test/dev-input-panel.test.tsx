@@ -2,7 +2,7 @@ import { render } from "solid-js/web";
 import { describe, expect, it } from "vitest";
 import App from "../dev/App";
 
-describe("playground input controls", () => {
+describe("playground preset controls", () => {
   it("switches presets and updates the renderer content", () => {
     const container = document.createElement("div");
     document.body.append(container);
@@ -25,20 +25,13 @@ describe("playground input controls", () => {
     container.remove();
   });
 
-  it("lets the user edit markdown directly through the textarea", () => {
+  it("does not render the freeform markdown textarea anymore", () => {
     const container = document.createElement("div");
     document.body.append(container);
 
     const dispose = render(() => <App />, container);
 
-    const textarea = container.querySelector("textarea");
-    expect(textarea).toBeTruthy();
-
-    (textarea as HTMLTextAreaElement).value = "# Custom\n\nManual override.";
-    textarea?.dispatchEvent(new Event("input", { bubbles: true }));
-
-    expect(container.textContent).toContain("Custom");
-    expect(container.textContent).toContain("Manual override.");
+    expect(container.querySelector("textarea")).toBeNull();
 
     dispose();
     container.remove();

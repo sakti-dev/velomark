@@ -28,10 +28,8 @@ describe("playground benchmark panel", () => {
     await vi.advanceTimersByTimeAsync(1_000);
 
     expect(container.textContent).toContain("Completed");
-    expect(container.textContent).toContain("Append Path");
-    expect(container.textContent).toContain("Rewrite Path");
-    expect(container.textContent).toContain("Average Update");
-    expect(container.textContent).toContain("Max Update");
+    expect(container.textContent).toContain("Benchmark");
+    expect(container.textContent).toContain("2 runs");
 
     dispose();
     container.remove();
