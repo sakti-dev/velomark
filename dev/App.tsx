@@ -4,9 +4,11 @@ import { DomIdentityPanel } from "./components/dom-identity-panel";
 import { InputPanel } from "./components/input-panel";
 import { PlaygroundShell } from "./components/playground-shell";
 import { RendererPanel } from "./components/renderer-panel";
+import { SelectionPanel } from "./components/selection-panel";
 import { StreamControlsPanel } from "./components/stream-controls-panel";
 import { playgroundPresets } from "./fixtures/presets";
 import { usePlaygroundMetrics } from "./hooks/use-playground-metrics";
+import { useSelectionProbe } from "./hooks/use-selection-probe";
 import { createStreamSimulator } from "./hooks/use-stream-simulator";
 import type { PlaygroundPreset } from "./types/playground";
 import type { VelomarkDebugMetrics } from "../src/types";
@@ -39,7 +41,9 @@ const App: Component = () => {
     chunkSize: () => streamControls().chunkSize,
     markdown,
   });
+  const { probeSelection, reevaluateSelection, selectionProbeState } = useSelectionProbe();
   let activeTimer: ReturnType<typeof setTimeout> | undefined;
+  let rendererSurface: HTMLDivElement | undefined;
 
   const clearStreaming = () => {
     if (activeTimer !== undefined) {
@@ -145,10 +149,20 @@ const App: Component = () => {
 
           <BenchmarkPanel benchmarkState={benchmarkState()} onRunBenchmark={runBenchmark} />
           <DomIdentityPanel metrics={debugMetrics()} />
+          <SelectionPanel onProbeSelection={probeSelection} probeState={selectionProbeState()} />
         </div>
       }
       renderer={
-        <RendererPanel markdown={renderedMarkdown()} onDebugMetrics={setDebugMetrics} />
+        <RendererPanel
+          markdown={renderedMarkdown()}
+          onDebugMetrics={(metrics) => {
+            setDebugMetrics(metrics);
+            reevaluateSelection(rendererSurface);
+          }}
+          onSurfaceReady={(element) => {
+            rendererSurface = element;
+          }}
+        />
       }
     />
   );
