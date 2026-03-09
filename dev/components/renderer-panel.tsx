@@ -1,8 +1,10 @@
 import type { Component } from "solid-js";
 import { Velomark } from "../../src";
+import type { VelomarkDebugMetrics } from "../../src/types";
 
 export interface RendererPanelProps {
   markdown: string;
+  onDebugMetrics?: (metrics: VelomarkDebugMetrics) => void;
 }
 
 export const RendererPanel: Component<RendererPanelProps> = (props) => {
@@ -13,7 +15,7 @@ export const RendererPanel: Component<RendererPanelProps> = (props) => {
         <p>Rendered output updates here as presets and stream controls change.</p>
       </header>
       <div class="renderer-surface">
-        <Velomark markdown={props.markdown} />
+        <Velomark markdown={props.markdown} onDebugMetrics={props.onDebugMetrics} />
       </div>
     </section>
   );

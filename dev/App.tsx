@@ -1,5 +1,6 @@
 import { createSignal, onCleanup, type Component } from "solid-js";
 import { BenchmarkPanel } from "./components/benchmark-panel";
+import { DomIdentityPanel } from "./components/dom-identity-panel";
 import { InputPanel } from "./components/input-panel";
 import { PlaygroundShell } from "./components/playground-shell";
 import { RendererPanel } from "./components/renderer-panel";
@@ -8,6 +9,7 @@ import { playgroundPresets } from "./fixtures/presets";
 import { usePlaygroundMetrics } from "./hooks/use-playground-metrics";
 import { createStreamSimulator } from "./hooks/use-stream-simulator";
 import type { PlaygroundPreset } from "./types/playground";
+import type { VelomarkDebugMetrics } from "../src/types";
 
 const initialPreset = playgroundPresets[0];
 const DEFAULT_STREAM_CONTROLS = {
@@ -15,6 +17,12 @@ const DEFAULT_STREAM_CONTROLS = {
   intervalMs: 40,
   mode: "append",
 } as const;
+const EMPTY_DEBUG_METRICS: VelomarkDebugMetrics = {
+  appendedBlockCount: 0,
+  blockCount: 0,
+  replacedBlockCount: 0,
+  reusedBlockCount: 0,
+};
 
 const App: Component = () => {
   const [activePresetId, setActivePresetId] = createSignal<PlaygroundPreset["id"]>(
@@ -26,6 +34,7 @@ const App: Component = () => {
   const [renderedMarkdown, setRenderedMarkdown] = createSignal(markdown());
   const [isStreaming, setIsStreaming] = createSignal(false);
   const [streamControls, setStreamControls] = createSignal(DEFAULT_STREAM_CONTROLS);
+  const [debugMetrics, setDebugMetrics] = createSignal(EMPTY_DEBUG_METRICS);
   const { benchmarkState, runBenchmark } = usePlaygroundMetrics({
     chunkSize: () => streamControls().chunkSize,
     markdown,
@@ -135,9 +144,12 @@ const App: Component = () => {
           />
 
           <BenchmarkPanel benchmarkState={benchmarkState()} onRunBenchmark={runBenchmark} />
+          <DomIdentityPanel metrics={debugMetrics()} />
         </div>
       }
-      renderer={<RendererPanel markdown={renderedMarkdown()} />}
+      renderer={
+        <RendererPanel markdown={renderedMarkdown()} onDebugMetrics={setDebugMetrics} />
+      }
     />
   );
 };
