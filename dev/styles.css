@@ -1,7 +1,24 @@
+:root {
+  --background: oklch(0.1776 0 0);
+  --foreground: oklch(0.9491 0 0);
+  --card: oklch(0.2134 0 0);
+  --muted: oklch(0.252 0 0);
+  --muted-foreground: oklch(0.7699 0 0);
+  --border: oklch(0.2351 0.0115 91.7467);
+  --primary: oklch(0.9247 0.0524 66.1732);
+  --radius: 0.5rem;
+  --shadow-xs: 0 1px 3px 0px hsl(0 0% 0% / 0.05);
+  --font-mono:
+    ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
+    "Courier New", monospace;
+}
+
 body {
   margin: 0;
-  color: #e6edf3;
-  background: radial-gradient(circle at top, #1b2333 0%, #0f141d 48%, #0a0d12 100%);
+  color: var(--foreground);
+  background:
+    radial-gradient(circle at top, oklch(from var(--primary) l c h / 0.08) 0%, transparent 42%),
+    var(--background);
   font-family: Inter, "Segoe UI", sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -174,6 +191,10 @@ input {
   background: rgba(10, 14, 20, 0.72);
   border: 1px solid rgba(123, 144, 170, 0.12);
   border-radius: 12px;
+}
+
+.renderer-surface .markdown-content {
+  min-height: 100%;
 }
 
 @media (max-width: 960px) {

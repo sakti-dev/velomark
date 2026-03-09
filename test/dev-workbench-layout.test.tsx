@@ -13,6 +13,9 @@ describe("playground workbench layout", () => {
     expect(container.textContent).not.toContain("DOM Identity");
     expect(container.textContent).not.toContain("Selection Probe");
     expect(container.textContent).not.toContain("BenchmarkMeasure");
+    expect(
+      container.querySelector('.renderer-surface .markdown-content[data-component="markdown"]')
+    ).not.toBeNull();
 
     dispose();
     container.remove();
