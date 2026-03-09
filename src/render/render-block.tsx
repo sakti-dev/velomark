@@ -9,91 +9,80 @@ import type {
   TableBlockData,
 } from "../parser/block-boundaries";
 import type { RenderBlock } from "../types";
+import { BlockquoteBlock } from "./blocks/blockquote-block";
+import { CodeBlock } from "./blocks/code-block";
+import { HeadingBlock } from "./blocks/heading-block";
+import { ListBlock } from "./blocks/list-block";
+import { ParagraphBlock } from "./blocks/paragraph-block";
+import { TableBlock } from "./blocks/table-block";
+import { ThematicBreakBlock } from "./blocks/thematic-break-block";
 
 export const RenderBlockView: Component<{
   block: RenderBlock<ParsedBlockData>;
   index: number;
 }> = (props) => {
-  const blockData = () => props.block.data;
-
-  return (
-    <>
-      {props.block.kind === "paragraph" && (
-        <p
-          data-velomark-block-id={props.block.id}
-          data-velomark-block-index={props.index}
-          data-velomark-block-kind={props.block.kind}
-        >
-          {(blockData() as ParagraphBlockData).text}
-        </p>
-      )}
-      {props.block.kind === "heading" && (
-        <p
-          data-velomark-block-id={props.block.id}
-          data-velomark-block-index={props.index}
-          data-velomark-block-kind={props.block.kind}
-          data-velomark-heading-depth={(blockData() as HeadingBlockData).depth}
-        >
-          {(blockData() as HeadingBlockData).text}
-        </p>
-      )}
-      {props.block.kind === "blockquote" && (
-        <blockquote
-          data-velomark-block-id={props.block.id}
-          data-velomark-block-index={props.index}
-          data-velomark-block-kind={props.block.kind}
-        >
-          {(blockData() as BlockquoteBlockData).text}
-        </blockquote>
-      )}
-      {props.block.kind === "list" && (
-        <ul
-          data-velomark-block-id={props.block.id}
-          data-velomark-block-index={props.index}
-          data-velomark-block-kind={props.block.kind}
-          data-velomark-list-ordered={String(
-            (blockData() as ListBlockData).ordered
-          )}
-        >
-          {(blockData() as ListBlockData).items.map((item) => (
-            <li>{item}</li>
-          ))}
-        </ul>
-      )}
-      {props.block.kind === "code" && (
-        <pre
-          data-velomark-block-id={props.block.id}
-          data-velomark-block-index={props.index}
-          data-velomark-block-kind={props.block.kind}
-          data-velomark-language={(blockData() as CodeBlockData).language ?? ""}
-        >
-          <code>{(blockData() as CodeBlockData).code}</code>
-        </pre>
-      )}
-      {props.block.kind === "thematic-break" && (
-        <hr
-          data-velomark-block-id={props.block.id}
-          data-velomark-block-index={props.index}
-          data-velomark-block-kind={props.block.kind}
+  switch (props.block.kind) {
+    case "paragraph":
+      return (
+        <ParagraphBlock
+          block={props.block as RenderBlock<ParagraphBlockData>}
+          index={props.index}
         />
-      )}
-      {props.block.kind === "table" && (
-        <table
-          data-velomark-block-id={props.block.id}
-          data-velomark-block-index={props.index}
-          data-velomark-block-kind={props.block.kind}
-        >
-          <tbody>
-            {(blockData() as TableBlockData).rows.map((row) => (
-              <tr>
-                {row.map((cell) => (
-                  <td>{cell}</td>
-                ))}
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      )}
-    </>
-  );
+      );
+    case "heading":
+      return (
+        <HeadingBlock
+          block={props.block as RenderBlock<HeadingBlockData>}
+          index={props.index}
+        />
+      );
+    case "blockquote":
+      return (
+        <BlockquoteBlock
+          block={props.block as RenderBlock<BlockquoteBlockData>}
+          index={props.index}
+        />
+      );
+    case "list":
+      return (
+        <ListBlock
+          block={props.block as RenderBlock<ListBlockData>}
+          index={props.index}
+        />
+      );
+    case "code":
+      return (
+        <CodeBlock
+          block={props.block as RenderBlock<CodeBlockData>}
+          index={props.index}
+        />
+      );
+    case "thematic-break":
+      return <ThematicBreakBlock blockId={props.block.id} index={props.index} />;
+    case "table":
+      return (
+        <TableBlock
+          block={props.block as RenderBlock<TableBlockData>}
+          index={props.index}
+        />
+      );
+    default:
+      return (
+        <ParagraphBlock
+          block={
+            {
+              ...props.block,
+              kind: "paragraph",
+              data: {
+                text:
+                  "text" in (props.block.data as Record<string, unknown>)
+                    ? String((props.block.data as { text?: unknown }).text ?? "")
+                    : "",
+              },
+            } as RenderBlock<ParagraphBlockData>
+          }
+          index={props.index}
+        />
+      );
+  }
 };
