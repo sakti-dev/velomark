@@ -1,14 +1,3 @@
-import type { Component } from "solid-js";
-
-export interface VelomarkProps {
-  class?: string;
-  markdown: string;
-}
-
-export const Velomark: Component<VelomarkProps> = (props) => {
-  return (
-    <div class={props.class} data-velomark-root="">
-      <p>{props.markdown}</p>
-    </div>
-  );
-};
+export { Velomark } from "./render/velomark";
+export type { VelomarkProps } from "./render/velomark";
+export type { RenderBlock, RenderDocument } from "./types";
