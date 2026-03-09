@@ -20,6 +20,11 @@ export interface InlineEmphasisToken {
   type: "emphasis";
 }
 
+export interface InlineDeleteToken {
+  children: InlineToken[];
+  type: "delete";
+}
+
 export interface InlineLinkToken {
   children: InlineToken[];
   href: string;
@@ -38,6 +43,7 @@ export interface InlineTextToken {
 
 export type InlineToken =
   | InlineCodeToken
+  | InlineDeleteToken
   | InlineEmphasisToken
   | InlineLinkToken
   | InlineStrongToken

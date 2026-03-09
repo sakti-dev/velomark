@@ -74,6 +74,18 @@ export function parseInline(source: string): InlineToken[] {
       }
     }
 
+    if (current === "~" && next === "~") {
+      const parsed = parseDelimited(source, index, "~~");
+      if (parsed) {
+        tokens.push({
+          type: "delete",
+          children: parseInline(parsed.content),
+        });
+        index = parsed.end;
+        continue;
+      }
+    }
+
     if (current === "*" && next === "*") {
       const parsed = parseDelimited(source, index, "**");
       if (parsed) {
@@ -86,8 +98,32 @@ export function parseInline(source: string): InlineToken[] {
       }
     }
 
+    if (current === "_" && next === "_") {
+      const parsed = parseDelimited(source, index, "__");
+      if (parsed) {
+        tokens.push({
+          type: "strong",
+          children: parseInline(parsed.content),
+        });
+        index = parsed.end;
+        continue;
+      }
+    }
+
     if (current === "*") {
       const parsed = parseDelimited(source, index, "*");
+      if (parsed) {
+        tokens.push({
+          type: "emphasis",
+          children: parseInline(parsed.content),
+        });
+        index = parsed.end;
+        continue;
+      }
+    }
+
+    if (current === "_") {
+      const parsed = parseDelimited(source, index, "_");
       if (parsed) {
         tokens.push({
           type: "emphasis",

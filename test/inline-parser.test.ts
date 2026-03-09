@@ -26,6 +26,16 @@ describe("parseInline", () => {
     ]);
   });
 
+  it("parses underscore emphasis and strong tokens", () => {
+    expect(parseInline("Mix _em_ and __strong__ text")).toEqual([
+      { type: "text", text: "Mix " },
+      { type: "emphasis", children: [{ type: "text", text: "em" }] },
+      { type: "text", text: " and " },
+      { type: "strong", children: [{ type: "text", text: "strong" }] },
+      { type: "text", text: " text" },
+    ]);
+  });
+
   it("parses inline links", () => {
     expect(parseInline("Open [docs](https://example.com)")).toEqual([
       { type: "text", text: "Open " },
@@ -57,6 +67,14 @@ describe("parseInline", () => {
       },
       { type: "text", text: " and " },
       { type: "code", text: "run" },
+    ]);
+  });
+
+  it("parses strikethrough tokens", () => {
+    expect(parseInline("Use ~~old~~ behavior")).toEqual([
+      { type: "text", text: "Use " },
+      { type: "delete", children: [{ type: "text", text: "old" }] },
+      { type: "text", text: " behavior" },
     ]);
   });
 });

@@ -8,6 +8,12 @@ function renderToken(token: InlineToken): JSX.Element {
       return token.text;
     case "code":
       return <code>{token.text}</code>;
+    case "delete":
+      return (
+        <del>
+          <For each={token.children}>{(child) => renderToken(child)}</For>
+        </del>
+      );
     case "emphasis":
       return (
         <em>
@@ -22,7 +28,7 @@ function renderToken(token: InlineToken): JSX.Element {
       );
     case "link":
       return (
-        <a href={token.href}>
+        <a href={token.href} rel="noopener noreferrer" target="_blank">
           <For each={token.children}>{(child) => renderToken(child)}</For>
         </a>
       );
