@@ -57,3 +57,10 @@ export interface RenderDocument<TData = unknown> {
   blocks: RenderBlock<TData>[];
   version: number;
 }
+
+export interface VelomarkDebugMetrics {
+  appendedBlockCount: number;
+  blockCount: number;
+  replacedBlockCount: number;
+  reusedBlockCount: number;
+}

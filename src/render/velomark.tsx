@@ -1,12 +1,13 @@
 import { For, createEffect, createSignal } from "solid-js";
-import { buildRenderDocument } from "../model/render-document";
+import { buildRenderDocument, collectRenderMetrics } from "../model/render-document";
 import type { ParsedBlockData } from "../parser/block-boundaries";
-import type { RenderDocument } from "../types";
+import type { RenderDocument, VelomarkDebugMetrics } from "../types";
 import { RenderBlockView } from "./render-block";
 
 export interface VelomarkProps {
   class?: string;
   markdown: string;
+  onDebugMetrics?: (metrics: VelomarkDebugMetrics) => void;
 }
 
 export function Velomark(props: VelomarkProps) {
@@ -15,7 +16,13 @@ export function Velomark(props: VelomarkProps) {
   );
 
   createEffect(() => {
-    setDocument((previous) => buildRenderDocument(previous, props.markdown));
+    setDocument((previous) => {
+      const nextDocument = buildRenderDocument(previous, props.markdown);
+
+      props.onDebugMetrics?.(collectRenderMetrics(previous.blocks, nextDocument.blocks));
+
+      return nextDocument;
+    });
   });
 
   return (
