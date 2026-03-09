@@ -45,6 +45,7 @@ describe("parseBlockBoundaries", () => {
       text: "Paragraph text",
     });
     expect(blocks[2]?.data).toMatchObject({
+      paragraphs: ["Quote line 1\nQuote line 2"],
       text: "Quote line 1\nQuote line 2",
     });
     expect(blocks[3]?.data).toMatchObject({
@@ -81,5 +82,18 @@ describe("parseBlockBoundaries", () => {
     expect(blocks).toHaveLength(1);
     expect(blocks[0]?.kind).toBe("code");
     expect(blocks[0]?.status).toBe("streaming");
+  });
+
+  it("preserves quoted paragraph boundaries", () => {
+    const blocks = parseBlockBoundaries(
+      ["> First quoted paragraph", ">", "> Second quoted paragraph"].join("\n")
+    );
+
+    expect(blocks).toHaveLength(1);
+    expect(blocks[0]?.kind).toBe("blockquote");
+    expect(blocks[0]?.data).toMatchObject({
+      paragraphs: ["First quoted paragraph", "Second quoted paragraph"],
+      text: "First quoted paragraph\n\nSecond quoted paragraph",
+    });
   });
 });

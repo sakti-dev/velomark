@@ -45,6 +45,7 @@ describe("Velomark block rendering", () => {
     expect(host.querySelector("p strong")?.textContent).toBe("strong");
     expect(host.querySelector("p code")?.textContent).toBe("code");
     expect(host.querySelector("blockquote")?.textContent).toBe("Quote line");
+    expect(host.querySelectorAll("blockquote > p")).toHaveLength(1);
     expect(host.querySelector("ol")).not.toBeNull();
     expect(host.querySelectorAll("ol > li")).toHaveLength(2);
     expect(host.querySelector("pre > code")?.textContent).toBe("const x = 1;");
@@ -71,5 +72,23 @@ describe("Velomark block rendering", () => {
     const headingAfter = host.querySelector("h1");
     expect(headingAfter).toBe(headingBefore);
     expect(headingAfter?.textContent).toBe("Heading");
+  });
+
+  it("renders blockquotes as paragraph children instead of inline line breaks", () => {
+    const host = document.createElement("div");
+    document.body.append(host);
+
+    const markdown = ["> First quoted paragraph", ">", "> Second quoted paragraph"].join(
+      "\n"
+    );
+
+    const dispose = render(() => <Velomark markdown={markdown} />, host);
+    mountedRoots.push(dispose);
+
+    const paragraphs = Array.from(host.querySelectorAll("blockquote > p"));
+    expect(paragraphs).toHaveLength(2);
+    expect(paragraphs[0]?.textContent).toBe("First quoted paragraph");
+    expect(paragraphs[1]?.textContent).toBe("Second quoted paragraph");
+    expect(host.querySelector("blockquote br")).toBeNull();
   });
 });

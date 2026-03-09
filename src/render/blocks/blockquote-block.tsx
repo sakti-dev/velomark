@@ -8,20 +8,17 @@ export const BlockquoteBlock: Component<{
   debug?: boolean;
   index: number;
 }> = (props) => {
-  const lines = () => props.block.data.text.split("\n");
-
   return (
     <blockquote
       data-velomark-block-id={props.debug ? props.block.id : undefined}
       data-velomark-block-index={props.index}
       data-velomark-block-kind={props.block.kind}
     >
-      <For each={lines()}>
-        {(line, index) => (
-          <>
-            {index() > 0 && <br />}
-            <RenderInline text={line} />
-          </>
+      <For each={props.block.data.paragraphs}>
+        {(paragraph) => (
+          <p>
+            <RenderInline text={paragraph} />
+          </p>
         )}
       </For>
     </blockquote>

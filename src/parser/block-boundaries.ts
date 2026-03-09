@@ -22,6 +22,7 @@ export interface HeadingBlockData {
 }
 
 export interface BlockquoteBlockData {
+  paragraphs: string[];
   text: string;
 }
 
@@ -195,6 +196,24 @@ export function parseBlockBoundaries(
         scanIndex += 1;
       }
 
+      const paragraphs: string[] = [];
+      let currentParagraph: string[] = [];
+
+      for (const quoteLine of quoteLines) {
+        if (isBlankLine(quoteLine)) {
+          if (currentParagraph.length > 0) {
+            paragraphs.push(currentParagraph.join("\n"));
+            currentParagraph = [];
+          }
+          continue;
+        }
+        currentParagraph.push(quoteLine);
+      }
+
+      if (currentParagraph.length > 0) {
+        paragraphs.push(currentParagraph.join("\n"));
+      }
+
       const text = quoteLines.join("\n");
       blocks.push(
         buildBlock(
@@ -203,7 +222,10 @@ export function parseBlockBoundaries(
           sourceEnd,
           scanIndex >= lines.length,
           `blockquote:${text}`,
-          { text }
+          {
+            paragraphs,
+            text,
+          }
         )
       );
       lineIndex = scanIndex;
