@@ -21,7 +21,11 @@ export const RendererPanel: Component<RendererPanelProps> = (props) => {
           props.onSurfaceReady?.(element);
         }}
       >
-        <Velomark markdown={props.markdown} onDebugMetrics={props.onDebugMetrics} />
+        <Velomark
+          debug={true}
+          markdown={props.markdown}
+          onDebugMetrics={props.onDebugMetrics}
+        />
       </div>
     </section>
   );

@@ -5,11 +5,12 @@ import { RenderInline } from "../inline/render-inline";
 
 export const HeadingBlock: Component<{
   block: RenderBlock<HeadingBlockData>;
+  debug?: boolean;
   index: number;
 }> = (props) => {
   const depth = () => props.block.data.depth;
   const commonProps = {
-    "data-velomark-block-id": props.block.id,
+    "data-velomark-block-id": props.debug ? props.block.id : undefined,
     "data-velomark-block-index": props.index,
     "data-velomark-block-kind": props.block.kind,
     "data-velomark-heading-depth": depth(),

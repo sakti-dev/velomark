@@ -51,6 +51,7 @@ describe("Velomark block rendering", () => {
     expect(host.querySelector("hr")).not.toBeNull();
     expect(host.querySelectorAll("table thead th")).toHaveLength(2);
     expect(host.querySelectorAll("table tbody tr")).toHaveLength(1);
+    expect(host.querySelector("[data-velomark-block-id]")).toBeNull();
   });
 
   it("preserves an unchanged heading node across later tail updates", async () => {

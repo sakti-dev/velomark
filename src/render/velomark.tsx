@@ -6,6 +6,7 @@ import { RenderBlockView } from "./render-block";
 
 export interface VelomarkProps {
   class?: string;
+  debug?: boolean;
   markdown: string;
   onDebugMetrics?: (metrics: VelomarkDebugMetrics) => void;
 }
@@ -31,7 +32,9 @@ export function Velomark(props: VelomarkProps) {
       data-velomark-root=""
     >
       <For each={document().blocks}>
-        {(block, index) => <RenderBlockView block={block} index={index()} />}
+        {(block, index) => (
+          <RenderBlockView block={block} debug={props.debug} index={index()} />
+        )}
       </For>
     </div>
   );

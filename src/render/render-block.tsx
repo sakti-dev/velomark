@@ -19,6 +19,7 @@ import { ThematicBreakBlock } from "./blocks/thematic-break-block";
 
 export const RenderBlockView: Component<{
   block: RenderBlock<ParsedBlockData>;
+  debug?: boolean;
   index: number;
 }> = (props) => {
   switch (props.block.kind) {
@@ -26,6 +27,7 @@ export const RenderBlockView: Component<{
       return (
         <ParagraphBlock
           block={props.block as RenderBlock<ParagraphBlockData>}
+          debug={props.debug}
           index={props.index}
         />
       );
@@ -33,6 +35,7 @@ export const RenderBlockView: Component<{
       return (
         <HeadingBlock
           block={props.block as RenderBlock<HeadingBlockData>}
+          debug={props.debug}
           index={props.index}
         />
       );
@@ -40,6 +43,7 @@ export const RenderBlockView: Component<{
       return (
         <BlockquoteBlock
           block={props.block as RenderBlock<BlockquoteBlockData>}
+          debug={props.debug}
           index={props.index}
         />
       );
@@ -47,6 +51,7 @@ export const RenderBlockView: Component<{
       return (
         <ListBlock
           block={props.block as RenderBlock<ListBlockData>}
+          debug={props.debug}
           index={props.index}
         />
       );
@@ -54,15 +59,23 @@ export const RenderBlockView: Component<{
       return (
         <CodeBlock
           block={props.block as RenderBlock<CodeBlockData>}
+          debug={props.debug}
           index={props.index}
         />
       );
     case "thematic-break":
-      return <ThematicBreakBlock blockId={props.block.id} index={props.index} />;
+      return (
+        <ThematicBreakBlock
+          blockId={props.block.id}
+          debug={props.debug}
+          index={props.index}
+        />
+      );
     case "table":
       return (
         <TableBlock
           block={props.block as RenderBlock<TableBlockData>}
+          debug={props.debug}
           index={props.index}
         />
       );
@@ -81,6 +94,7 @@ export const RenderBlockView: Component<{
               },
             } as RenderBlock<ParagraphBlockData>
           }
+          debug={props.debug}
           index={props.index}
         />
       );

@@ -5,10 +5,11 @@ import { RenderInline } from "../inline/render-inline";
 
 export const ListBlock: Component<{
   block: RenderBlock<ListBlockData>;
+  debug?: boolean;
   index: number;
 }> = (props) => {
   const commonProps = {
-    "data-velomark-block-id": props.block.id,
+    "data-velomark-block-id": props.debug ? props.block.id : undefined,
     "data-velomark-block-index": props.index,
     "data-velomark-block-kind": props.block.kind,
     "data-velomark-list-ordered": String(props.block.data.ordered),
