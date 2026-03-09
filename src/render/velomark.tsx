@@ -19,7 +19,10 @@ export function Velomark(props: VelomarkProps) {
   });
 
   return (
-    <div class={props.class} data-velomark-root="">
+    <div
+      class={props.class ? `velomark ${props.class}` : "velomark"}
+      data-velomark-root=""
+    >
       <For each={document().blocks}>
         {(block, index) => <RenderBlockView block={block} index={index()} />}
       </For>

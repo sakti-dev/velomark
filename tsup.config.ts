@@ -31,11 +31,21 @@ export default defineConfig(config => {
 
   if (!watching && !CI) {
     const package_fields = preset.generatePackageExports(parsed_options)
+    const normalized_exports = {
+      '.': package_fields.exports,
+      './styles.css': './dist/styles.css',
+    }
+    const package_fields_with_styles = {
+      ...package_fields,
+      exports: normalized_exports,
+    }
 
-    console.log(`package.json: \n\n${JSON.stringify(package_fields, null, 2)}\n\n`)
+    console.log(
+      `package.json: \n\n${JSON.stringify(package_fields_with_styles, null, 2)}\n\n`
+    )
 
     // will update ./package.json with the correct export fields
-    preset.writePackageJson(package_fields)
+    preset.writePackageJson(package_fields_with_styles)
   }
 
   return preset.generateTsupOptions(parsed_options)

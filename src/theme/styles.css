@@ -1,0 +1,53 @@
+.velomark {
+  --velomark-color-text: #e5e7eb;
+  --velomark-color-muted: #94a3b8;
+  --velomark-color-border: #334155;
+  --velomark-color-accent: #38bdf8;
+  --velomark-color-code-bg: #0f172a;
+  --velomark-block-gap: 1rem;
+  --velomark-radius: 0.5rem;
+  --velomark-line-height: 1.6;
+  color: var(--velomark-color-text);
+  line-height: var(--velomark-line-height);
+}
+
+.velomark > * + * {
+  margin-top: var(--velomark-block-gap);
+}
+
+.velomark code {
+  background: var(--velomark-color-code-bg);
+  border-radius: var(--velomark-radius);
+  padding: 0.1rem 0.35rem;
+}
+
+.velomark pre {
+  background: var(--velomark-color-code-bg);
+  border: 1px solid var(--velomark-color-border);
+  border-radius: var(--velomark-radius);
+  overflow-x: auto;
+  padding: 0.875rem 1rem;
+}
+
+.velomark a {
+  color: var(--velomark-color-accent);
+}
+
+.velomark blockquote {
+  border-left: 3px solid var(--velomark-color-border);
+  color: var(--velomark-color-muted);
+  margin: 0;
+  padding-left: 1rem;
+}
+
+.velomark table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.velomark th,
+.velomark td {
+  border: 1px solid var(--velomark-color-border);
+  padding: 0.5rem 0.75rem;
+  text-align: left;
+}
