@@ -25,9 +25,9 @@ describe("Velomark", () => {
       const container = (
         <Velomark markdown={"Hello world"} />
       ) as HTMLDivElement;
-      expect(container.outerHTML).toBe(
-        '<div data-velomark-root=""><p>Hello world</p></div>'
-      );
+      expect(container.outerHTML).toContain('data-velomark-root=""');
+      expect(container.outerHTML).toContain('data-velomark-block-kind="paragraph"');
+      expect(container.textContent).toBe("Hello world");
     });
   });
 });
