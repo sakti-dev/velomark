@@ -1,4 +1,5 @@
 import type { PlaygroundPreset } from "../types/playground";
+import recordedChatReplay from "./recorded-chat-replay";
 
 const agentReplay = `# Agent Replay Stress Sample
 
@@ -225,6 +226,13 @@ export const playgroundPresets: PlaygroundPreset[] = [
     label: "Chat Response",
     description: "General coding-agent explanation with headings and paragraphs.",
     markdown: chatResponse,
+  },
+  {
+    id: "recorded-chat-replay",
+    label: "Recorded Replay",
+    description:
+      "Markdown reconstructed from a real desktop chat stream fixture using the extractor script.",
+    markdown: recordedChatReplay,
   },
   {
     id: "code-heavy",

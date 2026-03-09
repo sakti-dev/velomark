@@ -21,6 +21,7 @@ describe("playground presets", () => {
 
     expect(playgroundPresets[0]?.id).toBe("agent-replay");
     expect(ids).toContain("agent-replay");
+    expect(ids).toContain("recorded-chat-replay");
     expect(ids).toContain("chat-response");
     expect(ids).toContain("code-heavy");
     expect(ids).toContain("list-table");

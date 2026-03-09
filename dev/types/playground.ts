@@ -1,6 +1,7 @@
 export interface PlaygroundPreset {
   id:
     | "agent-replay"
+    | "recorded-chat-replay"
     | "chat-response"
     | "code-heavy"
     | "list-table"
