@@ -11,11 +11,16 @@ describe("playground presets", () => {
     expect(playgroundPresets.every((preset) => preset.markdown.length > 40)).toBe(
       true
     );
+    expect(
+      playgroundPresets.some((preset) => preset.markdown.length >= 5_000)
+    ).toBe(true);
   });
 
-  it("includes chat- and code-oriented presets for playground coverage", () => {
+  it("includes a long stress preset alongside chat- and code-oriented presets", () => {
     const ids = playgroundPresets.map((preset) => preset.id);
 
+    expect(playgroundPresets[0]?.id).toBe("agent-replay");
+    expect(ids).toContain("agent-replay");
     expect(ids).toContain("chat-response");
     expect(ids).toContain("code-heavy");
     expect(ids).toContain("list-table");

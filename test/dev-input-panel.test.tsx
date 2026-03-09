@@ -9,7 +9,7 @@ describe("playground input controls", () => {
 
     const dispose = render(() => <App />, container);
 
-    expect(container.textContent).toContain("Project Overview");
+    expect(container.textContent).toContain("Agent Replay Stress Sample");
 
     const codeHeavyButton = Array.from(container.querySelectorAll("button")).find(
       (button) => button.textContent?.includes("Code Heavy")
@@ -19,7 +19,7 @@ describe("playground input controls", () => {
     (codeHeavyButton as HTMLButtonElement).click();
 
     expect(container.textContent).toContain("Streamed Patch Example");
-    expect(container.textContent).not.toContain("Project Overview");
+    expect(container.textContent).not.toContain("Agent Replay Stress Sample");
 
     dispose();
     container.remove();
