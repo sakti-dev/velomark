@@ -1,36 +1,24 @@
-<p>
-  <img width="100%" src="https://assets.solidjs.com/banner?type=velomark&background=tiles&project=%20" alt="velomark">
-</p>
-
 # velomark
 
-[![pnpm](https://img.shields.io/badge/maintained%20with-pnpm-cc00ff.svg?style=for-the-badge&logo=pnpm)](https://pnpm.io/)
+Solid-only markdown rendering tuned for streamed AI responses.
 
-{{desc_of_lib}}
+`velomark` is being built for coding-agent style output first:
 
-> **Note** After using this template, you have to search and replace all `velomark` and similar strings
-> with appropriate texts.
->
-> `velomark` should be a **kebab-case** string representing the name of you monorepo.
->
-> `{{desc_of_lib}}` should be a **Normal case** string with the description of the repository.
->
-> `sakti-dev` should be a **kebab-case** string from your profile URL.
+- append-heavy streaming
+- stable DOM identity for earlier blocks
+- minimal markdown subset instead of full CommonMark from day one
+- package-consumer compatibility without app-specific alias hacks
 
-## Quick start
+## Status
 
-Install it:
+This package is in active development. The current baseline exports a single
+`Velomark` component while the internal block model, patch planner, and
+streaming-focused renderer are being implemented.
+
+## Development
 
 ```bash
-npm i velomark
-# or
-yarn add velomark
-# or
-pnpm add velomark
-```
-
-Use it:
-
-```tsx
-import velomark from 'velomark'
+pnpm install --ignore-workspace
+pnpm test
+pnpm build
 ```
