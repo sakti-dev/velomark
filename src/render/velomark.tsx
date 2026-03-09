@@ -1,6 +1,6 @@
 import { For, createEffect, createSignal } from "solid-js";
 import { buildRenderDocument } from "../model/render-document";
-import type { ParagraphBlockData } from "../parser/block-boundaries";
+import type { ParsedBlockData } from "../parser/block-boundaries";
 import type { RenderDocument } from "../types";
 import { RenderBlockView } from "./render-block";
 
@@ -10,7 +10,7 @@ export interface VelomarkProps {
 }
 
 export function Velomark(props: VelomarkProps) {
-  const [document, setDocument] = createSignal<RenderDocument<ParagraphBlockData>>(
+  const [document, setDocument] = createSignal<RenderDocument<ParsedBlockData>>(
     buildRenderDocument(undefined, props.markdown)
   );
 

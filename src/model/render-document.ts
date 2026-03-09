@@ -1,6 +1,6 @@
 import { assignStableBlockIds } from "./stable-id";
 import {
-  type ParagraphBlockData,
+  type ParsedBlockData,
   parseBlockBoundaries,
 } from "../parser/block-boundaries";
 import type { RenderBlock, RenderDocument } from "../types";
@@ -20,9 +20,9 @@ function canReuseBlock<TData>(
 }
 
 export function buildRenderDocument(
-  previousDocument: RenderDocument<ParagraphBlockData> | undefined,
+  previousDocument: RenderDocument<ParsedBlockData> | undefined,
   markdown: string
-): RenderDocument<ParagraphBlockData> {
+): RenderDocument<ParsedBlockData> {
   const previousBlocks = previousDocument?.blocks ?? [];
   const draftBlocks = parseBlockBoundaries(markdown);
   const nextBlocksWithIds = assignStableBlockIds(previousBlocks, draftBlocks);
