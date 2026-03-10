@@ -26,6 +26,18 @@
   padding: 0.875rem 1rem;
 }
 
+.velomark pre code {
+  background: transparent;
+  border-radius: 0;
+  display: block;
+  min-width: max-content;
+  padding: 0;
+}
+
+.velomark [data-velomark-code-highlighted] {
+  color: inherit;
+}
+
 .velomark [data-velomark-code-header] {
   align-items: center;
   background: linear-gradient(

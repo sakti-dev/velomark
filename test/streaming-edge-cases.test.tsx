@@ -10,6 +10,18 @@ const mountedRoots: Array<() => void> = [];
 const loadFixture = (name: string): string =>
   readFileSync(resolve(process.cwd(), "test/fixtures/streaming", name), "utf8");
 
+const waitFor = async (predicate: () => boolean, attempts = 20): Promise<void> => {
+  for (let index = 0; index < attempts; index += 1) {
+    if (predicate()) {
+      return;
+    }
+
+    await new Promise((resolve) => window.setTimeout(resolve, 0));
+  }
+
+  throw new Error("Condition was not met before waitFor timed out.");
+};
+
 afterEach(() => {
   while (mountedRoots.length > 0) {
     mountedRoots.pop()?.();
@@ -33,6 +45,44 @@ describe("Velomark streaming edge cases", () => {
     await Promise.resolve();
 
     expect(host.querySelector("pre > code")?.textContent).toContain("const answer =\n42;");
+  });
+
+  it("keeps highlighted code rendering while streamed code grows", async () => {
+    const host = document.createElement("div");
+    document.body.append(host);
+    const [markdown, setMarkdown] = createSignal("```ts\nconst answer =");
+
+    const dispose = render(() => <Velomark markdown={markdown()} />, host);
+    mountedRoots.push(dispose);
+
+    await waitFor(
+      () =>
+        (host.querySelectorAll('[data-velomark-code-highlighted] span').length ?? 0) >
+        0
+    );
+
+    const codeBefore = host.querySelector(
+      '[data-velomark-block-kind="code"] pre > code'
+    );
+    expect(codeBefore).not.toBeNull();
+
+    setMarkdown("```ts\nconst answer = 42;\n```");
+    await waitFor(
+      () =>
+        (host.querySelectorAll('[data-velomark-code-highlighted] span').length ?? 0) > 0 &&
+        (host.querySelector('[data-velomark-block-kind="code"] pre > code')?.textContent ??
+          "").includes("const answer = 42;")
+    );
+
+    const codeAfter = host.querySelector(
+      '[data-velomark-block-kind="code"] pre > code'
+    );
+    expect(codeBefore).not.toBeNull();
+    expect(codeAfter).not.toBeNull();
+    expect(codeAfter?.textContent).toContain("const answer = 42;");
+    expect(
+      host.querySelectorAll('[data-velomark-code-highlighted] span').length
+    ).toBeGreaterThan(0);
   });
 
   it("upgrades unresolved references when the definition arrives later", async () => {
@@ -112,7 +162,7 @@ describe("Velomark streaming edge cases", () => {
       "| A | 1 |",
       "| B | 2 |",
     ].join("\n"));
-    await Promise.resolve();
+    await waitFor(() => host.querySelectorAll("table tbody tr").length === 2);
 
     expect(host.querySelectorAll("table tbody tr")).toHaveLength(2);
   });

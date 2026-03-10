@@ -6,7 +6,11 @@ import type {
   VelomarkCodeBlockOptions,
   VelomarkCodeBlockRendererProps,
 } from "../../types";
-import { DefaultCodeBlockShell } from "../code-blocks/default-code-block-shell";
+import {
+  CodeBlockHeader,
+  resolveCodeBlockOptions,
+} from "../code-blocks/default-code-block-shell";
+import { HighlightedCodeBlock } from "../code-blocks/highlighted-code-block";
 import { MermaidBlock } from "./mermaid-block";
 
 export const CodeBlock: Component<{
@@ -45,6 +49,8 @@ export const CodeBlock: Component<{
     );
   }
 
+  const options = () => resolveCodeBlockOptions(props.codeBlockOptions);
+
   return (
     <div
       data-velomark-block-id={props.debug ? props.block.id : undefined}
@@ -52,16 +58,22 @@ export const CodeBlock: Component<{
       data-velomark-block-kind={props.block.kind}
       data-velomark-language={language() ?? ""}
     >
-      <DefaultCodeBlockShell
+      <CodeBlockHeader
         code={props.block.data.code}
         language={language()}
         options={props.codeBlockOptions}
-        source={
-          <pre>
-            <code>{props.block.data.code}</code>
-          </pre>
-        }
       />
+      {options().highlight ? (
+        <HighlightedCodeBlock
+          code={props.block.data.code}
+          language={language()}
+          theme={options().highlightTheme}
+        />
+      ) : (
+        <pre>
+          <code>{props.block.data.code}</code>
+        </pre>
+      )}
     </div>
   );
 };

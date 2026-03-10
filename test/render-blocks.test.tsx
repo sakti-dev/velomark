@@ -6,6 +6,18 @@ import type { VelomarkContainerRendererProps } from "../src";
 
 const mountedRoots: Array<() => void> = [];
 
+const waitFor = async (predicate: () => boolean, attempts = 20): Promise<void> => {
+  for (let index = 0; index < attempts; index += 1) {
+    if (predicate()) {
+      return;
+    }
+
+    await new Promise((resolve) => window.setTimeout(resolve, 0));
+  }
+
+  throw new Error("Condition was not met before waitFor timed out.");
+};
+
 afterEach(() => {
   vi.useRealTimers();
   while (mountedRoots.length > 0) {
@@ -136,6 +148,29 @@ describe("Velomark block rendering", () => {
       "const answer = 42;"
     );
     expect(shell?.querySelector('[data-velomark-code-copy]')?.textContent).toBe("Copy");
+  });
+
+  it("renders highlighted code tokens for supported languages", async () => {
+    const host = document.createElement("div");
+    document.body.append(host);
+
+    const dispose = render(
+      () => <Velomark markdown={"```ts\nconst answer = 42;\n```"} />,
+      host
+    );
+    mountedRoots.push(dispose);
+
+    await waitFor(
+      () =>
+        (host.querySelectorAll('[data-velomark-code-highlighted] span').length ?? 0) >
+        0
+    );
+
+    const shell = host.querySelector('[data-velomark-block-kind="code"]');
+    expect(shell?.querySelector('[data-velomark-code-highlighted]')).not.toBeNull();
+    expect(shell?.querySelectorAll('[data-velomark-code-highlighted] span').length).toBeGreaterThan(
+      0
+    );
   });
 
   it("omits the language label for unlabeled code fences", () => {

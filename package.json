@@ -61,9 +61,13 @@
     "solid-js": "^1.6.0"
   },
   "dependencies": {
-    "mermaid": "^11.12.3"
+    "@shikijs/core": "^3.22.0",
+    "mermaid": "^11.12.3",
+    "shiki": "^3.22.0",
+    "shiki-stream": "^0.1.4"
   },
   "devDependencies": {
+    "@testing-library/jest-dom": "^6.9.1",
     "@types/node": "^20.12.12",
     "@typescript-eslint/eslint-plugin": "^7.9.0",
     "@typescript-eslint/parser": "^7.9.0",

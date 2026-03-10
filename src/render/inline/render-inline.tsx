@@ -112,9 +112,9 @@ function renderToken(
 export const RenderInline: Component<{
   containers?: Record<string, Component<VelomarkContainerRendererProps>>;
   definitions?: ReferenceDefinitionMap;
-  text: string;
+  text?: string;
 }> = (props) => {
-  const tokens = () => parseInline(props.text, props.definitions);
+  const tokens = () => parseInline(props.text ?? "", props.definitions);
 
   return <For each={tokens()}>{(token) => renderToken(token, props.containers)}</For>;
 };
