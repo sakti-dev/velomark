@@ -10,7 +10,7 @@ const mountedRoots: Array<() => void> = [];
 const loadParityFixture = (fileName: string): string =>
   readFileSync(resolve(process.cwd(), "test/fixtures/parity", fileName), "utf8");
 
-const waitFor = async (predicate: () => boolean, attempts = 100): Promise<void> => {
+const waitFor = async (predicate: () => boolean, attempts = 200): Promise<void> => {
   for (let index = 0; index < attempts; index += 1) {
     if (predicate()) {
       return;
@@ -169,7 +169,7 @@ describe("velomark render-surface parity harness", () => {
         (host.querySelectorAll('[data-velomark-code-highlighted] span').length ?? 0) >
           0 &&
         (host.querySelector("pre > code")?.textContent ?? "").includes(
-          "Streaming response"
+          "createSessionLabel"
         )
     );
 

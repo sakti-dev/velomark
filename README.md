@@ -9,6 +9,7 @@ Solid-only markdown rendering tuned for streamed AI responses.
 - targeted block reuse instead of full subtree replacement
 - package-consumer compatibility without app-specific alias hacks
 - generic built-in defaults with a restrained public API surface
+- first-class semantic theme tokens with light, dark, and partial override support
 
 ## Status
 
@@ -23,6 +24,7 @@ This package is in active development, but the core renderer surface is real and
 - syntax-highlighted fenced code blocks
 - streaming edge-case corpus for incomplete intermediate snapshots
 - parity corpus for render-surface regression coverage
+- container-scoped theming for all built-in block surfaces, including Mermaid
 
 ## Install
 
@@ -65,6 +67,50 @@ interface VelomarkProps {
   debug?: boolean;
   markdown: string;
   onDebugMetrics?: (metrics: VelomarkDebugMetrics) => void;
+  theme?: "default" | "dark" | Partial<VelomarkTheme>;
+}
+```
+
+### Theme presets and helpers
+
+`velomark` ships a small first-class theme surface:
+
+```ts
+import {
+  Velomark,
+  applyTheme,
+  darkTheme,
+  defaultTheme,
+  generateCssVars,
+  mergeTheme,
+} from "velomark";
+```
+
+Use `theme="dark"` for the built-in dark preset, or pass a partial override:
+
+```tsx
+<Velomark
+  markdown={markdown}
+  theme={{
+    color: {
+      text: {
+        accent: "#7c3aed",
+      },
+      code: {
+        copyButtonBackground: "#111827",
+      },
+    },
+  }}
+/>
+```
+
+For container-scoped theming outside the component, use `applyTheme`:
+
+```ts
+const host = document.querySelector(".markdown-preview");
+
+if (host instanceof HTMLElement) {
+  applyTheme(host, "dark");
 }
 ```
 
@@ -82,6 +128,7 @@ Mermaid blocks intentionally simplify the shared shell:
 - no copy button
 - no source/preview toggle
 - automatic source fallback when diagram rendering fails
+- diagram colors are derived from the active `VelomarkTheme`
 
 ### Extension seams
 
@@ -142,6 +189,19 @@ The playground deliberately mirrors the desktop app theme contract:
 
 This is a preview and evaluation aid for renderer work. It does **not** mean the
 published library depends on the desktop app at runtime.
+
+## Theme model
+
+The theme system follows familiar markdown-library practice:
+
+- semantic tokens, not per-component ad hoc colors
+- named presets: `default` and `dark`
+- partial object overrides merged into the default preset
+- CSS variables as the renderer contract
+- container-scoped application for consumers that need it
+
+This is intentionally close to the good parts of Incremark’s theme philosophy,
+while staying smaller and Solid-only.
 
 ## Scope boundary
 

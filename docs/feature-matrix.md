@@ -65,6 +65,8 @@ This matrix describes the current tested renderer surface.
 | Surface | Status | Notes |
 | --- | --- | --- |
 | `Velomark` component | Supported | Primary entrypoint |
+| `theme` prop | Supported | `default`, `dark`, or partial semantic token overrides |
+| Theme presets and utilities | Supported | `defaultTheme`, `darkTheme`, `mergeTheme`, `generateCssVars`, `applyTheme` |
 | `codeBlockOptions` | Supported | Small default-UX config surface |
 | `codeBlockRenderers` | Supported | Language override map |
 | `containers` | Supported | Container/directive override map |
@@ -96,3 +98,20 @@ shell on each update.
 
 These fixtures exist to keep Incremark-aligned rendered-surface work anchored to
 stable inputs instead of ad hoc string literals.
+
+## Theme system coverage
+
+`velomark` now ships a semantic token theme surface that covers:
+
+- text, link, and border colors
+- code blocks, inline code, copy controls, and language badges
+- blockquotes, tables, and math fallback surfaces
+- Mermaid diagram theme variables derived from the active `VelomarkTheme`
+- typography, radius, shadow, and spacing primitives
+
+The intended public contract is:
+
+- `default` preset
+- `dark` preset
+- partial object overrides merged into the default preset
+- container-scoped application through generated CSS variables

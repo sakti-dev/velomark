@@ -1119,7 +1119,7 @@ packages:
     hasBin: true
 
   velomark@file:vendor/velomark-0.0.0.tgz:
-    resolution: {integrity: sha512-cYgZTK8segObescXeH/8o0KJNKvUKMGIypwZrN9THmrndHRh+XboF0kUvbbbNrQNyPvClBNo6Fc+odxpGYfKvA==, tarball: file:vendor/velomark-0.0.0.tgz}
+    resolution: {integrity: sha512-HsFQUDya3rf3tkJKo4GfKfxMnrT4SovLSpT2JqCpO4PafvYcrUBBx0zkoKtsBzyHa9qrvN89CD5aIY/nRucZRg==, tarball: file:vendor/velomark-0.0.0.tgz}
     version: 0.0.0
     engines: {node: '>=18', pnpm: '>=9.0.0'}
     peerDependencies:
