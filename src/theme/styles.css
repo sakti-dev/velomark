@@ -22,7 +22,7 @@
 .velomark pre {
   background: var(--velomark-color-code-bg);
   border: 1px solid var(--velomark-color-border);
-  border-radius: 0 0 var(--velomark-radius) var(--velomark-radius);
+  border-radius: var(--velomark-radius);
   overflow-x: auto;
   margin: 0;
   padding: 0.875rem 1rem;
@@ -40,64 +40,58 @@
   color: inherit;
 }
 
-.velomark [data-velomark-code-header] {
-  align-items: center;
-  background: linear-gradient(
-    180deg,
-    color-mix(in srgb, var(--velomark-color-surface) 94%, white 6%),
-    var(--velomark-color-surface-strong)
-  );
-  border: 1px solid var(--velomark-color-border);
-  border-bottom: 0;
-  border-radius: var(--velomark-radius) var(--velomark-radius) 0 0;
-  display: flex;
-  gap: 0.75rem;
-  justify-content: space-between;
-  min-height: 2.5rem;
-  padding: 0.5rem 0.75rem;
+.velomark [data-velomark-block-kind="code"] {
+  position: relative;
+}
+
+.velomark [data-velomark-block-kind="code"] pre {
+  padding: 1rem 3.25rem 2rem 1rem;
 }
 
 .velomark [data-velomark-code-language] {
+  background: color-mix(in srgb, var(--velomark-color-surface-strong) 88%, white 12%);
+  border: 1px solid color-mix(in srgb, var(--velomark-color-border) 78%, white 22%);
+  border-radius: 999px;
   color: var(--velomark-color-muted);
+  position: absolute;
+  right: 0.75rem;
+  bottom: 0.75rem;
   font-size: 0.72rem;
   font-weight: 700;
   letter-spacing: 0.08em;
+  line-height: 1;
+  padding: 0.32rem 0.55rem;
   text-transform: uppercase;
 }
 
-.velomark [data-velomark-code-actions] {
-  align-items: center;
-  display: inline-flex;
-  gap: 0.45rem;
-}
-
-.velomark [data-velomark-code-copy],
-.velomark [data-velomark-code-view-toggle] {
+.velomark [data-velomark-code-copy] {
   appearance: none;
-  background: color-mix(in srgb, var(--velomark-color-surface) 86%, white 14%);
+  align-items: center;
+  background: color-mix(in srgb, var(--velomark-color-surface-strong) 88%, white 12%);
   border: 1px solid color-mix(in srgb, var(--velomark-color-border) 78%, white 22%);
   border-radius: 999px;
   color: var(--velomark-color-text);
   cursor: pointer;
-  font-size: 0.73rem;
-  font-weight: 600;
-  letter-spacing: 0.01em;
-  line-height: 1;
-  padding: 0.42rem 0.72rem;
+  display: inline-flex;
+  justify-content: center;
+  position: absolute;
+  right: 0.75rem;
+  top: 0.75rem;
+  height: 2rem;
+  width: 2rem;
+  padding: 0;
   transition:
     background-color 120ms ease,
     border-color 120ms ease,
     transform 120ms ease;
 }
 
-.velomark [data-velomark-code-copy]:hover,
-.velomark [data-velomark-code-view-toggle]:hover {
+.velomark [data-velomark-code-copy]:hover {
   background: color-mix(in srgb, var(--velomark-color-surface) 70%, white 30%);
   border-color: color-mix(in srgb, var(--velomark-color-accent) 35%, var(--velomark-color-border) 65%);
 }
 
-.velomark [data-velomark-code-copy]:active,
-.velomark [data-velomark-code-view-toggle]:active {
+.velomark [data-velomark-code-copy]:active {
   transform: translateY(1px);
 }
 
@@ -105,6 +99,10 @@
   background: color-mix(in srgb, var(--velomark-color-accent) 24%, var(--velomark-color-surface) 76%);
   border-color: color-mix(in srgb, var(--velomark-color-accent) 55%, var(--velomark-color-border) 45%);
   color: white;
+}
+
+.velomark [data-velomark-code-copy] svg {
+  display: block;
 }
 
 .velomark a {

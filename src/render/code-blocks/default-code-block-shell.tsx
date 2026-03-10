@@ -1,6 +1,8 @@
 import { createSignal, type Component, type JSX } from "solid-js";
 import type { VelomarkCodeBlockOptions } from "../../types";
 
+const COPY_RESET_DELAY_MS = 2_000;
+
 const DEFAULT_CODE_BLOCK_OPTIONS: Required<VelomarkCodeBlockOptions> = {
   copyButton: true,
   defaultView: "preview",
@@ -17,22 +19,66 @@ export const resolveCodeBlockOptions = (
   ...options,
 });
 
-const CopyCodeButton: Component<{
+const CopyIcon: Component = () => (
+  <svg
+    aria-hidden="true"
+    data-velomark-code-copy-icon="copy"
+    fill="none"
+    height="14"
+    viewBox="0 0 16 16"
+    width="14"
+  >
+    <rect
+      height="8.5"
+      rx="1.75"
+      stroke="currentColor"
+      stroke-width="1.4"
+      width="7.5"
+      x="5"
+      y="3"
+    />
+    <path
+      d="M4.25 12.5H3.5a1.5 1.5 0 0 1-1.5-1.5V4.75a1.5 1.5 0 0 1 1.5-1.5H10"
+      stroke="currentColor"
+      stroke-linecap="round"
+      stroke-width="1.4"
+    />
+  </svg>
+);
+
+const CheckIcon: Component = () => (
+  <svg
+    aria-hidden="true"
+    data-velomark-code-copy-icon="check"
+    fill="none"
+    height="14"
+    viewBox="0 0 16 16"
+    width="14"
+  >
+    <path
+      d="m3.5 8.25 2.5 2.5 6-6"
+      stroke="currentColor"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      stroke-width="1.6"
+    />
+  </svg>
+);
+
+export const CopyCodeButton: Component<{
   code: string;
 }> = (props) => {
   const [copied, setCopied] = createSignal<boolean>(false);
 
   const copyCode = async (): Promise<void> => {
-    setCopied(true);
     try {
       await navigator.clipboard.writeText(props.code);
       setCopied(true);
       window.setTimeout(() => {
         setCopied(false);
-      }, 1_500);
+      }, COPY_RESET_DELAY_MS);
     } catch {
       setCopied(false);
-      return;
     }
   };
 
@@ -46,12 +92,19 @@ const CopyCodeButton: Component<{
       }}
       type="button"
     >
-      {copied() ? "Copied" : "Copy"}
+      {copied() ? <CheckIcon /> : <CopyIcon />}
     </button>
   );
 };
 
-export const CodeBlockHeader: Component<{
+export const CodeBlockLanguageBadge: Component<{
+  language?: string;
+}> = (props) =>
+  props.language ? (
+    <div data-velomark-code-language="">{props.language}</div>
+  ) : null;
+
+export const CodeBlockOverlayControls: Component<{
   code: string;
   language?: string;
   options?: VelomarkCodeBlockOptions;
@@ -60,14 +113,12 @@ export const CodeBlockHeader: Component<{
     resolveCodeBlockOptions(props.options);
 
   return (
-    <div data-velomark-code-header="">
-      {options().languageLabel && props.language ? (
-        <div data-velomark-code-language="">{props.language}</div>
-      ) : <div />}
-      <div data-velomark-code-actions="">
-        {options().copyButton ? <CopyCodeButton code={props.code} /> : null}
-      </div>
-    </div>
+    <>
+      {options().copyButton ? <CopyCodeButton code={props.code} /> : null}
+      {options().languageLabel ? (
+        <CodeBlockLanguageBadge language={props.language} />
+      ) : null}
+    </>
   );
 };
 
@@ -77,39 +128,13 @@ export const DefaultCodeBlockShell: Component<{
   options?: VelomarkCodeBlockOptions;
   preview?: JSX.Element;
   source: JSX.Element;
-}> = (props) => {
-  const options = (): Required<VelomarkCodeBlockOptions> =>
-    resolveCodeBlockOptions(props.options);
-  const [view, setView] = createSignal<"preview" | "source">(
-    options().defaultView
-  );
-  const canPreview = (): boolean => props.preview !== undefined;
-  const shouldShowPreview = (): boolean =>
-    canPreview() && (!options().previewToggle || view() === "preview");
-
-  return (
-    <>
-      <div data-velomark-code-header="">
-        {options().languageLabel && props.language ? (
-          <div data-velomark-code-language="">{props.language}</div>
-        ) : <div />}
-        <div data-velomark-code-actions="">
-          {canPreview() && options().previewToggle ? (
-            <button
-              aria-label={shouldShowPreview() ? "Show source" : "Show preview"}
-              data-velomark-code-view-toggle=""
-              onClick={() => {
-                setView((current) => (current === "preview" ? "source" : "preview"));
-              }}
-              type="button"
-            >
-              {shouldShowPreview() ? "Source" : "Preview"}
-            </button>
-          ) : null}
-          {options().copyButton ? <CopyCodeButton code={props.code} /> : null}
-        </div>
-      </div>
-      {shouldShowPreview() ? props.preview : props.source}
-    </>
-  );
-};
+}> = (props) => (
+  <>
+    <CodeBlockOverlayControls
+      code={props.code}
+      language={props.language}
+      options={props.options}
+    />
+    {props.preview ?? props.source}
+  </>
+);

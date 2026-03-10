@@ -7,7 +7,7 @@ import type {
   VelomarkCodeBlockRendererProps,
 } from "../../types";
 import {
-  CodeBlockHeader,
+  CodeBlockOverlayControls,
   resolveCodeBlockOptions,
 } from "../code-blocks/default-code-block-shell";
 import { HighlightedCodeBlock } from "../code-blocks/highlighted-code-block";
@@ -57,7 +57,7 @@ export const CodeBlock: Component<{
       data-velomark-block-kind={props.block.kind}
       data-velomark-language={language() ?? ""}
     >
-      <CodeBlockHeader
+      <CodeBlockOverlayControls
         code={props.block.data.code}
         language={language()}
         options={props.codeBlockOptions}

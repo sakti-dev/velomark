@@ -128,7 +128,7 @@ describe("Velomark block rendering", () => {
     expect(host.textContent).toContain("Done");
   });
 
-  it("renders code blocks with a generic shell and language label", () => {
+  it("renders code blocks with overlay controls and a floating language badge", () => {
     const host = document.createElement("div");
     document.body.append(host);
 
@@ -140,14 +140,19 @@ describe("Velomark block rendering", () => {
 
     const shell = host.querySelector('[data-velomark-block-kind="code"]');
     expect(shell?.tagName).toBe("DIV");
+    expect(shell?.querySelector('[data-velomark-code-header]')).toBeNull();
     expect(shell?.querySelector('[data-velomark-code-language]')?.textContent).toBe(
       "ts"
     );
-    expect(shell?.querySelector('[data-velomark-code-header]')).not.toBeNull();
     expect(shell?.querySelector("pre > code")?.textContent).toBe(
       "const answer = 42;"
     );
-    expect(shell?.querySelector('[data-velomark-code-copy]')?.textContent).toBe("Copy");
+    const copyButton = shell?.querySelector(
+      '[data-velomark-code-copy]'
+    ) as HTMLButtonElement | null;
+    expect(copyButton).not.toBeNull();
+    expect(copyButton?.getAttribute("aria-label")).toBe("Copy code");
+    expect(copyButton?.querySelector('[data-velomark-code-copy-icon="copy"]')).not.toBeNull();
   });
 
   it("renders highlighted code tokens for supported languages", async () => {
@@ -173,7 +178,7 @@ describe("Velomark block rendering", () => {
     );
   });
 
-  it("omits the language label for unlabeled code fences", () => {
+  it("omits the language badge and header for unlabeled code fences", () => {
     const host = document.createElement("div");
     document.body.append(host);
 
@@ -184,6 +189,7 @@ describe("Velomark block rendering", () => {
     mountedRoots.push(dispose);
 
     const shell = host.querySelector('[data-velomark-block-kind="code"]');
+    expect(shell?.querySelector('[data-velomark-code-header]')).toBeNull();
     expect(shell?.querySelector('[data-velomark-code-language]')).toBeNull();
     expect(shell?.querySelector("pre > code")?.textContent).toBe("plain text");
     expect(shell?.querySelector('[data-velomark-code-copy]')).not.toBeNull();
@@ -232,22 +238,29 @@ describe("Velomark block rendering", () => {
     const copyButton = host.querySelector(
       '[data-velomark-code-copy]'
     ) as HTMLButtonElement | null;
-    expect(copyButton?.textContent).toBe("Copy");
+    expect(copyButton?.querySelector('[data-velomark-code-copy-icon="copy"]')).not.toBeNull();
 
     copyButton?.click();
     await Promise.resolve();
     await Promise.resolve();
+    await vi.advanceTimersByTimeAsync(1);
 
     expect(clipboard.writeText).toHaveBeenCalledWith("const answer = 42;");
+    expect(host.querySelector('[data-velomark-code-copy]')?.getAttribute("aria-label")).toBe(
+      "Copied code"
+    );
     expect(
-      host.querySelector('[data-velomark-code-copy]')?.textContent
-    ).toBe("Copied");
+      host.querySelector('[data-velomark-code-copy-icon="check"]')
+    ).not.toBeNull();
 
-    await vi.advanceTimersByTimeAsync(1_500);
+    await vi.advanceTimersByTimeAsync(2_000);
 
+    expect(host.querySelector('[data-velomark-code-copy]')?.getAttribute("aria-label")).toBe(
+      "Copy code"
+    );
     expect(
-      host.querySelector('[data-velomark-code-copy]')?.textContent
-    ).toBe("Copy");
+      host.querySelector('[data-velomark-code-copy-icon="copy"]')
+    ).not.toBeNull();
   });
 
   it("renders tables with a generic wrapper and column alignment", () => {
