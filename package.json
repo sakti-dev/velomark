@@ -1,6 +1,6 @@
 {
   "name": "velomark",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Solid-only markdown rendering tuned for streamed AI responses.",
   "license": "MIT",
   "author": "sakti-dev",
@@ -17,7 +17,9 @@
     "dist"
   ],
   "private": false,
-  "sideEffects": false,
+  "sideEffects": [
+    "*.css"
+  ],
   "type": "module",
   "main": "./dist/index.js",
   "module": "./dist/index.js",
@@ -58,7 +60,7 @@
     "update-deps": "pnpm up -Li"
   },
   "peerDependencies": {
-    "solid-js": "^1.6.0"
+    "solid-js": "^1.9.10"
   },
   "dependencies": {
     "@shikijs/core": "^3.22.0",
@@ -81,7 +83,7 @@
     "eslint-plugin-no-only-tests": "^3.1.0",
     "jsdom": "^24.0.0",
     "prettier": "3.0.0",
-    "solid-js": "^1.8.17",
+    "solid-js": "^1.9.10",
     "tailwindcss": "^4.1.18",
     "tsup": "^8.0.2",
     "tsup-preset-solid": "^2.2.0",

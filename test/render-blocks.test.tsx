@@ -168,7 +168,8 @@ describe("Velomark block rendering", () => {
     await waitFor(
       () =>
         (host.querySelectorAll('[data-velomark-code-highlighted] span').length ?? 0) >
-        0
+        0,
+      500
     );
 
     const shell = host.querySelector('[data-velomark-block-kind="code"]');
