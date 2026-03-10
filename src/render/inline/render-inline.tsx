@@ -1,114 +1,10 @@
-import { For, type Component, type JSX } from "solid-js";
-import { Dynamic } from "solid-js/web";
+import type { Component } from "solid-js";
 import { parseInline } from "../../parser/inline-parser";
-import { HtmlElementView } from "../html-element-view";
-import { MathView } from "../math/math-view";
 import type {
-  InlineToken,
   ReferenceDefinitionMap,
   VelomarkContainerRendererProps,
 } from "../../types";
-
-function renderToken(
-  token: InlineToken,
-  containers?: Record<string, Component<VelomarkContainerRendererProps>>
-): JSX.Element {
-  switch (token.type) {
-    case "break":
-      return <br />;
-    case "text":
-      return token.text;
-    case "footnote-reference":
-      return (
-        <sup>
-          <a href={`#fn-${token.identifier}`} id={`fnref-${token.identifier}`}>
-            [{token.identifier}]
-          </a>
-        </sup>
-      );
-    case "inline-math":
-      return (
-        <span data-velomark-inline-math="">
-          <MathView displayMode={false} formula={token.value} />
-        </span>
-      );
-    case "html":
-      return <span data-velomark-inline-html="" innerHTML={token.value} />;
-    case "html-element":
-      return (
-        <HtmlElementView
-          attributes={token.attributes}
-          children={token.children.map((child) => ({
-            token: child,
-            type: "inline-token" as const,
-          }))}
-          tagName={token.tagName}
-        />
-      );
-    case "text-directive": {
-      const CustomContainer = containers?.[token.name];
-      const children = (
-        <For each={token.children}>{(child) => renderToken(child, containers)}</For>
-      );
-
-      if (CustomContainer) {
-        return (
-          <Dynamic
-            component={CustomContainer}
-            attributes={token.attributes}
-            name={token.name}
-          >
-            {children}
-          </Dynamic>
-        );
-      }
-
-      return (
-        <span
-          data-velomark-attr-tone={token.attributes?.tone}
-          data-velomark-text-directive={token.name}
-        >
-          {children}
-        </span>
-      );
-    }
-    case "code":
-      return <code>{token.text}</code>;
-    case "delete":
-      return (
-        <del>
-          <For each={token.children}>{(child) => renderToken(child, containers)}</For>
-        </del>
-      );
-    case "emphasis":
-      return (
-        <em>
-          <For each={token.children}>{(child) => renderToken(child, containers)}</For>
-        </em>
-      );
-    case "image":
-      return (
-        <img alt={token.alt} loading="lazy" src={token.src} title={token.title} />
-      );
-    case "strong":
-      return (
-        <strong>
-          <For each={token.children}>{(child) => renderToken(child, containers)}</For>
-        </strong>
-      );
-    case "link":
-      return (
-        <a
-          href={token.href}
-          rel="noopener noreferrer"
-          target="_blank"
-          title={token.title}
-        >
-          <For each={token.children}>{(child) => renderToken(child, containers)}</For>
-        </a>
-      );
-  }
-}
+import { RenderInlineTokens } from "./inline-token-view";
 
 export const RenderInline: Component<{
   containers?: Record<string, Component<VelomarkContainerRendererProps>>;
@@ -117,5 +13,11 @@ export const RenderInline: Component<{
 }> = (props) => {
   const tokens = () => parseInline(props.text ?? "", props.definitions);
 
-  return <For each={tokens()}>{(token) => renderToken(token, props.containers)}</For>;
+  return (
+    <RenderInlineTokens
+      containers={props.containers}
+      definitions={props.definitions}
+      tokens={tokens()}
+    />
+  );
 };

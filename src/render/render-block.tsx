@@ -117,7 +117,9 @@ export const RenderBlockView: Component<{
       return (
         <HtmlElementBlock
           block={props.block as RenderBlock<HtmlElementBlockData>}
+          containers={props.containers}
           debug={props.debug}
+          definitions={props.definitions}
           index={props.index}
         />
       );

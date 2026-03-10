@@ -33,14 +33,15 @@ const VOID_ELEMENTS = new Set([
   "wbr",
 ]);
 
-const ATTRIBUTE_RE = /([A-Za-z_:][A-Za-z0-9:._-]*)(?:="([^"]*)")?/g;
+const ATTRIBUTE_RE =
+  /([A-Za-z_:][A-Za-z0-9:._-]*)(?:=(?:"([^"]*)"|'([^']*)'|([^\s"'=<>`]+)))?/g;
 
 export function parseHtmlAttributes(source: string): Record<string, string> {
   const attributes: Record<string, string> = {};
 
   for (const match of source.matchAll(ATTRIBUTE_RE)) {
     const key = match[1];
-    const value = match[2] ?? "";
+    const value = match[2] ?? match[3] ?? match[4] ?? "";
     if (key) {
       attributes[key] = value;
     }

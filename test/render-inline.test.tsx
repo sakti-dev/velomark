@@ -218,6 +218,48 @@ describe("RenderInline", () => {
     expect(host.querySelector('[data-velomark-inline-html]')).toBeNull();
   });
 
+  it("renders markdown-like text inside structured inline html elements", async () => {
+    const host = document.createElement("div");
+    document.body.append(host);
+
+    const dispose = render(
+      () =>
+        <RenderInline text={'Text with <span class="chip">**bold** and $E = mc^2$</span> here'} />,
+      host
+    );
+    mountedRoots.push(dispose);
+
+    const chip = host.querySelector("span.chip");
+    expect(chip).not.toBeNull();
+    expect(chip?.querySelector("strong")?.textContent).toBe("bold");
+
+    for (let attempt = 0; attempt < 20; attempt += 1) {
+      if (chip?.querySelector(".katex")) {
+        break;
+      }
+      await new Promise(resolve => window.setTimeout(resolve, 0));
+    }
+
+    expect(chip?.querySelector(".katex")).not.toBeNull();
+  });
+
+  it("parses single-quoted html attributes on structured inline html elements", () => {
+    const host = document.createElement("div");
+    document.body.append(host);
+
+    const dispose = render(
+      () =>
+        <RenderInline text={"Text with <span class='chip' data-tone='info'>hi</span> here"} />,
+      host
+    );
+    mountedRoots.push(dispose);
+
+    const chip = host.querySelector("span.chip");
+    expect(chip).not.toBeNull();
+    expect(chip?.getAttribute("data-tone")).toBe("info");
+    expect(chip?.textContent).toBe("hi");
+  });
+
   it("renders text directives with inline content", () => {
     const host = document.createElement("div");
     document.body.append(host);

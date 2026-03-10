@@ -78,11 +78,13 @@ describe("velomark render-surface parity harness", () => {
 
     const chip = host.querySelector("span.chip");
     expect(chip).not.toBeNull();
-    expect(chip?.querySelector("strong")?.textContent).toBe("path");
+    expect(chip?.getAttribute("data-tone")).toBe("info");
+    expect(chip?.querySelector("strong")?.textContent).toBe("hot");
+    expect(chip?.textContent).toContain("path with");
     expect(host.querySelector('[data-velomark-inline-html]')).toBeNull();
   });
 
-  it("renders nested block html elements semantically", () => {
+  it("renders nested block html elements semantically", async () => {
     const host = document.createElement("div");
     document.body.append(host);
 
@@ -95,7 +97,13 @@ describe("velomark render-surface parity harness", () => {
     const section = host.querySelector("section.note");
     expect(section).not.toBeNull();
     expect(section?.querySelector("p strong")?.textContent).toBe("content");
+    expect(section?.querySelector("p a")?.getAttribute("href")).toBe(
+      "https://example.com"
+    );
     expect(section?.querySelectorAll("ul > li")).toHaveLength(2);
+
+    await waitFor(() => section?.querySelector(".katex") !== null);
+    expect(section?.querySelector(".katex")).not.toBeNull();
   });
 
   it("renders container and leaf directives with child content intact", () => {
@@ -168,6 +176,5 @@ describe("velomark render-surface parity harness", () => {
     ).toBeGreaterThan(0);
   });
 
-  it.todo("deepens html element parity for richer mixed block and inline descendants");
   it.todo("hardens directive shells against richer attribute and child edge cases");
 });

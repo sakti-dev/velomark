@@ -15,7 +15,7 @@ const PARITY_FIXTURES = [
   },
   {
     fileName: "html-inline-nested.md",
-    includes: '<span class="chip">',
+    includes: "<span class='chip'",
     minLength: 20,
   },
   {

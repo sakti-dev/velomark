@@ -1,11 +1,17 @@
 import type { Component } from "solid-js";
 import type { HtmlElementBlockData } from "../../parser/block-boundaries";
-import type { RenderBlock } from "../../types";
+import type {
+  ReferenceDefinitionMap,
+  RenderBlock,
+  VelomarkContainerRendererProps,
+} from "../../types";
 import { HtmlElementView } from "../html-element-view";
 
 export const HtmlElementBlock: Component<{
   block: RenderBlock<HtmlElementBlockData>;
+  containers?: Record<string, Component<VelomarkContainerRendererProps>>;
   debug?: boolean;
+  definitions?: ReferenceDefinitionMap;
   index: number;
 }> = (props) => {
   return (
@@ -17,6 +23,8 @@ export const HtmlElementBlock: Component<{
       <HtmlElementView
         attributes={props.block.data.attributes}
         children={props.block.data.children}
+        containers={props.containers}
+        definitions={props.definitions}
         tagName={props.block.data.tagName}
       />
     </div>

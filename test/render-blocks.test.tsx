@@ -609,6 +609,38 @@ describe("Velomark block rendering", () => {
     expect(element?.querySelector("pre")).toBeNull();
   });
 
+  it("renders markdown-like text inside structured html element blocks", async () => {
+    const host = document.createElement("div");
+    document.body.append(host);
+
+    const dispose = render(
+      () =>
+        <Velomark
+          markdown={
+            "<div class='note'><p>Use **bold** and [docs](https://example.com) with $E = mc^2$.</p></div>"
+          }
+        />,
+      host
+    );
+    mountedRoots.push(dispose);
+
+    const element = host.querySelector('[data-velomark-block-kind="html-element"]');
+    expect(element).not.toBeNull();
+    expect(element?.querySelector("div.note p strong")?.textContent).toBe("bold");
+    expect(element?.querySelector("div.note p a")?.getAttribute("href")).toBe(
+      "https://example.com"
+    );
+
+    for (let attempt = 0; attempt < 20; attempt += 1) {
+      if (element?.querySelector(".katex")) {
+        break;
+      }
+      await new Promise(resolve => window.setTimeout(resolve, 0));
+    }
+
+    expect(element?.querySelector(".katex")).not.toBeNull();
+  });
+
   it("renders container directives with nested markdown content", () => {
     const host = document.createElement("div");
     document.body.append(host);
