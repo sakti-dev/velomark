@@ -3,13 +3,13 @@ import {
   createSignal,
   onCleanup,
   onMount,
-  Show,
   type Component,
 } from "solid-js";
 import { isServer } from "solid-js/web";
 import type { Mermaid } from "mermaid";
 import type { CodeBlockData } from "../../parser/block-boundaries";
-import type { RenderBlock } from "../../types";
+import type { RenderBlock, VelomarkCodeBlockOptions } from "../../types";
+import { DefaultCodeBlockShell } from "../code-blocks/default-code-block-shell";
 
 let mermaidChartSequence = 0;
 
@@ -20,6 +20,7 @@ const nextChartId = (): string => {
 
 export const MermaidBlock: Component<{
   block: RenderBlock<CodeBlockData>;
+  codeBlockOptions?: VelomarkCodeBlockOptions;
   debug?: boolean;
   index: number;
 }> = (props) => {
@@ -87,20 +88,24 @@ export const MermaidBlock: Component<{
       data-velomark-language="mermaid"
       data-velomark-mermaid=""
     >
-      <div data-velomark-code-language="">mermaid</div>
-      <Show
-        when={diagramSvg().length > 0 && !renderFailed()}
-        fallback={
+      <DefaultCodeBlockShell
+        code={code()}
+        language="mermaid"
+        options={props.codeBlockOptions}
+        preview={
+          !renderFailed() && diagramSvg().length > 0 ? (
+            <div
+              data-velomark-mermaid-diagram=""
+              innerHTML={diagramSvg()}
+            />
+          ) : undefined
+        }
+        source={
           <pre>
             <code>{code()}</code>
           </pre>
         }
-      >
-        <div
-          data-velomark-mermaid-diagram=""
-          innerHTML={diagramSvg()}
-        />
-      </Show>
+      />
     </div>
   );
 };

@@ -38,6 +38,7 @@ export const CodeBlock: Component<{
     return (
       <MermaidBlock
         block={props.block}
+        codeBlockOptions={props.codeBlockOptions}
         debug={props.debug}
         index={props.index}
       />
@@ -52,14 +53,14 @@ export const CodeBlock: Component<{
       data-velomark-language={language() ?? ""}
     >
       <DefaultCodeBlockShell
-        body={
+        code={props.block.data.code}
+        language={language()}
+        options={props.codeBlockOptions}
+        source={
           <pre>
             <code>{props.block.data.code}</code>
           </pre>
         }
-        code={props.block.data.code}
-        language={language()}
-        options={props.codeBlockOptions}
       />
     </div>
   );

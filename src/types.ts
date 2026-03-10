@@ -137,7 +137,9 @@ export interface VelomarkDebugMetrics {
 
 export interface VelomarkCodeBlockOptions {
   copyButton?: boolean;
+  defaultView?: "preview" | "source";
   languageLabel?: boolean;
+  previewToggle?: boolean;
 }
 
 export interface VelomarkCodeBlockRendererProps {
