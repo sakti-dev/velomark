@@ -22,7 +22,7 @@ This matrix describes the current tested renderer surface.
 | Tables | Supported | Includes column alignment support |
 | Thematic breaks | Supported | Semantic `<hr>` |
 | Footnote definitions | Supported | Document footnote section rendered |
-| Block math | Supported | Safe fallback shell |
+| Block math | Supported | KaTeX render with safe fallback for invalid or incomplete formulas |
 | Raw block HTML | Supported | Safe source-shell rendering |
 | Structured HTML block elements | Supported | Parsed for simple supported elements |
 | Container directives | Supported | Generic container rendering |
@@ -40,7 +40,7 @@ This matrix describes the current tested renderer surface.
 | Images | Supported | Lazy-loaded `<img>` |
 | Reference-style links/images | Supported | Explicit, collapsed, and shortcut forms |
 | Footnote references | Supported | Superscript backlink references |
-| Inline math | Supported | Safe fallback shell |
+| Inline math | Supported | KaTeX render with safe fallback for invalid or incomplete formulas |
 | Raw inline HTML | Supported | Direct inline HTML rendering |
 | Structured inline HTML elements | Supported | Parsed for simple supported elements |
 | Text directives | Supported | Generic inline directive rendering |

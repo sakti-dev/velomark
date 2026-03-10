@@ -2,6 +2,7 @@ import { For, type Component, type JSX } from "solid-js";
 import { Dynamic } from "solid-js/web";
 import { parseInline } from "../../parser/inline-parser";
 import { HtmlElementView } from "../html-element-view";
+import { MathView } from "../math/math-view";
 import type {
   InlineToken,
   ReferenceDefinitionMap,
@@ -28,7 +29,7 @@ function renderToken(
     case "inline-math":
       return (
         <span data-velomark-inline-math="">
-          <code>{token.value}</code>
+          <MathView displayMode={false} formula={token.value} />
         </span>
       );
     case "html":

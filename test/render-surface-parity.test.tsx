@@ -30,7 +30,7 @@ afterEach(() => {
 });
 
 describe("velomark render-surface parity harness", () => {
-  it("keeps inline math visible inside parity fixtures", () => {
+  it("renders inline math fixtures with KaTeX output", async () => {
     const host = document.createElement("div");
     document.body.append(host);
 
@@ -42,10 +42,14 @@ describe("velomark render-surface parity harness", () => {
 
     const inlineMath = host.querySelector('[data-velomark-inline-math]');
     expect(inlineMath).not.toBeNull();
-    expect(inlineMath?.querySelector("code")?.textContent).toBe("E = mc^2");
+
+    await waitFor(() => inlineMath?.querySelector(".katex") !== null);
+
+    expect(inlineMath?.querySelector(".katex")).not.toBeNull();
+    expect(inlineMath?.querySelector("code")).toBeNull();
   });
 
-  it("keeps block math visible inside parity fixtures", () => {
+  it("renders block math fixtures with KaTeX output", async () => {
     const host = document.createElement("div");
     document.body.append(host);
 
@@ -57,9 +61,9 @@ describe("velomark render-surface parity harness", () => {
 
     const mathBlock = host.querySelector('[data-velomark-block-kind="math"]');
     expect(mathBlock).not.toBeNull();
-    expect(mathBlock?.querySelector("pre > code")?.textContent).toContain(
-      "\\frac{1}{2}mv^2"
-    );
+    await waitFor(() => mathBlock?.querySelector(".katex-display") !== null);
+    expect(mathBlock?.querySelector(".katex-display")).not.toBeNull();
+    expect(mathBlock?.querySelector("pre > code")).toBeNull();
   });
 
   it("renders nested inline html elements semantically", () => {
@@ -164,7 +168,6 @@ describe("velomark render-surface parity harness", () => {
     ).toBeGreaterThan(0);
   });
 
-  it.todo("renders valid math fixtures with KaTeX markup instead of source-only fallback");
   it.todo("deepens html element parity for richer mixed block and inline descendants");
   it.todo("hardens directive shells against richer attribute and child edge cases");
 });

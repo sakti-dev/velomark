@@ -1,6 +1,7 @@
 import type { Component } from "solid-js";
 import type { MathBlockData } from "../../parser/block-boundaries";
 import type { RenderBlock } from "../../types";
+import { MathView } from "../math/math-view";
 
 export const MathBlock: Component<{
   block: RenderBlock<MathBlockData>;
@@ -13,9 +14,7 @@ export const MathBlock: Component<{
       data-velomark-block-index={props.index}
       data-velomark-block-kind={props.block.kind}
     >
-      <pre>
-        <code>{props.block.data.value}</code>
-      </pre>
+      <MathView displayMode={true} formula={props.block.data.value} />
     </div>
   );
 };

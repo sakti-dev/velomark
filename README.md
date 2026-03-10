@@ -17,7 +17,7 @@ This package is in active development, but the core renderer surface is real and
 - semantic block and inline rendering
 - reference-style links and images
 - footnotes
-- math fallback rendering
+- KaTeX-backed math rendering with safe fallback for invalid or incomplete formulas
 - directives and HTML handling
 - Mermaid rendering with preview/source defaults
 - streaming edge-case corpus for incomplete intermediate snapshots

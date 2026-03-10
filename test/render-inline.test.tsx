@@ -147,7 +147,7 @@ describe("RenderInline", () => {
     expect(footnoteRef?.textContent).toBe("[1]");
   });
 
-  it("renders inline math with a semantic fallback shell", () => {
+  it("renders inline math with KaTeX when the formula is valid", async () => {
     const host = document.createElement("div");
     document.body.append(host);
 
@@ -159,7 +159,32 @@ describe("RenderInline", () => {
 
     const inlineMath = host.querySelector('[data-velomark-inline-math]');
     expect(inlineMath).not.toBeNull();
-    expect(inlineMath?.querySelector("code")?.textContent).toBe("E = mc^2");
+
+    for (let attempt = 0; attempt < 20; attempt += 1) {
+      if (inlineMath?.querySelector(".katex")) {
+        break;
+      }
+      await new Promise(resolve => window.setTimeout(resolve, 0));
+    }
+
+    expect(inlineMath?.querySelector(".katex")).not.toBeNull();
+    expect(inlineMath?.querySelector("code")).toBeNull();
+  });
+
+  it("falls back to source for invalid inline math", async () => {
+    const host = document.createElement("div");
+    document.body.append(host);
+
+    const dispose = render(() => <RenderInline text={"Broken math $\\frac{1$"} />, host);
+    mountedRoots.push(dispose);
+
+    const inlineMath = host.querySelector('[data-velomark-inline-math]');
+    expect(inlineMath).not.toBeNull();
+
+    await new Promise(resolve => window.setTimeout(resolve, 0));
+
+    expect(inlineMath?.querySelector(".katex")).toBeNull();
+    expect(inlineMath?.querySelector("code")?.textContent).toBe("\\frac{1");
   });
 
   it("renders raw inline html directly", () => {

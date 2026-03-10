@@ -166,4 +166,29 @@ describe("Velomark streaming edge cases", () => {
 
     expect(host.querySelectorAll("table tbody tr")).toHaveLength(2);
   });
+
+  it("falls back safely while block math is still incomplete and upgrades when it stabilizes", async () => {
+    const host = document.createElement("div");
+    document.body.append(host);
+    const [markdown, setMarkdown] = createSignal(["$$", "\\frac{1"].join("\n"));
+
+    const dispose = render(() => <Velomark markdown={markdown()} />, host);
+    mountedRoots.push(dispose);
+
+    expect(host.querySelector('[data-velomark-block-kind="math"]')).not.toBeNull();
+    expect(
+      host.querySelector('[data-velomark-block-kind="math"] pre > code')?.textContent
+    ).toContain("\\frac{1");
+
+    setMarkdown(["$$", "\\frac{1}{2}", "$$"].join("\n"));
+    await waitFor(
+      () =>
+        host.querySelector('[data-velomark-block-kind="math"] .katex-display') !== null
+    );
+
+    expect(
+      host.querySelector('[data-velomark-block-kind="math"] .katex-display')
+    ).not.toBeNull();
+    expect(host.querySelector('[data-velomark-block-kind="math"] pre > code')).toBeNull();
+  });
 });

@@ -1,3 +1,5 @@
+@import "katex/dist/katex.min.css";
+
 .velomark {
   --velomark-color-text: #e5e7eb;
   --velomark-color-muted: #94a3b8;
@@ -107,6 +109,34 @@
 
 .velomark a {
   color: var(--velomark-color-accent);
+}
+
+.velomark [data-velomark-inline-math] {
+  display: inline-flex;
+  vertical-align: middle;
+}
+
+.velomark [data-velomark-inline-math] [data-velomark-math-rendered] {
+  display: inline-flex;
+  vertical-align: middle;
+}
+
+.velomark [data-velomark-block-kind="math"] [data-velomark-math-rendered] {
+  display: block;
+  overflow-x: auto;
+  padding: 0.5rem 0;
+}
+
+.velomark [data-velomark-block-kind="math"] [data-velomark-math-fallback] {
+  background: var(--velomark-color-code-bg);
+  border: 1px solid var(--velomark-color-border);
+  border-radius: var(--velomark-radius);
+}
+
+.velomark [data-velomark-inline-math] [data-velomark-math-fallback] {
+  background: var(--velomark-color-code-bg);
+  border-radius: var(--velomark-radius);
+  padding: 0.1rem 0.35rem;
 }
 
 .velomark blockquote {

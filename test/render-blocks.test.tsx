@@ -429,14 +429,14 @@ describe("Velomark block rendering", () => {
     expect(footnoteItem?.textContent).toContain("Closing paragraph.");
   });
 
-  it("renders block math with a generic fallback shell", () => {
+  it("renders block math with KaTeX when the formula is valid", async () => {
     const host = document.createElement("div");
     document.body.append(host);
 
     const dispose = render(
       () =>
         <Velomark
-          markdown={["$$", "E = mc^2", "\\frac{a}{b} = c", "$$"].join("\n")}
+          markdown={["$$", "E = mc^2 + \\frac{a}{b}", "$$"].join("\n")}
         />,
       host
     );
@@ -444,13 +444,14 @@ describe("Velomark block rendering", () => {
 
     const mathBlock = host.querySelector('[data-velomark-block-kind="math"]');
     expect(mathBlock).not.toBeNull();
-    expect(mathBlock?.querySelector("pre > code")?.textContent).toContain("E = mc^2");
-    expect(mathBlock?.querySelector("pre > code")?.textContent).toContain(
-      "\\frac{a}{b} = c"
-    );
+
+    await waitFor(() => mathBlock?.querySelector(".katex-display") !== null);
+
+    expect(mathBlock?.querySelector(".katex-display")).not.toBeNull();
+    expect(mathBlock?.querySelector("pre > code")).toBeNull();
   });
 
-  it("renders single-line block math", () => {
+  it("renders single-line block math", async () => {
     const host = document.createElement("div");
     document.body.append(host);
 
@@ -458,7 +459,25 @@ describe("Velomark block rendering", () => {
     mountedRoots.push(dispose);
 
     const mathBlock = host.querySelector('[data-velomark-block-kind="math"]');
-    expect(mathBlock?.querySelector("pre > code")?.textContent).toBe("E = mc^2");
+    expect(mathBlock).not.toBeNull();
+    await waitFor(() => mathBlock?.querySelector(".katex-display") !== null);
+    expect(mathBlock?.querySelector(".katex-display")).not.toBeNull();
+  });
+
+  it("falls back to source for invalid block math", async () => {
+    const host = document.createElement("div");
+    document.body.append(host);
+
+    const dispose = render(() => <Velomark markdown={"$$\\frac{1$$"} />, host);
+    mountedRoots.push(dispose);
+
+    const mathBlock = host.querySelector('[data-velomark-block-kind="math"]');
+    expect(mathBlock).not.toBeNull();
+
+    await Promise.resolve();
+
+    expect(mathBlock?.querySelector(".katex-display")).toBeNull();
+    expect(mathBlock?.querySelector("pre > code")?.textContent).toBe("\\frac{1");
   });
 
   it("renders mermaid code blocks with a diagram shell", async () => {
