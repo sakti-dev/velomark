@@ -1,4 +1,4 @@
-import { For, createEffect, createSignal, type Component } from "solid-js";
+import { For, createEffect, createMemo, createSignal, type Component } from "solid-js";
 import { buildRenderDocument, collectRenderMetrics } from "../model/render-document";
 import type { ParsedBlockData } from "../parser/block-boundaries";
 import type {
@@ -24,9 +24,48 @@ export interface VelomarkProps {
   onDebugMetrics?: (metrics: VelomarkDebugMetrics) => void;
 }
 
+const BlockSlot: Component<{
+  blockId: string;
+  blockLookup: () => Map<string, RenderDocument<ParsedBlockData>["blocks"][number]>;
+  codeBlockOptions?: VelomarkCodeBlockOptions;
+  codeBlockRenderers?: Record<
+    string,
+    Component<VelomarkCodeBlockRendererProps>
+  >;
+  containers?: Record<string, Component<VelomarkContainerRendererProps>>;
+  debug?: boolean;
+  definitions: () => RenderDocument<ParsedBlockData>["definitions"];
+  index: () => number;
+}> = (props) => {
+  const block = createMemo(() => {
+    const resolvedBlock = props.blockLookup().get(props.blockId);
+    if (!resolvedBlock) {
+      throw new Error(`Missing block for id ${props.blockId}`);
+    }
+
+    return resolvedBlock;
+  });
+
+  return (
+    <RenderBlockView
+      block={block()}
+      codeBlockOptions={props.codeBlockOptions}
+      codeBlockRenderers={props.codeBlockRenderers}
+      containers={props.containers}
+      debug={props.debug}
+      definitions={props.definitions()}
+      index={props.index()}
+    />
+  );
+};
+
 export function Velomark(props: VelomarkProps) {
   const [document, setDocument] = createSignal<RenderDocument<ParsedBlockData>>(
     buildRenderDocument(undefined, props.markdown)
+  );
+  const blockIds = createMemo(() => document().blocks.map((block) => block.id));
+  const blockLookup = createMemo(
+    () => new Map(document().blocks.map((block) => [block.id, block] as const))
   );
 
   createEffect(() => {
@@ -44,16 +83,17 @@ export function Velomark(props: VelomarkProps) {
       class={props.class ? `velomark ${props.class}` : "velomark"}
       data-velomark-root=""
     >
-      <For each={document().blocks}>
-        {(block, index) => (
-          <RenderBlockView
-            block={block}
+      <For each={blockIds()}>
+        {(blockId, index) => (
+          <BlockSlot
+            blockId={blockId}
+            blockLookup={blockLookup}
             codeBlockOptions={props.codeBlockOptions}
             codeBlockRenderers={props.codeBlockRenderers}
             containers={props.containers}
             debug={props.debug}
-            definitions={document().definitions}
-            index={index()}
+            definitions={() => document().definitions}
+            index={index}
           />
         )}
       </For>

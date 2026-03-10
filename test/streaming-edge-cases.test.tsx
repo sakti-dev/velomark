@@ -58,13 +58,16 @@ describe("Velomark streaming edge cases", () => {
     await waitFor(
       () =>
         (host.querySelectorAll('[data-velomark-code-highlighted] span').length ?? 0) >
-        0
+        0,
+      120
     );
 
-    const codeBefore = host.querySelector(
-      '[data-velomark-block-kind="code"] pre > code'
-    );
+    const blockBefore = host.querySelector('[data-velomark-block-kind="code"]');
+    const codeBefore = host.querySelector('[data-velomark-block-kind="code"] pre > code');
+    const highlightedBefore = host.querySelector('[data-velomark-code-highlighted]');
+    expect(blockBefore).not.toBeNull();
     expect(codeBefore).not.toBeNull();
+    expect(highlightedBefore).not.toBeNull();
 
     setMarkdown("```ts\nconst answer = 42;\n```");
     await waitFor(
@@ -72,13 +75,18 @@ describe("Velomark streaming edge cases", () => {
         (host.querySelectorAll('[data-velomark-code-highlighted] span').length ?? 0) > 0 &&
         (host.querySelector('[data-velomark-block-kind="code"] pre > code')?.textContent ??
           "").includes("const answer = 42;")
+      ,
+      120
     );
 
-    const codeAfter = host.querySelector(
-      '[data-velomark-block-kind="code"] pre > code'
-    );
+    const blockAfter = host.querySelector('[data-velomark-block-kind="code"]');
+    const codeAfter = host.querySelector('[data-velomark-block-kind="code"] pre > code');
+    const highlightedAfter = host.querySelector('[data-velomark-code-highlighted]');
+    expect(blockAfter).toBe(blockBefore);
     expect(codeBefore).not.toBeNull();
     expect(codeAfter).not.toBeNull();
+    expect(codeAfter).toBe(codeBefore);
+    expect(highlightedAfter).toBe(highlightedBefore);
     expect(codeAfter?.textContent).toContain("const answer = 42;");
     expect(
       host.querySelectorAll('[data-velomark-code-highlighted] span').length

@@ -1,3 +1,4 @@
+import type { CodeBlockData } from "../parser/block-boundaries";
 import type { RenderBlock } from "../types";
 
 export type DraftRenderBlock<TData = unknown> = Omit<RenderBlock<TData>, "id">;
@@ -32,6 +33,24 @@ function isStableMatch<TData>(
   );
 }
 
+function isCodeGrowthMatch<TData>(
+  previous: RenderBlock<TData> | undefined,
+  next: DraftRenderBlock<TData>
+): previous is RenderBlock<TData> {
+  if (!previous || previous.kind !== "code" || next.kind !== "code") {
+    return false;
+  }
+
+  const previousData = previous.data as CodeBlockData;
+  const nextData = next.data as CodeBlockData;
+
+  return (
+    previous.sourceStart === next.sourceStart &&
+    previousData.language === nextData.language &&
+    nextData.code.startsWith(previousData.code)
+  );
+}
+
 export function assignStableBlockIds<TData>(
   previousBlocks: RenderBlock<TData>[],
   nextBlocks: DraftRenderBlock<TData>[]
@@ -39,7 +58,7 @@ export function assignStableBlockIds<TData>(
   return nextBlocks.map((nextBlock, index) => {
     const previousBlock = previousBlocks[index];
 
-    if (isStableMatch(previousBlock, nextBlock)) {
+    if (isStableMatch(previousBlock, nextBlock) || isCodeGrowthMatch(previousBlock, nextBlock)) {
       return {
         ...nextBlock,
         id: previousBlock.id,
