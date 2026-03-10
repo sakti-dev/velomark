@@ -1,10 +1,114 @@
 import { existsSync, readFileSync } from "node:fs";
 import path from "node:path";
 import { describe, expect, it } from "vitest";
-import { velomarkColors, velomarkTokens } from "../src/theme/tokens";
+import {
+  darkTheme,
+  defaultTheme,
+  velomarkColors,
+  velomarkTokens,
+  type VelomarkTheme,
+} from "../src";
 
 describe("velomark theme surface", () => {
-  it("exports baseline color tokens", () => {
+  it("exports default and dark theme presets", () => {
+    expect(defaultTheme).toBeDefined();
+    expect(darkTheme).toBeDefined();
+  });
+
+  it("shapes preset themes as semantic velomark themes", () => {
+    const themes: VelomarkTheme[] = [defaultTheme, darkTheme];
+
+    for (const theme of themes) {
+      expect(theme).toMatchObject({
+        color: {
+          text: {
+            primary: expect.any(String),
+            muted: expect.any(String),
+            accent: expect.any(String),
+            inverse: expect.any(String),
+          },
+          surface: {
+            base: expect.any(String),
+            elevated: expect.any(String),
+            code: expect.any(String),
+            codeStrong: expect.any(String),
+            quote: expect.any(String),
+            tableHeader: expect.any(String),
+            tableStripe: expect.any(String),
+            math: expect.any(String),
+            diagram: expect.any(String),
+          },
+          border: {
+            default: expect.any(String),
+            strong: expect.any(String),
+            accent: expect.any(String),
+          },
+          link: {
+            default: expect.any(String),
+            hover: expect.any(String),
+          },
+          code: {
+            languageBadgeBackground: expect.any(String),
+            languageBadgeForeground: expect.any(String),
+            copyButtonBackground: expect.any(String),
+            copyButtonForeground: expect.any(String),
+            copyButtonHoverBackground: expect.any(String),
+            copyButtonCopiedBackground: expect.any(String),
+            copyButtonCopiedForeground: expect.any(String),
+          },
+          quote: {
+            border: expect.any(String),
+            foreground: expect.any(String),
+          },
+          diagram: {
+            background: expect.any(String),
+            text: expect.any(String),
+            primary: expect.any(String),
+            secondary: expect.any(String),
+            border: expect.any(String),
+            line: expect.any(String),
+            nodeBackground: expect.any(String),
+            nodeForeground: expect.any(String),
+          },
+        },
+        typography: {
+          bodyFont: expect.any(String),
+          monoFont: expect.any(String),
+          lineHeight: expect.any(String),
+        },
+        radius: {
+          sm: expect.any(String),
+          md: expect.any(String),
+          lg: expect.any(String),
+          pill: expect.any(String),
+        },
+        shadow: {
+          xs: expect.any(String),
+          sm: expect.any(String),
+        },
+        spacing: {
+          blockGap: expect.any(String),
+          inlineCodeX: expect.any(String),
+          inlineCodeY: expect.any(String),
+          codePaddingX: expect.any(String),
+          codePaddingY: expect.any(String),
+        },
+      });
+    }
+  });
+
+  it("keeps dark preset meaningfully different from the default preset", () => {
+    expect(darkTheme.color.text.primary).not.toBe(defaultTheme.color.text.primary);
+    expect(darkTheme.color.surface.base).not.toBe(defaultTheme.color.surface.base);
+    expect(darkTheme.color.code.copyButtonBackground).not.toBe(
+      defaultTheme.color.code.copyButtonBackground
+    );
+    expect(darkTheme.color.diagram.background).not.toBe(
+      defaultTheme.color.diagram.background
+    );
+  });
+
+  it("maintains baseline compatibility exports for colors and tokens", () => {
     expect(velomarkColors).toMatchObject({
       text: expect.any(String),
       muted: expect.any(String),
@@ -12,9 +116,7 @@ describe("velomark theme surface", () => {
       accent: expect.any(String),
       codeBg: expect.any(String),
     });
-  });
 
-  it("exports baseline layout and typography tokens", () => {
     expect(velomarkTokens).toMatchObject({
       radius: expect.any(String),
       fontFamily: expect.any(String),
