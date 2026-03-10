@@ -91,7 +91,11 @@ export const MermaidBlock: Component<{
       <DefaultCodeBlockShell
         code={code()}
         language="mermaid"
-        options={props.codeBlockOptions}
+        options={{
+          ...props.codeBlockOptions,
+          copyButton: false,
+          previewToggle: false,
+        }}
         preview={
           !renderFailed() && diagramSvg().length > 0 ? (
             <div

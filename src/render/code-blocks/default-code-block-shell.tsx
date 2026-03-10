@@ -30,7 +30,7 @@ export const DefaultCodeBlockShell: Component<{
   const [copied, setCopied] = createSignal<boolean>(false);
   const canPreview = (): boolean => props.preview !== undefined;
   const shouldShowPreview = (): boolean =>
-    canPreview() && view() === "preview" && options().previewToggle;
+    canPreview() && (!options().previewToggle || view() === "preview");
 
   const copyCode = async (): Promise<void> => {
     setCopied(true);
