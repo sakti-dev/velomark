@@ -69,6 +69,7 @@
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^6.9.1",
+    "@tailwindcss/vite": "^4.1.18",
     "@types/node": "^20.12.12",
     "@typescript-eslint/eslint-plugin": "^7.9.0",
     "@typescript-eslint/parser": "^7.9.0",
@@ -81,8 +82,10 @@
     "jsdom": "^24.0.0",
     "prettier": "3.0.0",
     "solid-js": "^1.8.17",
+    "tailwindcss": "^4.1.18",
     "tsup": "^8.0.2",
     "tsup-preset-solid": "^2.2.0",
+    "tw-animate-css": "^1.4.0",
     "typescript": "^5.4.5",
     "vite": "^5.2.11",
     "vite-plugin-solid": "^2.10.2",
