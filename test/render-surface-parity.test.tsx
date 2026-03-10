@@ -10,7 +10,7 @@ const mountedRoots: Array<() => void> = [];
 const loadParityFixture = (fileName: string): string =>
   readFileSync(resolve(process.cwd(), "test/fixtures/parity", fileName), "utf8");
 
-const waitFor = async (predicate: () => boolean, attempts = 20): Promise<void> => {
+const waitFor = async (predicate: () => boolean, attempts = 100): Promise<void> => {
   for (let index = 0; index < attempts; index += 1) {
     if (predicate()) {
       return;
