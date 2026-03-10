@@ -118,4 +118,20 @@ describe("parseInline", () => {
       { type: "text", text: " behavior" },
     ]);
   });
+
+  it("parses hard line breaks from trailing double spaces", () => {
+    expect(parseInline("Alpha  \nBeta")).toEqual([
+      { type: "text", text: "Alpha" },
+      { type: "break" },
+      { type: "text", text: "Beta" },
+    ]);
+  });
+
+  it("parses hard line breaks from escaped newlines", () => {
+    expect(parseInline("Alpha\\\nBeta")).toEqual([
+      { type: "text", text: "Alpha" },
+      { type: "break" },
+      { type: "text", text: "Beta" },
+    ]);
+  });
 });

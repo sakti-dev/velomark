@@ -113,6 +113,19 @@ export function parseInline(
   while (index < source.length) {
     const current = source[index];
     const next = source[index + 1];
+    const nextNext = source[index + 2];
+
+    if (current === " " && next === " " && nextNext === "\n") {
+      tokens.push({ type: "break" });
+      index += 3;
+      continue;
+    }
+
+    if (current === "\\" && next === "\n") {
+      tokens.push({ type: "break" });
+      index += 2;
+      continue;
+    }
 
     if (current === "\\") {
       const escaped = next;

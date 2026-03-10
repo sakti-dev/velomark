@@ -25,6 +25,10 @@ export interface InlineDeleteToken {
   type: "delete";
 }
 
+export interface InlineBreakToken {
+  type: "break";
+}
+
 export interface InlineImageToken {
   alt: string;
   src: string;
@@ -54,6 +58,7 @@ export interface InlineTextToken {
 }
 
 export type InlineToken =
+  | InlineBreakToken
   | InlineCodeToken
   | InlineDeleteToken
   | InlineEmphasisToken

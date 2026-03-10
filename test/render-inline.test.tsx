@@ -74,4 +74,16 @@ describe("RenderInline", () => {
     expect(link?.getAttribute("href")).toBe("https://example.com/guide");
     expect(link?.textContent).toBe("docs");
   });
+
+  it("renders hard line break tokens as br elements", () => {
+    const host = document.createElement("div");
+    document.body.append(host);
+
+    const dispose = render(() => <RenderInline text={"Alpha  \nBeta"} />, host);
+    mountedRoots.push(dispose);
+
+    const br = host.querySelector("br");
+    expect(br).not.toBeNull();
+    expect(host.textContent).toBe("AlphaBeta");
+  });
 });

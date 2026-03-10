@@ -4,6 +4,8 @@ import type { InlineToken, ReferenceDefinitionMap } from "../../types";
 
 function renderToken(token: InlineToken): JSX.Element {
   switch (token.type) {
+    case "break":
+      return <br />;
     case "text":
       return token.text;
     case "code":
