@@ -21,6 +21,7 @@ This package is in active development, but the core renderer surface is real and
 - directives and HTML handling
 - Mermaid rendering with preview/source defaults
 - streaming edge-case corpus for incomplete intermediate snapshots
+- parity corpus for render-surface regression coverage
 
 ## Install
 
@@ -87,6 +88,19 @@ By default, `velomark` enables generic code block UX:
 ## Supported syntax
 
 See [docs/feature-matrix.md](./docs/feature-matrix.md).
+
+## Parity corpus
+
+`velomark` keeps a dedicated parity corpus under `test/fixtures/parity/` for the
+remaining Incremark-aligned render surface. These fixtures are used to lock:
+
+- math fixtures
+- nested HTML fixtures
+- directive fixtures
+- streamed code-growth fixtures
+
+The parity harness is intentionally semantic. It asserts rendered structure and
+streaming resilience rather than library-internal CSS details.
 
 ## Development
 

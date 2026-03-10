@@ -57,6 +57,7 @@ This matrix describes the current tested renderer surface.
 | Incomplete directives | Supported | Covered by streaming corpus |
 | Incomplete HTML | Supported | Covered by streaming corpus |
 | Incomplete tables | Supported | Covered by streaming corpus |
+| Render-surface parity corpus | Supported | `test/fixtures/parity` + semantic regression harness |
 
 ## Public API surface
 
@@ -78,3 +79,15 @@ This matrix describes the current tested renderer surface.
 | HTML element parsing depth | Partial | Simple supported element structures only |
 | Mermaid UX richness | Partial | Preview/source path exists; not a full diagram IDE |
 | General-purpose markdown library ergonomics | Partial | Public API remains intentionally small |
+
+## Parity harness coverage
+
+The parity corpus currently tracks:
+
+- inline and block math fixtures
+- nested inline and block HTML fixtures
+- inline and block directive fixtures
+- streamed code-growth fixture coverage
+
+These fixtures exist to keep Incremark-aligned rendered-surface work anchored to
+stable inputs instead of ad hoc string literals.
