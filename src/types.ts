@@ -135,6 +135,11 @@ export interface VelomarkDebugMetrics {
   reusedBlockCount: number;
 }
 
+export interface VelomarkCodeBlockOptions {
+  copyButton?: boolean;
+  languageLabel?: boolean;
+}
+
 export interface VelomarkCodeBlockRendererProps {
   code: string;
   language?: string;

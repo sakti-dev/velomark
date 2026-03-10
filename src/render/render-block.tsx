@@ -15,6 +15,7 @@ import type {
 import type {
   ReferenceDefinitionMap,
   RenderBlock,
+  VelomarkCodeBlockOptions,
   VelomarkCodeBlockRendererProps,
   VelomarkContainerRendererProps,
 } from "../types";
@@ -36,6 +37,7 @@ export const RenderBlockView: Component<{
     string,
     Component<VelomarkCodeBlockRendererProps>
   >;
+  codeBlockOptions?: VelomarkCodeBlockOptions;
   containers?: Record<string, Component<VelomarkContainerRendererProps>>;
   debug?: boolean;
   definitions?: ReferenceDefinitionMap;
@@ -86,6 +88,7 @@ export const RenderBlockView: Component<{
       return (
         <CodeBlock
           block={props.block as RenderBlock<CodeBlockData>}
+          codeBlockOptions={props.codeBlockOptions}
           codeBlockRenderers={props.codeBlockRenderers}
           debug={props.debug}
           index={props.index}

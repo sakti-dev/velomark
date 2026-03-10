@@ -6,6 +6,7 @@ export type {
   InlineToken,
   RenderBlock,
   RenderDocument,
+  VelomarkCodeBlockOptions,
   VelomarkCodeBlockRendererProps,
   VelomarkContainerRendererProps,
 } from "./types";

@@ -133,6 +133,7 @@ describe("Velomark block rendering", () => {
     expect(shell?.querySelector("pre > code")?.textContent).toBe(
       "const answer = 42;"
     );
+    expect(shell?.querySelector('[data-velomark-code-copy]')).not.toBeNull();
   });
 
   it("omits the language label for unlabeled code fences", () => {
@@ -148,6 +149,28 @@ describe("Velomark block rendering", () => {
     const shell = host.querySelector('[data-velomark-block-kind="code"]');
     expect(shell?.querySelector('[data-velomark-code-language]')).toBeNull();
     expect(shell?.querySelector("pre > code")?.textContent).toBe("plain text");
+    expect(shell?.querySelector('[data-velomark-code-copy]')).not.toBeNull();
+  });
+
+  it("allows default code block copy controls to be disabled", () => {
+    const host = document.createElement("div");
+    document.body.append(host);
+
+    const dispose = render(
+      () =>
+        <Velomark
+          codeBlockOptions={{ copyButton: false }}
+          markdown={"```ts\nconst answer = 42;\n```"}
+        />,
+      host
+    );
+    mountedRoots.push(dispose);
+
+    const shell = host.querySelector('[data-velomark-block-kind="code"]');
+    expect(shell?.querySelector('[data-velomark-code-language]')?.textContent).toBe(
+      "ts"
+    );
+    expect(shell?.querySelector('[data-velomark-code-copy]')).toBeNull();
   });
 
   it("renders tables with a generic wrapper and column alignment", () => {

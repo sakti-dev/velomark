@@ -3,8 +3,10 @@ import type { Component } from "solid-js";
 import type { CodeBlockData } from "../../parser/block-boundaries";
 import type {
   RenderBlock,
+  VelomarkCodeBlockOptions,
   VelomarkCodeBlockRendererProps,
 } from "../../types";
+import { DefaultCodeBlockShell } from "../code-blocks/default-code-block-shell";
 import { MermaidBlock } from "./mermaid-block";
 
 export const CodeBlock: Component<{
@@ -13,6 +15,7 @@ export const CodeBlock: Component<{
     string,
     Component<VelomarkCodeBlockRendererProps>
   >;
+  codeBlockOptions?: VelomarkCodeBlockOptions;
   debug?: boolean;
   index: number;
 }> = (props) => {
@@ -48,12 +51,16 @@ export const CodeBlock: Component<{
       data-velomark-block-kind={props.block.kind}
       data-velomark-language={language() ?? ""}
     >
-      {language() ? (
-        <div data-velomark-code-language="">{language()}</div>
-      ) : null}
-      <pre>
-        <code>{props.block.data.code}</code>
-      </pre>
+      <DefaultCodeBlockShell
+        body={
+          <pre>
+            <code>{props.block.data.code}</code>
+          </pre>
+        }
+        code={props.block.data.code}
+        language={language()}
+        options={props.codeBlockOptions}
+      />
     </div>
   );
 };
