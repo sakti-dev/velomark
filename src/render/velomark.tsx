@@ -1,6 +1,7 @@
 import { For, createEffect, createMemo, createSignal, type Component } from "solid-js";
 import { buildRenderDocument, collectRenderMetrics } from "../model/render-document";
 import type { ParsedBlockData } from "../parser/block-boundaries";
+import type { VelomarkTheme } from "../theme/types";
 import { generateCssVars } from "../theme/generate-css-vars";
 import type { PartialVelomarkTheme } from "../theme/merge-theme";
 import { resolveTheme } from "../theme/apply-theme";
@@ -41,6 +42,7 @@ const BlockSlot: Component<{
   debug?: boolean;
   definitions: () => RenderDocument<ParsedBlockData>["definitions"];
   index: () => number;
+  theme: () => VelomarkTheme;
 }> = (props) => {
   const block = createMemo(() => {
     const resolvedBlock = props.blockLookup().get(props.blockId);
@@ -60,6 +62,7 @@ const BlockSlot: Component<{
       debug={props.debug}
       definitions={props.definitions()}
       index={props.index()}
+      theme={props.theme()}
     />
   );
 };
@@ -68,8 +71,9 @@ export function Velomark(props: VelomarkProps) {
   const [document, setDocument] = createSignal<RenderDocument<ParsedBlockData>>(
     buildRenderDocument(undefined, props.markdown)
   );
+  const resolvedTheme = createMemo(() => resolveTheme(props.theme));
   const themeStyle = createMemo<Record<string, string>>(() =>
-    generateCssVars(resolveTheme(props.theme))
+    generateCssVars(resolvedTheme())
   );
   const blockIds = createMemo(() => document().blocks.map((block) => block.id));
   const blockLookup = createMemo(
@@ -103,6 +107,7 @@ export function Velomark(props: VelomarkProps) {
             debug={props.debug}
             definitions={() => document().definitions}
             index={index}
+            theme={resolvedTheme}
           />
         )}
       </For>
@@ -112,6 +117,7 @@ export function Velomark(props: VelomarkProps) {
         definitions={document().definitions}
         footnoteDefinitions={document().footnoteDefinitions}
         order={document().footnoteReferenceOrder}
+        theme={resolvedTheme()}
       />
     </div>
   );

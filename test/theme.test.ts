@@ -13,6 +13,7 @@ import {
   type VelomarkTheme,
 } from "../src";
 import { Velomark } from "../src";
+import { toMermaidThemeVariables } from "../src/theme/to-mermaid-theme";
 
 describe("velomark theme surface", () => {
   it("exports default and dark theme presets", () => {
@@ -151,6 +152,23 @@ describe("velomark theme surface", () => {
     expect(cssVars["--velomark-spacing-code-padding-x"]).toBe(
       defaultTheme.spacing.codePaddingX
     );
+  });
+
+  it("derives mermaid theme variables from the active velomark theme", () => {
+    const lightMermaidTheme = toMermaidThemeVariables(defaultTheme);
+    const darkMermaidTheme = toMermaidThemeVariables(darkTheme);
+
+    expect(lightMermaidTheme.background).toBe(defaultTheme.color.diagram.background);
+    expect(lightMermaidTheme.nodeBkg).toBe(
+      defaultTheme.color.diagram.nodeBackground
+    );
+    expect(lightMermaidTheme.primaryColor).toBe(
+      defaultTheme.color.diagram.primary
+    );
+    expect(lightMermaidTheme.darkMode).toBe(false);
+    expect(darkMermaidTheme.darkMode).toBe(true);
+    expect(darkMermaidTheme.textColor).toBe(darkTheme.color.diagram.text);
+    expect(darkMermaidTheme.lineColor).toBe(darkTheme.color.diagram.line);
   });
 
   it("applies generated css variables to a container element", () => {

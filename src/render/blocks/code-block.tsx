@@ -1,6 +1,7 @@
 import { Dynamic } from "solid-js/web";
 import type { Component } from "solid-js";
 import type { CodeBlockData } from "../../parser/block-boundaries";
+import type { VelomarkTheme } from "../../theme/types";
 import type {
   RenderBlock,
   VelomarkCodeBlockOptions,
@@ -22,6 +23,7 @@ export const CodeBlock: Component<{
   codeBlockOptions?: VelomarkCodeBlockOptions;
   debug?: boolean;
   index: number;
+  theme: VelomarkTheme;
 }> = (props) => {
   const language = () => props.block.data.language?.trim() || undefined;
   const customRenderer = () =>
@@ -44,6 +46,7 @@ export const CodeBlock: Component<{
         block={props.block}
         debug={props.debug}
         index={props.index}
+        theme={props.theme}
       />
     );
   }

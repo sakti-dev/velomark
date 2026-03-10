@@ -8,6 +8,8 @@ import {
 import { isServer } from "solid-js/web";
 import type { Mermaid } from "mermaid";
 import type { CodeBlockData } from "../../parser/block-boundaries";
+import { toMermaidThemeVariables } from "../../theme/to-mermaid-theme";
+import type { VelomarkTheme } from "../../theme/types";
 import type { RenderBlock } from "../../types";
 
 let mermaidChartSequence = 0;
@@ -21,6 +23,7 @@ export const MermaidBlock: Component<{
   block: RenderBlock<CodeBlockData>;
   debug?: boolean;
   index: number;
+  theme: VelomarkTheme;
 }> = (props) => {
   const [diagramSvg, setDiagramSvg] = createSignal<string>("");
   const [renderFailed, setRenderFailed] = createSignal<boolean>(false);
@@ -34,15 +37,26 @@ export const MermaidBlock: Component<{
   onMount(async () => {
     try {
       const { default: mermaid } = await import("mermaid");
-      mermaid.initialize({
-        securityLevel: "loose",
-        startOnLoad: false,
-        suppressErrorRendering: true,
-      });
       setMermaidInstance(mermaid);
     } catch {
       setRenderFailed(true);
     }
+  });
+
+  createEffect(() => {
+    const instance = mermaidInstance();
+
+    if (!instance) {
+      return;
+    }
+
+    instance.initialize({
+      securityLevel: "loose",
+      startOnLoad: false,
+      suppressErrorRendering: true,
+      theme: "base",
+      themeVariables: toMermaidThemeVariables(props.theme),
+    });
   });
 
   createEffect(() => {

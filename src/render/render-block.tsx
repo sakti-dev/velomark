@@ -19,6 +19,7 @@ import type {
   VelomarkCodeBlockRendererProps,
   VelomarkContainerRendererProps,
 } from "../types";
+import type { VelomarkTheme } from "../theme/types";
 import { BlockquoteBlock } from "./blocks/blockquote-block";
 import { CodeBlock } from "./blocks/code-block";
 import { ContainerBlock } from "./blocks/container-block";
@@ -42,6 +43,7 @@ export const RenderBlockView: Component<{
   debug?: boolean;
   definitions?: ReferenceDefinitionMap;
   index: number;
+  theme: VelomarkTheme;
 }> = (props) => {
   switch (props.block.kind) {
     case "paragraph":
@@ -92,6 +94,7 @@ export const RenderBlockView: Component<{
           codeBlockRenderers={props.codeBlockRenderers}
           debug={props.debug}
           index={props.index}
+          theme={props.theme}
         />
       );
     case "container":
@@ -103,6 +106,7 @@ export const RenderBlockView: Component<{
           debug={props.debug}
           definitions={props.definitions}
           index={props.index}
+          theme={props.theme}
         />
       );
     case "html":
