@@ -60,6 +60,9 @@
   "peerDependencies": {
     "solid-js": "^1.6.0"
   },
+  "dependencies": {
+    "mermaid": "^11.12.3"
+  },
   "devDependencies": {
     "@types/node": "^20.12.12",
     "@typescript-eslint/eslint-plugin": "^7.9.0",

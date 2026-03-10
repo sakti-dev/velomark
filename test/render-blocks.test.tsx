@@ -361,9 +361,27 @@ describe("Velomark block rendering", () => {
     expect(mathBlock?.querySelector("pre > code")?.textContent).toBe("E = mc^2");
   });
 
-  it("renders mermaid code blocks with a dedicated fallback shell", () => {
+  it("renders mermaid code blocks with a diagram shell", async () => {
     const host = document.createElement("div");
     document.body.append(host);
+    const svgPrototype = window.SVGElement.prototype as SVGElement & {
+      getBBox?: () => DOMRect;
+    };
+
+    if (typeof svgPrototype.getBBox !== "function") {
+      svgPrototype.getBBox = () =>
+        ({
+          bottom: 24,
+          height: 24,
+          left: 0,
+          right: 96,
+          toJSON: () => ({}),
+          top: 0,
+          width: 96,
+          x: 0,
+          y: 0,
+        }) as DOMRect;
+    }
 
     const dispose = render(
       () =>
@@ -375,7 +393,41 @@ describe("Velomark block rendering", () => {
     const mermaidBlock = host.querySelector('[data-velomark-mermaid]');
     expect(mermaidBlock).not.toBeNull();
     expect(mermaidBlock?.getAttribute("data-velomark-language")).toBe("mermaid");
-    expect(mermaidBlock?.querySelector("pre > code")?.textContent).toContain("graph TD");
+    for (let attempt = 0; attempt < 20; attempt += 1) {
+      if (mermaidBlock?.querySelector("[data-velomark-mermaid-diagram]")) {
+        break;
+      }
+      await new Promise(resolve => window.setTimeout(resolve, 10));
+    }
+
+    expect(
+      mermaidBlock?.querySelector("[data-velomark-mermaid-diagram]")
+    ).not.toBeNull();
+    expect(mermaidBlock?.querySelector("svg")).not.toBeNull();
+    expect(mermaidBlock?.querySelector("pre > code")).toBeNull();
+  });
+
+  it("falls back to source shell when mermaid rendering fails", async () => {
+    const host = document.createElement("div");
+    document.body.append(host);
+
+    const dispose = render(
+      () => <Velomark markdown={"```mermaid\nnot a valid diagram\n```"} />,
+      host
+    );
+    mountedRoots.push(dispose);
+
+    await Promise.resolve();
+    await Promise.resolve();
+
+    const mermaidBlock = host.querySelector('[data-velomark-mermaid]');
+    expect(mermaidBlock).not.toBeNull();
+    expect(
+      mermaidBlock?.querySelector("[data-velomark-mermaid-diagram]")
+    ).toBeNull();
+    expect(mermaidBlock?.querySelector("pre > code")?.textContent).toContain(
+      "not a valid diagram"
+    );
   });
 
   it("allows language-specific custom code block renderers", () => {

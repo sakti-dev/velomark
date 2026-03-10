@@ -1,12 +1,84 @@
-import type { Component } from "solid-js";
+import {
+  createEffect,
+  createSignal,
+  onCleanup,
+  onMount,
+  Show,
+  type Component,
+} from "solid-js";
+import { isServer } from "solid-js/web";
+import type { Mermaid } from "mermaid";
 import type { CodeBlockData } from "../../parser/block-boundaries";
 import type { RenderBlock } from "../../types";
+
+let mermaidChartSequence = 0;
+
+const nextChartId = (): string => {
+  mermaidChartSequence += 1;
+  return `velomark-mermaid-${mermaidChartSequence}`;
+};
 
 export const MermaidBlock: Component<{
   block: RenderBlock<CodeBlockData>;
   debug?: boolean;
   index: number;
 }> = (props) => {
+  const [diagramSvg, setDiagramSvg] = createSignal<string>("");
+  const [renderFailed, setRenderFailed] = createSignal<boolean>(false);
+  const [mermaidInstance, setMermaidInstance] = createSignal<Mermaid | null>(
+    null
+  );
+  let activeRenderToken = 0;
+
+  const code = (): string => props.block.data.code;
+
+  onMount(async () => {
+    try {
+      const { default: mermaid } = await import("mermaid");
+      mermaid.initialize({
+        securityLevel: "loose",
+        startOnLoad: false,
+        suppressErrorRendering: true,
+      });
+      setMermaidInstance(mermaid);
+    } catch {
+      setRenderFailed(true);
+    }
+  });
+
+  createEffect(() => {
+    const instance = mermaidInstance();
+    const source = code();
+
+    if (!instance || isServer || source.length === 0) {
+      return;
+    }
+
+    const renderToken = activeRenderToken + 1;
+    activeRenderToken = renderToken;
+    setRenderFailed(false);
+
+    void instance
+      .render(nextChartId(), source)
+      .then(({ svg }) => {
+        if (activeRenderToken !== renderToken) {
+          return;
+        }
+        setDiagramSvg(svg);
+      })
+      .catch(() => {
+        if (activeRenderToken !== renderToken) {
+          return;
+        }
+        setDiagramSvg("");
+        setRenderFailed(true);
+      });
+  });
+
+  onCleanup(() => {
+    activeRenderToken += 1;
+  });
+
   return (
     <div
       data-velomark-block-id={props.debug ? props.block.id : undefined}
@@ -16,9 +88,19 @@ export const MermaidBlock: Component<{
       data-velomark-mermaid=""
     >
       <div data-velomark-code-language="">mermaid</div>
-      <pre>
-        <code>{props.block.data.code}</code>
-      </pre>
+      <Show
+        when={diagramSvg().length > 0 && !renderFailed()}
+        fallback={
+          <pre>
+            <code>{code()}</code>
+          </pre>
+        }
+      >
+        <div
+          data-velomark-mermaid-diagram=""
+          innerHTML={diagramSvg()}
+        />
+      </Show>
     </div>
   );
 };
