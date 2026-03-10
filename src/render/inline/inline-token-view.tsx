@@ -6,6 +6,7 @@ import type {
   ReferenceDefinitionMap,
   VelomarkContainerRendererProps,
 } from "../../types";
+import { directiveAttributeProps } from "../directives/directive-attribute-props";
 import { HtmlElementView } from "../html-element-view";
 import { MathView } from "../math/math-view";
 
@@ -70,8 +71,8 @@ export const renderInlineToken = (
 
       return (
         <span
-          data-velomark-attr-tone={token.attributes?.tone}
           data-velomark-text-directive={token.name}
+          {...directiveAttributeProps(token.attributes)}
         >
           {children}
         </span>

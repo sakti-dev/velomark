@@ -7,6 +7,7 @@ import type {
   VelomarkCodeBlockRendererProps,
   VelomarkContainerRendererProps,
 } from "../../types";
+import { directiveAttributeProps } from "../directives/directive-attribute-props";
 import { RenderBlockView } from "../render-block";
 
 function withNestedId(
@@ -67,7 +68,6 @@ export const ContainerBlock: Component<{
 
   return (
     <div
-      data-velomark-attr-title={props.block.data.attributes?.title}
       data-velomark-block-id={props.debug ? props.block.id : undefined}
       data-velomark-block-index={props.index}
       data-velomark-block-kind={props.block.kind}
@@ -81,6 +81,7 @@ export const ContainerBlock: Component<{
           ? props.block.data.name
           : undefined
       }
+      {...directiveAttributeProps(props.block.data.attributes)}
     >
       {renderedChildren}
     </div>

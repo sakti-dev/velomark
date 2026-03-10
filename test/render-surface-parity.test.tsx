@@ -119,12 +119,15 @@ describe("velomark render-surface parity harness", () => {
     const container = host.querySelector('[data-velomark-container="info"]');
     expect(container).not.toBeNull();
     expect(container?.getAttribute("data-velomark-attr-title")).toBe("Information");
+    expect(container?.getAttribute("data-velomark-attr-tone")).toBe("info");
+    expect(container?.getAttribute("data-velomark-attr-emphasis")).toBe("high");
     expect(container?.querySelector("p")?.textContent).toBe("Alpha paragraph.");
     expect(container?.querySelectorAll("ul > li")).toHaveLength(2);
 
     const leaf = container?.querySelector('[data-velomark-leaf-directive="callout"]');
     expect(leaf).not.toBeNull();
     expect(leaf?.getAttribute("data-velomark-attr-title")).toBe("Heads up");
+    expect(leaf?.getAttribute("data-velomark-attr-tone")).toBe("warn");
   });
 
   it("renders inline directives without dropping surrounding phrasing content", () => {
@@ -140,6 +143,8 @@ describe("velomark render-surface parity harness", () => {
     const badge = host.querySelector('[data-velomark-text-directive="badge"]');
     expect(badge).not.toBeNull();
     expect(badge?.getAttribute("data-velomark-attr-tone")).toBe("info");
+    expect(badge?.getAttribute("data-velomark-attr-icon")).toBe("bolt");
+    expect(badge?.getAttribute("data-velomark-attr-emphasis")).toBe("high");
     expect(badge?.textContent).toBe("Beta");
     expect(host.querySelector("strong")?.textContent).toBe("signal");
   });
@@ -176,5 +181,4 @@ describe("velomark render-surface parity harness", () => {
     ).toBeGreaterThan(0);
   });
 
-  it.todo("hardens directive shells against richer attribute and child edge cases");
 });

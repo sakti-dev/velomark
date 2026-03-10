@@ -133,12 +133,13 @@ function parseDirectiveAttributes(attributes: string | undefined): Record<string
   }
 
   const result: Record<string, string> = {};
-  const attributeRe = /([A-Za-z][A-Za-z0-9_-]*)="([^"]*)"/g;
+  const attributeRe =
+    /([A-Za-z][A-Za-z0-9_-]*)(?:=(?:"([^"]*)"|'([^']*)'|([^\s"'=<>`]+)))?/g;
 
   for (const match of attributes.matchAll(attributeRe)) {
     const key = match[1];
-    const value = match[2];
-    if (key && value !== undefined) {
+    const value = match[2] ?? match[3] ?? match[4] ?? "";
+    if (key) {
       result[key] = value;
     }
   }

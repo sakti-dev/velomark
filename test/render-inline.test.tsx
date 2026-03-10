@@ -276,6 +276,26 @@ describe("RenderInline", () => {
     expect(directive?.textContent).toBe("Beta");
   });
 
+  it("parses mixed directive attribute quoting and preserves all default shell attributes", () => {
+    const host = document.createElement("div");
+    document.body.append(host);
+
+    const dispose = render(
+      () =>
+        <RenderInline
+          text={":badge[Beta]{tone='info' icon=bolt emphasis=\"high\"}"}
+        />,
+      host
+    );
+    mountedRoots.push(dispose);
+
+    const directive = host.querySelector('[data-velomark-text-directive="badge"]');
+    expect(directive).not.toBeNull();
+    expect(directive?.getAttribute("data-velomark-attr-tone")).toBe("info");
+    expect(directive?.getAttribute("data-velomark-attr-icon")).toBe("bolt");
+    expect(directive?.getAttribute("data-velomark-attr-emphasis")).toBe("high");
+  });
+
   it("allows custom renderers for text directives", () => {
     const host = document.createElement("div");
     document.body.append(host);

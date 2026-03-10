@@ -668,6 +668,37 @@ describe("Velomark block rendering", () => {
     expect(container?.querySelectorAll("ul > li")).toHaveLength(2);
   });
 
+  it("preserves mixed quoted directive attributes on default block shells", () => {
+    const host = document.createElement("div");
+    document.body.append(host);
+
+    const dispose = render(
+      () =>
+        <Velomark
+          markdown={[
+            ":::info{title='Information' tone=info emphasis=\"high\"}",
+            "Alpha paragraph.",
+            ":::",
+            "",
+            "::callout{title='Heads up' tone=warn}",
+          ].join("\n")}
+        />,
+      host
+    );
+    mountedRoots.push(dispose);
+
+    const container = host.querySelector('[data-velomark-container="info"]');
+    expect(container).not.toBeNull();
+    expect(container?.getAttribute("data-velomark-attr-title")).toBe("Information");
+    expect(container?.getAttribute("data-velomark-attr-tone")).toBe("info");
+    expect(container?.getAttribute("data-velomark-attr-emphasis")).toBe("high");
+
+    const leaf = host.querySelector('[data-velomark-leaf-directive="callout"]');
+    expect(leaf).not.toBeNull();
+    expect(leaf?.getAttribute("data-velomark-attr-title")).toBe("Heads up");
+    expect(leaf?.getAttribute("data-velomark-attr-tone")).toBe("warn");
+  });
+
   it("allows custom container renderers by directive name", () => {
     const host = document.createElement("div");
     document.body.append(host);
