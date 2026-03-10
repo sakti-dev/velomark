@@ -1,6 +1,7 @@
 export interface PlaygroundPreset {
   id:
     | "agent-replay"
+    | "incremark-solid-example"
     | "recorded-chat-replay"
     | "chat-response"
     | "mermaid-gallery"

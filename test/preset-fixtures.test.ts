@@ -21,6 +21,7 @@ describe("playground presets", () => {
 
     expect(playgroundPresets[0]?.id).toBe("agent-replay");
     expect(ids).toContain("agent-replay");
+    expect(ids).toContain("incremark-solid-example");
     expect(ids).toContain("mermaid-gallery");
     expect(ids).toContain("recorded-chat-replay");
     expect(ids).toContain("chat-response");
@@ -44,5 +45,18 @@ describe("playground presets", () => {
     expect(mermaidPreset?.markdown).toContain("gantt");
     expect(mermaidPreset?.markdown).toContain("mindmap");
     expect(mermaidPreset?.markdown).toContain("pie title");
+  });
+
+  it("includes the copied incremark solid example sample", () => {
+    const incremarkPreset = playgroundPresets.find(
+      (preset) => preset.id === "incremark-solid-example"
+    );
+
+    expect(incremarkPreset).toBeDefined();
+    expect(incremarkPreset?.markdown).toContain("# 🚀 Incremark SolidJS Example");
+    expect(incremarkPreset?.markdown).toContain("## 📊 Mermaid Charts");
+    expect(incremarkPreset?.markdown).toContain("## 🎨 Custom Containers");
+    expect(incremarkPreset?.markdown).toContain("## 💻 Code Highlighting");
+    expect(incremarkPreset?.markdown.length ?? 0).toBeGreaterThan(8_000);
   });
 });

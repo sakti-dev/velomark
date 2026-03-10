@@ -1,4 +1,5 @@
 import type { PlaygroundPreset } from "../types/playground";
+import incremarkSolidExample from "./incremark-solid-example";
 import recordedChatReplay from "./recorded-chat-replay";
 
 const agentReplay = `# Agent Replay Stress Sample
@@ -358,6 +359,13 @@ export const playgroundPresets: PlaygroundPreset[] = [
     label: "Chat Response",
     description: "General coding-agent explanation with headings and paragraphs.",
     markdown: chatResponse,
+  },
+  {
+    id: "incremark-solid-example",
+    label: "Incremark Example",
+    description:
+      "Copied from the Incremark Solid example sample so renderer behavior can be compared on the same long-form content.",
+    markdown: incremarkSolidExample,
   },
   {
     id: "mermaid-gallery",
