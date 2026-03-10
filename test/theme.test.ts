@@ -245,9 +245,11 @@ describe("velomark theme surface", () => {
     const css = readFileSync(stylesPath, "utf8");
 
     expect(css).toContain(".velomark");
-    expect(css).toContain("--velomark-color-text");
-    expect(css).toContain("--velomark-block-gap");
+    expect(css).toContain("--velomark-color-text-primary");
+    expect(css).toContain("--velomark-color-surface-code");
+    expect(css).toContain("--velomark-spacing-block-gap");
     expect(css).not.toContain(".velomark > * + *");
     expect(css).not.toContain("line-height: var(--velomark-line-height)");
+    expect(css).not.toContain("--velomark-color-text:");
   });
 });

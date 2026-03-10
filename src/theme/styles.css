@@ -1,37 +1,89 @@
 @import "katex/dist/katex.min.css";
 
 .velomark {
-  --velomark-color-text: #e5e7eb;
-  --velomark-color-muted: #94a3b8;
-  --velomark-color-border: #334155;
-  --velomark-color-accent: #38bdf8;
-  --velomark-color-surface: #111827;
-  --velomark-color-surface-strong: #0b1220;
-  --velomark-color-code-bg: #0f172a;
-  --velomark-block-gap: 1rem;
-  --velomark-radius: 0.5rem;
-  --velomark-line-height: 1.6;
+  --velomark-color-text-primary: #243041;
+  --velomark-color-text-muted: #5f6e82;
+  --velomark-color-text-accent: #235fbc;
+  --velomark-color-text-inverse: #f8fafc;
+  --velomark-color-surface-base: #ffffff;
+  --velomark-color-surface-elevated: #f8fafc;
+  --velomark-color-surface-code: #f5f7fb;
+  --velomark-color-surface-code-strong: #edf2f7;
+  --velomark-color-surface-quote: #f8fafc;
+  --velomark-color-surface-table-header: #edf2f7;
+  --velomark-color-surface-table-stripe: #f8fafc;
+  --velomark-color-surface-math: #f5f7fb;
+  --velomark-color-surface-diagram: #ffffff;
+  --velomark-color-border-default: #d7dee8;
+  --velomark-color-border-strong: #b8c4d4;
+  --velomark-color-border-accent: #90b5eb;
+  --velomark-color-link-default: #235fbc;
+  --velomark-color-link-hover: #1c4e9d;
+  --velomark-color-code-language-badge-background: #edf2f7;
+  --velomark-color-code-language-badge-foreground: #4d5d72;
+  --velomark-color-code-copy-button-background: #ffffff;
+  --velomark-color-code-copy-button-foreground: #243041;
+  --velomark-color-code-copy-button-hover-background: #edf2f7;
+  --velomark-color-code-copy-button-copied-background: #235fbc;
+  --velomark-color-code-copy-button-copied-foreground: #f8fafc;
+  --velomark-color-quote-border: #90b5eb;
+  --velomark-color-quote-foreground: #506174;
+  --velomark-color-diagram-background: #ffffff;
+  --velomark-color-diagram-text: #243041;
+  --velomark-color-diagram-primary: #235fbc;
+  --velomark-color-diagram-secondary: #4f8fe9;
+  --velomark-color-diagram-border: #b8c4d4;
+  --velomark-color-diagram-line: #4d5d72;
+  --velomark-color-diagram-node-background: #edf2f7;
+  --velomark-color-diagram-node-foreground: #243041;
+  --velomark-typography-body-font:
+    "IBM Plex Sans", "Iosevka Aile", ui-sans-serif, system-ui, sans-serif;
+  --velomark-typography-mono-font:
+    "Iosevka Term", "SFMono-Regular", ui-monospace, Menlo, Monaco, Consolas,
+    monospace;
+  --velomark-typography-line-height: 1.6;
+  --velomark-radius-sm: 0.375rem;
+  --velomark-radius-md: 0.5rem;
+  --velomark-radius-lg: 0.75rem;
+  --velomark-radius-pill: 999px;
+  --velomark-shadow-xs: 0 1px 3px 0 hsl(210 30% 18% / 0.08);
+  --velomark-shadow-sm: 0 6px 18px -10px hsl(210 30% 18% / 0.18);
+  --velomark-spacing-block-gap: 1rem;
+  --velomark-spacing-inline-code-x: 0.35rem;
+  --velomark-spacing-inline-code-y: 0.1rem;
+  --velomark-spacing-code-padding-x: 1rem;
+  --velomark-spacing-code-padding-y: 0.875rem;
+  background: var(--velomark-color-surface-base);
+  color: var(--velomark-color-text-primary);
+  font-family: var(--velomark-typography-body-font);
+  line-height: var(--velomark-typography-line-height);
 }
 
 .velomark code {
-  background: var(--velomark-color-code-bg);
-  border-radius: var(--velomark-radius);
-  padding: 0.1rem 0.35rem;
+  background: var(--velomark-color-surface-code);
+  border-radius: var(--velomark-radius-sm);
+  color: var(--velomark-color-text-primary);
+  font-family: var(--velomark-typography-mono-font);
+  padding: var(--velomark-spacing-inline-code-y) var(--velomark-spacing-inline-code-x);
 }
 
 .velomark pre {
-  background: var(--velomark-color-code-bg);
-  border: 1px solid var(--velomark-color-border);
-  border-radius: var(--velomark-radius);
+  background: var(--velomark-color-surface-code);
+  border: 1px solid var(--velomark-color-border-default);
+  border-radius: var(--velomark-radius-lg);
+  box-shadow: var(--velomark-shadow-xs);
+  color: var(--velomark-color-text-primary);
   overflow-x: auto;
   margin: 0;
-  padding: 0.875rem 1rem;
+  padding: var(--velomark-spacing-code-padding-y)
+    var(--velomark-spacing-code-padding-x);
 }
 
 .velomark pre code {
   background: transparent;
   border-radius: 0;
   display: block;
+  font-family: var(--velomark-typography-mono-font);
   min-width: max-content;
   padding: 0;
 }
@@ -45,14 +97,19 @@
 }
 
 .velomark [data-velomark-block-kind="code"] pre {
-  padding: 1rem 3.25rem 2rem 1rem;
+  padding:
+    var(--velomark-spacing-code-padding-y)
+    calc(var(--velomark-spacing-code-padding-x) + 2.25rem)
+    calc(var(--velomark-spacing-code-padding-y) + 1.125rem)
+    var(--velomark-spacing-code-padding-x);
 }
 
 .velomark [data-velomark-code-language] {
-  background: color-mix(in srgb, var(--velomark-color-surface-strong) 88%, white 12%);
-  border: 1px solid color-mix(in srgb, var(--velomark-color-border) 78%, white 22%);
-  border-radius: 999px;
-  color: var(--velomark-color-muted);
+  background: var(--velomark-color-code-language-badge-background);
+  border: 1px solid var(--velomark-color-border-default);
+  border-radius: var(--velomark-radius-pill);
+  color: var(--velomark-color-code-language-badge-foreground);
+  font-family: var(--velomark-typography-body-font);
   position: absolute;
   right: 0.75rem;
   bottom: 0.75rem;
@@ -67,10 +124,11 @@
 .velomark [data-velomark-code-copy] {
   appearance: none;
   align-items: center;
-  background: color-mix(in srgb, var(--velomark-color-surface-strong) 88%, white 12%);
-  border: 1px solid color-mix(in srgb, var(--velomark-color-border) 78%, white 22%);
-  border-radius: 999px;
-  color: var(--velomark-color-text);
+  background: var(--velomark-color-code-copy-button-background);
+  border: 1px solid var(--velomark-color-border-default);
+  border-radius: var(--velomark-radius-pill);
+  box-shadow: var(--velomark-shadow-xs);
+  color: var(--velomark-color-code-copy-button-foreground);
   cursor: pointer;
   display: inline-flex;
   justify-content: center;
@@ -87,8 +145,8 @@
 }
 
 .velomark [data-velomark-code-copy]:hover {
-  background: color-mix(in srgb, var(--velomark-color-surface) 70%, white 30%);
-  border-color: color-mix(in srgb, var(--velomark-color-accent) 35%, var(--velomark-color-border) 65%);
+  background: var(--velomark-color-code-copy-button-hover-background);
+  border-color: var(--velomark-color-border-accent);
 }
 
 .velomark [data-velomark-code-copy]:active {
@@ -96,9 +154,9 @@
 }
 
 .velomark [data-velomark-code-copy][data-velomark-code-copy-state="copied"] {
-  background: color-mix(in srgb, var(--velomark-color-accent) 24%, var(--velomark-color-surface) 76%);
-  border-color: color-mix(in srgb, var(--velomark-color-accent) 55%, var(--velomark-color-border) 45%);
-  color: white;
+  background: var(--velomark-color-code-copy-button-copied-background);
+  border-color: var(--velomark-color-border-accent);
+  color: var(--velomark-color-code-copy-button-copied-foreground);
 }
 
 .velomark [data-velomark-code-copy] svg {
@@ -106,7 +164,11 @@
 }
 
 .velomark a {
-  color: var(--velomark-color-accent);
+  color: var(--velomark-color-link-default);
+}
+
+.velomark a:hover {
+  color: var(--velomark-color-link-hover);
 }
 
 .velomark [data-velomark-inline-math] {
@@ -120,28 +182,32 @@
 }
 
 .velomark [data-velomark-block-kind="math"] [data-velomark-math-rendered] {
+  background: var(--velomark-color-surface-math);
+  border-radius: var(--velomark-radius-md);
   display: block;
   overflow-x: auto;
-  padding: 0.5rem 0;
+  padding: 0.5rem;
 }
 
 .velomark [data-velomark-block-kind="math"] [data-velomark-math-fallback] {
-  background: var(--velomark-color-code-bg);
-  border: 1px solid var(--velomark-color-border);
-  border-radius: var(--velomark-radius);
+  background: var(--velomark-color-surface-math);
+  border: 1px solid var(--velomark-color-border-default);
+  border-radius: var(--velomark-radius-md);
 }
 
 .velomark [data-velomark-inline-math] [data-velomark-math-fallback] {
-  background: var(--velomark-color-code-bg);
-  border-radius: var(--velomark-radius);
-  padding: 0.1rem 0.35rem;
+  background: var(--velomark-color-surface-math);
+  border-radius: var(--velomark-radius-sm);
+  padding: var(--velomark-spacing-inline-code-y) var(--velomark-spacing-inline-code-x);
 }
 
 .velomark blockquote {
-  border-left: 3px solid var(--velomark-color-border);
-  color: var(--velomark-color-muted);
+  background: var(--velomark-color-surface-quote);
+  border-left: 3px solid var(--velomark-color-quote-border);
+  border-radius: 0 var(--velomark-radius-md) var(--velomark-radius-md) 0;
+  color: var(--velomark-color-quote-foreground);
   margin: 0;
-  padding-left: 1rem;
+  padding: 0.5rem 0.875rem 0.5rem 1rem;
 }
 
 .velomark table {
@@ -149,9 +215,17 @@
   width: 100%;
 }
 
+.velomark th {
+  background: var(--velomark-color-surface-table-header);
+}
+
+.velomark tbody tr:nth-child(even) td {
+  background: var(--velomark-color-surface-table-stripe);
+}
+
 .velomark th,
 .velomark td {
-  border: 1px solid var(--velomark-color-border);
+  border: 1px solid var(--velomark-color-border-default);
   padding: 0.5rem 0.75rem;
   text-align: left;
 }
