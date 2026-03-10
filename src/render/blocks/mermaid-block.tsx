@@ -33,6 +33,7 @@ export const MermaidBlock: Component<{
   let activeRenderToken = 0;
 
   const code = (): string => props.block.data.code;
+  const isComplete = (): boolean => props.block.status === "complete";
 
   onMount(async () => {
     try {
@@ -63,7 +64,9 @@ export const MermaidBlock: Component<{
     const instance = mermaidInstance();
     const source = code();
 
-    if (!instance || isServer || source.length === 0) {
+    if (!instance || isServer || source.length === 0 || !isComplete()) {
+      setDiagramSvg("");
+      setRenderFailed(false);
       return;
     }
 

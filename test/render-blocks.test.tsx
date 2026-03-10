@@ -546,6 +546,54 @@ describe("Velomark block rendering", () => {
     expect(mermaidBlock?.querySelector('[data-velomark-code-copy]')).toBeNull();
   });
 
+  it("keeps mermaid fences as source blocks until the stream closes the fence", async () => {
+    const host = document.createElement("div");
+    document.body.append(host);
+    const svgPrototype = window.SVGElement.prototype as SVGElement & {
+      getBBox?: () => DOMRect;
+    };
+
+    if (typeof svgPrototype.getBBox !== "function") {
+      svgPrototype.getBBox = () =>
+        ({
+          bottom: 24,
+          height: 24,
+          left: 0,
+          right: 96,
+          toJSON: () => ({}),
+          top: 0,
+          width: 96,
+          x: 0,
+          y: 0,
+        }) as DOMRect;
+    }
+
+    const [markdown, setMarkdown] = createSignal("```mermaid\ngraph TD\nA-->B");
+    const dispose = render(() => <Velomark markdown={markdown()} />, host);
+    mountedRoots.push(dispose);
+
+    const mermaidBlock = host.querySelector('[data-velomark-mermaid]');
+    expect(mermaidBlock).not.toBeNull();
+    expect(mermaidBlock?.querySelector("[data-velomark-mermaid-diagram]")).toBeNull();
+    expect(mermaidBlock?.querySelector("pre > code")?.textContent).toContain(
+      "graph TD"
+    );
+
+    setMarkdown("```mermaid\ngraph TD\nA-->B\n```");
+
+    for (let attempt = 0; attempt < 20; attempt += 1) {
+      if (mermaidBlock?.querySelector("[data-velomark-mermaid-diagram]")) {
+        break;
+      }
+      await new Promise((resolve) => window.setTimeout(resolve, 10));
+    }
+
+    expect(
+      mermaidBlock?.querySelector("[data-velomark-mermaid-diagram]")
+    ).not.toBeNull();
+    expect(mermaidBlock?.querySelector("pre")).toBeNull();
+  });
+
   it("falls back to bare source when mermaid rendering fails", async () => {
     const host = document.createElement("div");
     document.body.append(host);
