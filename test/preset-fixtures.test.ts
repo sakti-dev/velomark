@@ -21,10 +21,28 @@ describe("playground presets", () => {
 
     expect(playgroundPresets[0]?.id).toBe("agent-replay");
     expect(ids).toContain("agent-replay");
+    expect(ids).toContain("mermaid-gallery");
     expect(ids).toContain("recorded-chat-replay");
     expect(ids).toContain("chat-response");
     expect(ids).toContain("code-heavy");
     expect(ids).toContain("list-table");
     expect(ids).toContain("mixed-long");
+  });
+
+  it("includes a mermaid-focused gallery preset with multiple diagram families", () => {
+    const mermaidPreset = playgroundPresets.find(
+      (preset) => preset.id === "mermaid-gallery"
+    );
+
+    expect(mermaidPreset).toBeDefined();
+    expect(mermaidPreset?.markdown).toContain("```mermaid");
+    expect(mermaidPreset?.markdown).toContain("sequenceDiagram");
+    expect(mermaidPreset?.markdown).toContain("classDiagram");
+    expect(mermaidPreset?.markdown).toContain("stateDiagram-v2");
+    expect(mermaidPreset?.markdown).toContain("erDiagram");
+    expect(mermaidPreset?.markdown).toContain("journey");
+    expect(mermaidPreset?.markdown).toContain("gantt");
+    expect(mermaidPreset?.markdown).toContain("mindmap");
+    expect(mermaidPreset?.markdown).toContain("pie title");
   });
 });

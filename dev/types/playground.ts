@@ -3,6 +3,7 @@ export interface PlaygroundPreset {
     | "agent-replay"
     | "recorded-chat-replay"
     | "chat-response"
+    | "mermaid-gallery"
     | "code-heavy"
     | "list-table"
     | "mixed-long";
