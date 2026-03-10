@@ -7,6 +7,7 @@ import { playgroundPresets } from "./fixtures/presets";
 import { usePlaygroundMetrics } from "./hooks/use-playground-metrics";
 import { useSelectionProbe } from "./hooks/use-selection-probe";
 import { createStreamSimulator } from "./hooks/use-stream-simulator";
+import { usePlaygroundTheme } from "./hooks/use-playground-theme";
 import type { PlaygroundPreset } from "./types/playground";
 import type { VelomarkDebugMetrics } from "../src/types";
 
@@ -35,6 +36,7 @@ const App: Component = () => {
   const [isStreaming, setIsStreaming] = createSignal(false);
   const [streamControls, setStreamControls] = createSignal(DEFAULT_STREAM_CONTROLS);
   const [debugMetrics, setDebugMetrics] = createSignal(EMPTY_DEBUG_METRICS);
+  const { setTheme, theme } = usePlaygroundTheme();
   const { benchmarkState, runBenchmark } = usePlaygroundMetrics({
     chunkSize: () => streamControls().chunkSize,
     markdown,
@@ -134,9 +136,11 @@ const App: Component = () => {
             onReset={handleReset}
             onRunBenchmark={runBenchmark}
             onSimulateStream={handleSimulateStream}
+            onThemeChange={setTheme}
             presets={playgroundPresets}
             probeState={selectionProbeState()}
             selectionProbeEnabled={PLAYGROUND_DEBUG}
+            theme={theme()}
           />
         </div>
       }

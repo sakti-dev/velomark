@@ -1,5 +1,6 @@
 import { For, Show, type Component } from "solid-js";
 import type { SelectionProbeState } from "../hooks/use-selection-probe";
+import type { PlaygroundTheme } from "../hooks/use-playground-theme";
 import type {
   PlaygroundBenchmarkState,
   PlaygroundPreset,
@@ -19,9 +20,11 @@ export interface WorkbenchControlsPanelProps {
   onReset: () => void;
   onRunBenchmark: () => void;
   onSimulateStream: () => void;
+  onThemeChange: (next: PlaygroundTheme) => void;
   presets: PlaygroundPreset[];
   probeState: SelectionProbeState;
   selectionProbeEnabled: boolean;
+  theme: PlaygroundTheme;
 }
 
 const STREAM_MODES: Array<{ label: string; value: PlaygroundStreamMode }> = [
@@ -43,6 +46,23 @@ export const WorkbenchControlsPanel: Component<WorkbenchControlsPanelProps> = (p
         <h2>Workbench</h2>
         <p>Pick a replay preset, run the stream, and inspect compact diagnostics.</p>
       </header>
+
+      <div class="control-actions">
+        <button
+          aria-pressed={props.theme === "light"}
+          onClick={() => props.onThemeChange("light")}
+          type="button"
+        >
+          Light
+        </button>
+        <button
+          aria-pressed={props.theme === "dark"}
+          onClick={() => props.onThemeChange("dark")}
+          type="button"
+        >
+          Dark
+        </button>
+      </div>
 
       <div class="preset-list">
         <For each={props.presets}>
