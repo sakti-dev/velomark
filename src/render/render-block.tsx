@@ -2,6 +2,7 @@ import type { Component } from "solid-js";
 import type {
   BlockquoteBlockData,
   CodeBlockData,
+  ContainerBlockData,
   HeadingBlockData,
   HtmlBlockData,
   ListBlockData,
@@ -14,9 +15,11 @@ import type {
   ReferenceDefinitionMap,
   RenderBlock,
   VelomarkCodeBlockRendererProps,
+  VelomarkContainerRendererProps,
 } from "../types";
 import { BlockquoteBlock } from "./blocks/blockquote-block";
 import { CodeBlock } from "./blocks/code-block";
+import { ContainerBlock } from "./blocks/container-block";
 import { HeadingBlock } from "./blocks/heading-block";
 import { HtmlBlock } from "./blocks/html-block";
 import { ListBlock } from "./blocks/list-block";
@@ -31,6 +34,7 @@ export const RenderBlockView: Component<{
     string,
     Component<VelomarkCodeBlockRendererProps>
   >;
+  containers?: Record<string, Component<VelomarkContainerRendererProps>>;
   debug?: boolean;
   definitions?: ReferenceDefinitionMap;
   index: number;
@@ -78,6 +82,17 @@ export const RenderBlockView: Component<{
           block={props.block as RenderBlock<CodeBlockData>}
           codeBlockRenderers={props.codeBlockRenderers}
           debug={props.debug}
+          index={props.index}
+        />
+      );
+    case "container":
+      return (
+        <ContainerBlock
+          block={props.block as RenderBlock<ContainerBlockData>}
+          codeBlockRenderers={props.codeBlockRenderers}
+          containers={props.containers}
+          debug={props.debug}
+          definitions={props.definitions}
           index={props.index}
         />
       );

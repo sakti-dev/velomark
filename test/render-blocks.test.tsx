@@ -2,6 +2,7 @@ import { createSignal } from "solid-js";
 import { render } from "solid-js/web";
 import { afterEach, describe, expect, it } from "vitest";
 import { Velomark } from "../src";
+import type { VelomarkContainerRendererProps } from "../src";
 
 const mountedRoots: Array<() => void> = [];
 
@@ -411,5 +412,63 @@ describe("Velomark block rendering", () => {
     const htmlBlock = host.querySelector('[data-velomark-block-kind="html"]');
     expect(htmlBlock).not.toBeNull();
     expect(htmlBlock?.querySelector("pre > code")?.textContent).toBe("<div>Alpha</div>");
+  });
+
+  it("renders container directives with nested markdown content", () => {
+    const host = document.createElement("div");
+    document.body.append(host);
+
+    const dispose = render(
+      () =>
+        <Velomark
+          markdown={[
+            ':::info{title="Information"}',
+            "Alpha paragraph.",
+            "",
+            "- Item one",
+            "- Item two",
+            ":::",
+          ].join("\n")}
+        />,
+      host
+    );
+    mountedRoots.push(dispose);
+
+    const container = host.querySelector('[data-velomark-container="info"]');
+    expect(container).not.toBeNull();
+    expect(container?.getAttribute("data-velomark-attr-title")).toBe("Information");
+    expect(container?.querySelector("p")?.textContent).toBe("Alpha paragraph.");
+    expect(container?.querySelectorAll("ul > li")).toHaveLength(2);
+  });
+
+  it("allows custom container renderers by directive name", () => {
+    const host = document.createElement("div");
+    document.body.append(host);
+
+    const InfoContainer = (props: VelomarkContainerRendererProps) => (
+      <section data-custom-container={props.name} data-title={props.attributes?.title}>
+        {props.children}
+      </section>
+    );
+
+    const dispose = render(
+      () =>
+        <Velomark
+          containers={{ info: InfoContainer }}
+          markdown={[
+            ':::info{title="Information"}',
+            "Alpha paragraph.",
+            ":::",
+          ].join("\n")}
+        />,
+      host
+    );
+    mountedRoots.push(dispose);
+
+    const custom = host.querySelector("[data-custom-container]");
+    expect(custom?.getAttribute("data-custom-container")).toBe("info");
+    expect(custom?.getAttribute("data-title")).toBe("Information");
+    expect(custom?.textContent).toContain("Alpha paragraph.");
+    expect(host.querySelector('[data-velomark-container="info"]')).toBeNull();
   });
 });

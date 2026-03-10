@@ -4,6 +4,7 @@ import type {
   ReferenceDefinitionMap,
   RenderBlock,
   VelomarkCodeBlockRendererProps,
+  VelomarkContainerRendererProps,
 } from "../../types";
 import { RenderBlockView } from "../render-block";
 
@@ -12,6 +13,7 @@ export const FootnotesSection: Component<{
     string,
     Component<VelomarkCodeBlockRendererProps>
   >;
+  containers?: Record<string, Component<VelomarkContainerRendererProps>>;
   definitions: ReferenceDefinitionMap;
   footnoteDefinitions: Record<string, RenderBlock<ParsedBlockData>[]>;
   order: string[];
@@ -38,6 +40,7 @@ export const FootnotesSection: Component<{
                       <RenderBlockView
                         block={block}
                         codeBlockRenderers={props.codeBlockRenderers}
+                        containers={props.containers}
                         definitions={props.definitions}
                         index={index()}
                       />

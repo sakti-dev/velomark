@@ -58,6 +58,12 @@ export interface HtmlBlockData {
   value: string;
 }
 
+export interface ContainerBlockData {
+  attributes?: Record<string, string>;
+  children: DraftRenderBlock<ParsedBlockData>[];
+  name: string;
+}
+
 export interface ThematicBreakBlockData {}
 
 export type TableColumnAlign = "center" | "left" | "right";
@@ -73,6 +79,7 @@ export type ParsedBlockData =
   | BlockquoteBlockData
   | ListBlockData
   | CodeBlockData
+  | ContainerBlockData
   | HtmlBlockData
   | MathBlockData
   | ThematicBreakBlockData
@@ -85,6 +92,8 @@ interface LineInfo {
   start: number;
   text: string;
 }
+
+const CONTAINER_START_RE = /^:::\s*([A-Za-z][A-Za-z0-9_-]*)(?:\{([^}]*)\})?\s*$/;
 
 function buildLineInfos(markdown: string): LineInfo[] {
   const lines: LineInfo[] = [];
@@ -105,6 +114,25 @@ function buildLineInfos(markdown: string): LineInfo[] {
   }
 
   return lines;
+}
+
+function parseDirectiveAttributes(attributes: string | undefined): Record<string, string> {
+  if (!attributes) {
+    return {};
+  }
+
+  const result: Record<string, string> = {};
+  const attributeRe = /([A-Za-z][A-Za-z0-9_-]*)="([^"]*)"/g;
+
+  for (const match of attributes.matchAll(attributeRe)) {
+    const key = match[1];
+    const value = match[2];
+    if (key && value !== undefined) {
+      result[key] = value;
+    }
+  }
+
+  return result;
 }
 
 function parseTableAlignments(separatorLine: string): TableColumnAlign[] {
@@ -304,6 +332,49 @@ export function parseBlockBoundaries(
     }
 
     const trimmedLine = line.text.trim();
+    const containerMatch = trimmedLine.match(CONTAINER_START_RE);
+    if (containerMatch) {
+      const sourceStart = line.start;
+      const name = containerMatch[1] ?? "container";
+      const attributes = parseDirectiveAttributes(containerMatch[2]);
+      const childLines: string[] = [];
+      let scanIndex = lineIndex + 1;
+      let sourceEnd = line.end;
+      let closed = false;
+
+      while (scanIndex < lines.length) {
+        const scanLine = lines[scanIndex];
+        if (!scanLine) {
+          break;
+        }
+        if (scanLine.text.trim() === ":::") {
+          sourceEnd = scanLine.end;
+          closed = true;
+          scanIndex += 1;
+          break;
+        }
+        childLines.push(scanLine.text);
+        sourceEnd = scanLine.end;
+        scanIndex += 1;
+      }
+
+      const childMarkdown = childLines.join("\n");
+      blocks.push({
+        kind: "container",
+        sourceStart,
+        sourceEnd,
+        status: closed ? "complete" : "streaming",
+        fingerprint: `container:${name}:${JSON.stringify(attributes)}:${childMarkdown}`,
+        data: {
+          name,
+          attributes,
+          children: parseBlockBoundaries(childMarkdown),
+        },
+      });
+      lineIndex = scanIndex;
+      continue;
+    }
+
     if (
       trimmedLine.startsWith("<") &&
       trimmedLine.endsWith(">") &&

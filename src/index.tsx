@@ -7,4 +7,5 @@ export type {
   RenderBlock,
   RenderDocument,
   VelomarkCodeBlockRendererProps,
+  VelomarkContainerRendererProps,
 } from "./types";

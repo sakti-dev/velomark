@@ -4,6 +4,7 @@ import type { ParsedBlockData } from "../parser/block-boundaries";
 import type {
   RenderDocument,
   VelomarkCodeBlockRendererProps,
+  VelomarkContainerRendererProps,
   VelomarkDebugMetrics,
 } from "../types";
 import { RenderBlockView } from "./render-block";
@@ -15,6 +16,7 @@ export interface VelomarkProps {
     string,
     Component<VelomarkCodeBlockRendererProps>
   >;
+  containers?: Record<string, Component<VelomarkContainerRendererProps>>;
   debug?: boolean;
   markdown: string;
   onDebugMetrics?: (metrics: VelomarkDebugMetrics) => void;
@@ -45,6 +47,7 @@ export function Velomark(props: VelomarkProps) {
           <RenderBlockView
             block={block}
             codeBlockRenderers={props.codeBlockRenderers}
+            containers={props.containers}
             debug={props.debug}
             definitions={document().definitions}
             index={index()}
@@ -53,6 +56,7 @@ export function Velomark(props: VelomarkProps) {
       </For>
       <FootnotesSection
         codeBlockRenderers={props.codeBlockRenderers}
+        containers={props.containers}
         definitions={document().definitions}
         footnoteDefinitions={document().footnoteDefinitions}
         order={document().footnoteReferenceOrder}

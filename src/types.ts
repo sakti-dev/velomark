@@ -1,7 +1,10 @@
+import type { JSX } from "solid-js";
+
 export type RenderBlockKind =
   | "paragraph"
   | "heading"
   | "code"
+  | "container"
   | "html"
   | "math"
   | "blockquote"
@@ -118,4 +121,10 @@ export interface VelomarkDebugMetrics {
 export interface VelomarkCodeBlockRendererProps {
   code: string;
   language?: string;
+}
+
+export interface VelomarkContainerRendererProps {
+  attributes?: Record<string, string>;
+  children?: JSX.Element;
+  name: string;
 }
