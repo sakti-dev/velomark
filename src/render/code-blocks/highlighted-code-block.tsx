@@ -1,5 +1,5 @@
-import type { BundledTheme, HighlighterGeneric } from "shiki";
-import { Show, createEffect, createSignal, on, type Component } from "solid-js";
+import type { BundledTheme, HighlighterGeneric, ThemedToken } from "shiki";
+import { For, Show, createEffect, createSignal, on, type Component } from "solid-js";
 import { getShikiManager } from "./shiki-manager";
 
 const DEFAULT_HIGHLIGHT_THEME = "github-dark";
@@ -10,7 +10,7 @@ export const HighlightedCodeBlock: Component<{
   language?: string;
   theme?: string;
 }> = (props) => {
-  const [highlightedHtml, setHighlightedHtml] = createSignal("");
+  const [highlightedTokens, setHighlightedTokens] = createSignal<ThemedToken[][]>([]);
   const [streamError, setStreamError] = createSignal(false);
   const [resolvedLanguage, setResolvedLanguage] = createSignal("text");
   const [resolvedTheme, setResolvedTheme] = createSignal(DEFAULT_HIGHLIGHT_THEME);
@@ -27,7 +27,7 @@ export const HighlightedCodeBlock: Component<{
     const currentRequestId = requestId;
 
     try {
-      const html = await highlighter()!.codeToHtml(props.code, {
+      const tokens = highlighter()!.codeToTokensBase(props.code, {
         lang: resolvedLanguage(),
         theme: resolvedTheme(),
       });
@@ -35,16 +35,14 @@ export const HighlightedCodeBlock: Component<{
         return;
       }
 
-      const wrapper = document.createElement("div");
-      wrapper.innerHTML = html;
-      setHighlightedHtml(wrapper.querySelector("code")?.innerHTML ?? "");
+      setHighlightedTokens(tokens);
       setStreamError(false);
     } catch {
       if (currentRequestId !== requestId) {
         return;
       }
 
-      setHighlightedHtml("");
+      setHighlightedTokens([]);
       setStreamError(true);
     }
   };
@@ -71,7 +69,7 @@ export const HighlightedCodeBlock: Component<{
           setStreamError(false);
           void highlightCode();
         } catch {
-          setHighlightedHtml("");
+          setHighlightedTokens([]);
           setStreamError(true);
         }
       },
@@ -87,10 +85,45 @@ export const HighlightedCodeBlock: Component<{
   return (
     <pre>
       <code data-velomark-code-highlighted={!streamError() ? "" : undefined}>
-        <Show when={!streamError() && highlightedHtml().length > 0} fallback={props.code}>
-          <span innerHTML={highlightedHtml()} />
+        <Show when={!streamError() && highlightedTokens().length > 0} fallback={props.code}>
+          <For each={highlightedTokens()}>
+            {(line, lineIndex) => (
+              <>
+                <For each={line}>
+                  {(token) => (
+                    <span style={buildTokenStyle(token)}>{token.content}</span>
+                  )}
+                </For>
+                <Show when={lineIndex() < highlightedTokens().length - 1}>{"\n"}</Show>
+              </>
+            )}
+          </For>
         </Show>
       </code>
     </pre>
   );
+};
+
+const buildTokenStyle = (token: ThemedToken): Record<string, string> => {
+  const style: Record<string, string> = {};
+
+  if (token.color) {
+    style.color = token.color;
+  }
+
+  if (typeof token.fontStyle === "number") {
+    if ((token.fontStyle & 1) !== 0) {
+      style["font-style"] = "italic";
+    }
+
+    if ((token.fontStyle & 2) !== 0) {
+      style["font-weight"] = "700";
+    }
+
+    if ((token.fontStyle & 4) !== 0) {
+      style["text-decoration"] = "underline";
+    }
+  }
+
+  return style;
 };

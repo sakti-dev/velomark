@@ -172,10 +172,12 @@ describe("Velomark block rendering", () => {
     );
 
     const shell = host.querySelector('[data-velomark-block-kind="code"]');
-    expect(shell?.querySelector('[data-velomark-code-highlighted]')).not.toBeNull();
+    const highlighted = shell?.querySelector('[data-velomark-code-highlighted]');
+    expect(highlighted).not.toBeNull();
     expect(shell?.querySelectorAll('[data-velomark-code-highlighted] span').length).toBeGreaterThan(
       0
     );
+    expect(highlighted?.querySelectorAll(':scope > span').length).toBeGreaterThan(1);
   });
 
   it("omits the language badge and header for unlabeled code fences", () => {

@@ -24,24 +24,24 @@ const CopyIcon: Component = () => (
     aria-hidden="true"
     data-velomark-code-copy-icon="copy"
     fill="none"
-    height="14"
-    viewBox="0 0 16 16"
-    width="14"
+    height="16"
+    stroke="currentColor"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    stroke-width="2"
+    viewBox="0 0 24 24"
+    width="16"
   >
     <rect
-      height="8.5"
-      rx="1.75"
-      stroke="currentColor"
-      stroke-width="1.4"
-      width="7.5"
-      x="5"
-      y="3"
+      height="14"
+      rx="2"
+      ry="2"
+      width="14"
+      x="8"
+      y="8"
     />
     <path
-      d="M4.25 12.5H3.5a1.5 1.5 0 0 1-1.5-1.5V4.75a1.5 1.5 0 0 1 1.5-1.5H10"
-      stroke="currentColor"
-      stroke-linecap="round"
-      stroke-width="1.4"
+      d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"
     />
   </svg>
 );

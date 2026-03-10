@@ -64,24 +64,27 @@ class ShikiManager {
     }
 
     const { bundledLanguages, bundledLanguagesAlias } = await import("shiki");
-    const alias = bundledLanguagesAlias[language as keyof typeof bundledLanguagesAlias];
-    const resolvedLanguage = (alias ?? language) as BundledLanguage;
+    const aliasCandidate =
+      bundledLanguagesAlias[language as keyof typeof bundledLanguagesAlias];
+    const resolvedLanguage =
+      typeof aliasCandidate === "string" ? aliasCandidate : language;
+    const bundledLanguage = resolvedLanguage as BundledLanguage;
 
-    if (!Object.hasOwn(bundledLanguages, resolvedLanguage)) {
+    if (!Object.hasOwn(bundledLanguages, bundledLanguage)) {
       return {
         highlighter: info.highlighter,
         language: "text",
       };
     }
 
-    if (!info.loadedLanguages.has(resolvedLanguage)) {
-      await info.highlighter.loadLanguage(resolvedLanguage);
-      info.loadedLanguages.add(resolvedLanguage);
+    if (!info.loadedLanguages.has(bundledLanguage)) {
+      await info.highlighter.loadLanguage(bundledLanguage);
+      info.loadedLanguages.add(bundledLanguage);
     }
 
     return {
       highlighter: info.highlighter,
-      language: resolvedLanguage,
+      language: bundledLanguage,
     };
   }
 }
