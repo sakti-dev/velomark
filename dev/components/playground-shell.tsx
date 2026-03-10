@@ -7,17 +7,17 @@ export interface PlaygroundShellProps {
 
 export const PlaygroundShell: Component<PlaygroundShellProps> = (props) => {
   return (
-    <div class="playground-shell">
-      <header class="playground-hero">
-        <h1>Velomark Playground</h1>
-        <p>
+    <div class="playground-shell flex min-h-screen flex-col gap-6 bg-background p-6 text-foreground">
+      <header class="flex flex-col gap-2">
+        <h1 class="text-3xl font-semibold tracking-tight">Velomark Playground</h1>
+        <p class="max-w-3xl text-sm leading-6 text-muted-foreground">
           Streaming-oriented renderer playground for append updates, tail rewrites,
           and DOM stability checks.
         </p>
       </header>
-      <div class="playground-grid">
-        <aside class="playground-controls">{props.controls}</aside>
-        <main class="playground-main">{props.renderer}</main>
+      <div class="grid min-h-0 flex-1 gap-4 lg:grid-cols-[minmax(20rem,24rem)_minmax(0,1fr)]">
+        <aside class="min-w-0">{props.controls}</aside>
+        <main class="min-w-0">{props.renderer}</main>
       </div>
     </div>
   );

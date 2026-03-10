@@ -33,18 +33,22 @@ export const DiagnosticsStrip: Component<DiagnosticsStripProps> = (props) => {
   ];
 
   return (
-    <section class="controls-panel diagnostics-strip">
-      <header class="panel-header">
-        <h2>Diagnostics</h2>
-        <p>Compact reuse and stability signals while the renderer updates.</p>
+    <section class="flex min-w-0 flex-col gap-4 rounded-xl border border-border bg-card p-4 shadow-xs">
+      <header class="flex flex-col gap-1">
+        <h2 class="text-lg font-semibold tracking-tight text-foreground">Diagnostics</h2>
+        <p class="text-sm leading-6 text-muted-foreground">
+          Compact reuse and stability signals while the renderer updates.
+        </p>
       </header>
 
-      <div class="diagnostics-grid">
+      <div class="grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-3">
         <For each={metrics()}>
           {(metric) => (
-            <div class="diagnostic-pill">
-              <dt>{metric.label}</dt>
-              <dd>{metric.value}</dd>
+            <div class="rounded-lg border border-border bg-background p-3">
+              <dt class="text-xs font-medium uppercase tracking-[0.12em] text-muted-foreground">
+                {metric.label}
+              </dt>
+              <dd class="mt-1 text-sm font-semibold text-foreground">{metric.value}</dd>
             </div>
           )}
         </For>

@@ -17,6 +17,32 @@ describe("playground workbench layout", () => {
       container.querySelector('.renderer-surface .markdown-content[data-component="markdown"]')
     ).not.toBeNull();
 
+    const shell = container.querySelector(".playground-shell");
+    const workbenchPanel = Array.from(container.querySelectorAll("section")).find((section) =>
+      section.textContent?.includes("Workbench")
+    );
+    const diagnosticsPanel = Array.from(container.querySelectorAll("section")).find((section) =>
+      section.textContent?.includes("Diagnostics")
+    );
+    const rendererPanel = Array.from(container.querySelectorAll("section")).find((section) =>
+      section.textContent?.includes("Renderer Viewport")
+    );
+    const lightButton = Array.from(container.querySelectorAll("button")).find(
+      (button) => button.textContent?.trim() === "Light"
+    );
+    const darkButton = Array.from(container.querySelectorAll("button")).find(
+      (button) => button.textContent?.trim() === "Dark"
+    );
+
+    expect(shell?.classList.contains("bg-background")).toBe(true);
+    expect(shell?.classList.contains("text-foreground")).toBe(true);
+    expect(workbenchPanel?.classList.contains("bg-card")).toBe(true);
+    expect(workbenchPanel?.classList.contains("border-border")).toBe(true);
+    expect(diagnosticsPanel?.classList.contains("bg-card")).toBe(true);
+    expect(rendererPanel?.classList.contains("bg-card")).toBe(true);
+    expect(lightButton).toBeDefined();
+    expect(darkButton).toBeDefined();
+
     dispose();
     container.remove();
   });

@@ -10,13 +10,15 @@ export interface RendererPanelProps {
 
 export const RendererPanel: Component<RendererPanelProps> = (props) => {
   return (
-    <section class="renderer-panel">
-      <header class="panel-header">
-        <h2>Renderer Viewport</h2>
-        <p>Rendered output updates here as presets and stream controls change.</p>
+    <section class="flex min-w-0 flex-col gap-4 rounded-xl border border-border bg-card p-4 shadow-xs">
+      <header class="flex flex-col gap-1">
+        <h2 class="text-lg font-semibold tracking-tight text-foreground">Renderer Viewport</h2>
+        <p class="text-sm leading-6 text-muted-foreground">
+          Rendered output updates here as presets and stream controls change.
+        </p>
       </header>
       <div
-        class="renderer-surface"
+        class="renderer-surface min-h-[28rem] rounded-lg border border-border bg-background p-4"
         ref={(element) => {
           props.onSurfaceReady?.(element);
         }}

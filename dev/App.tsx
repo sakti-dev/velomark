@@ -123,7 +123,7 @@ const App: Component = () => {
   return (
     <PlaygroundShell
       controls={
-        <div class="controls-column">
+        <div class="flex min-w-0 flex-col gap-4">
           <WorkbenchControlsPanel
             activePresetId={activePresetId()}
             benchmarkState={benchmarkState()}
@@ -145,7 +145,7 @@ const App: Component = () => {
         </div>
       }
       renderer={
-        <div class="renderer-column">
+        <div class="flex min-w-0 flex-col gap-4">
           <DiagnosticsStrip
             benchmarkState={benchmarkState()}
             metrics={debugMetrics()}
