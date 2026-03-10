@@ -59,4 +59,14 @@ describe("Velomark", () => {
     expect(source).not.toMatch(/#[\da-fA-F]{3,8}\b/);
     expect(source).not.toMatch(/\brgba?\(/);
   });
+
+  it("overrides the desktop root overflow lock so the playground can scroll", () => {
+    const source = readFileSync(DEV_STYLES_PATH, "utf8");
+
+    expect(source).toContain("html,");
+    expect(source).toContain("body,");
+    expect(source).toContain("#root");
+    expect(source).toContain("overflow: auto;");
+    expect(source).toContain("height: auto;");
+  });
 });
