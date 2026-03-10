@@ -1,4 +1,8 @@
 import type { InlineToken, ReferenceDefinitionMap } from "../types";
+import {
+  htmlElementChildrenToInlineTokens,
+  parseSimpleHtmlElement,
+} from "./html-element";
 
 const ESCAPABLE_CHARACTERS = new Set(["\\", "*", "`", "[", "]", "(", ")"]);
 
@@ -275,6 +279,21 @@ export function parseInline(
     }
 
     if (current === "<") {
+      const structuredElement = parseSimpleHtmlElement(source.slice(index));
+      if (structuredElement) {
+        tokens.push({
+          type: "html-element",
+          tagName: structuredElement.node.tagName,
+          attributes: structuredElement.node.attributes,
+          children: htmlElementChildrenToInlineTokens(
+            structuredElement.node.children,
+            (text) => parseInline(text, definitions)
+          ),
+        });
+        index += structuredElement.length;
+        continue;
+      }
+
       const parsed = parseInlineHtml(source, index);
       if (parsed) {
         tokens.push({ type: "html", value: parsed.value });

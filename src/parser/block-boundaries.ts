@@ -1,5 +1,7 @@
 import type { RenderBlock } from "../types";
 import type { DraftRenderBlock } from "../model/stable-id";
+import type { HtmlElementChild } from "./html-element";
+import { parseSimpleHtmlElement } from "./html-element";
 import {
   isBlankLine,
   isTableSeparator,
@@ -58,6 +60,12 @@ export interface HtmlBlockData {
   value: string;
 }
 
+export interface HtmlElementBlockData {
+  attributes?: Record<string, string>;
+  children: HtmlElementChild[];
+  tagName: string;
+}
+
 export interface ContainerBlockData {
   attributes?: Record<string, string>;
   children: DraftRenderBlock<ParsedBlockData>[];
@@ -82,6 +90,7 @@ export type ParsedBlockData =
   | CodeBlockData
   | ContainerBlockData
   | HtmlBlockData
+  | HtmlElementBlockData
   | MathBlockData
   | ThematicBreakBlockData
   | TableBlockData;
@@ -407,6 +416,26 @@ export function parseBlockBoundaries(
       trimmedLine.endsWith(">") &&
       !trimmedLine.startsWith("<!--")
     ) {
+      const structuredElement = parseSimpleHtmlElement(trimmedLine);
+      if (structuredElement && structuredElement.length === trimmedLine.length) {
+        blocks.push(
+          buildBlock(
+            "html-element",
+            line.start,
+            line.end,
+            lineIndex === lines.length - 1,
+            `html-element:${trimmedLine}`,
+            {
+              tagName: structuredElement.node.tagName,
+              attributes: structuredElement.node.attributes,
+              children: structuredElement.node.children,
+            }
+          )
+        );
+        lineIndex += 1;
+        continue;
+      }
+
       blocks.push(
         buildBlock(
           "html",

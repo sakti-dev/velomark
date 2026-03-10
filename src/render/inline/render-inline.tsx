@@ -1,6 +1,7 @@
 import { For, type Component, type JSX } from "solid-js";
 import { Dynamic } from "solid-js/web";
 import { parseInline } from "../../parser/inline-parser";
+import { HtmlElementView } from "../html-element-view";
 import type {
   InlineToken,
   ReferenceDefinitionMap,
@@ -32,6 +33,17 @@ function renderToken(
       );
     case "html":
       return <span data-velomark-inline-html="">{token.value}</span>;
+    case "html-element":
+      return (
+        <HtmlElementView
+          attributes={token.attributes}
+          children={token.children.map((child) => ({
+            token: child,
+            type: "inline-token" as const,
+          }))}
+          tagName={token.tagName}
+        />
+      );
     case "text-directive": {
       const CustomContainer = containers?.[token.name];
       const children = (

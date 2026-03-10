@@ -406,12 +406,34 @@ describe("Velomark block rendering", () => {
     const host = document.createElement("div");
     document.body.append(host);
 
-    const dispose = render(() => <Velomark markdown={"<div>Alpha</div>"} />, host);
+    const dispose = render(
+      () => <Velomark markdown={"<div>Alpha</div><div>Beta</div>"} />,
+      host
+    );
     mountedRoots.push(dispose);
 
     const htmlBlock = host.querySelector('[data-velomark-block-kind="html"]');
     expect(htmlBlock).not.toBeNull();
-    expect(htmlBlock?.querySelector("pre > code")?.textContent).toBe("<div>Alpha</div>");
+    expect(htmlBlock?.querySelector("pre > code")?.textContent).toBe(
+      "<div>Alpha</div><div>Beta</div>"
+    );
+  });
+
+  it("renders simple html element blocks structurally", () => {
+    const host = document.createElement("div");
+    document.body.append(host);
+
+    const dispose = render(
+      () => <Velomark markdown={'<div class="note"><p>Alpha</p></div>'} />,
+      host
+    );
+    mountedRoots.push(dispose);
+
+    const element = host.querySelector('[data-velomark-block-kind="html-element"]');
+    expect(element).not.toBeNull();
+    expect(element?.querySelector("div.note")).not.toBeNull();
+    expect(element?.querySelector("div.note > p")?.textContent).toBe("Alpha");
+    expect(element?.querySelector("pre")).toBeNull();
   });
 
   it("renders container directives with nested markdown content", () => {

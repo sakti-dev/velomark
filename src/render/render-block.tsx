@@ -5,6 +5,7 @@ import type {
   ContainerBlockData,
   HeadingBlockData,
   HtmlBlockData,
+  HtmlElementBlockData,
   ListBlockData,
   MathBlockData,
   ParagraphBlockData,
@@ -22,6 +23,7 @@ import { CodeBlock } from "./blocks/code-block";
 import { ContainerBlock } from "./blocks/container-block";
 import { HeadingBlock } from "./blocks/heading-block";
 import { HtmlBlock } from "./blocks/html-block";
+import { HtmlElementBlock } from "./blocks/html-element-block";
 import { ListBlock } from "./blocks/list-block";
 import { MathBlock } from "./blocks/math-block";
 import { ParagraphBlock } from "./blocks/paragraph-block";
@@ -104,6 +106,14 @@ export const RenderBlockView: Component<{
       return (
         <HtmlBlock
           block={props.block as RenderBlock<HtmlBlockData>}
+          debug={props.debug}
+          index={props.index}
+        />
+      );
+    case "html-element":
+      return (
+        <HtmlElementBlock
+          block={props.block as RenderBlock<HtmlElementBlockData>}
           debug={props.debug}
           index={props.index}
         />

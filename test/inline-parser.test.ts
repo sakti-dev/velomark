@@ -238,9 +238,22 @@ describe("parseInline", () => {
   });
 
   it("parses raw inline html as a dedicated token", () => {
-    expect(parseInline("Text with <span>hi</span> here")).toEqual([
+    expect(parseInline("Text with <span>hi here")).toEqual([
       { type: "text", text: "Text with " },
-      { type: "html", value: "<span>hi</span>" },
+      { type: "html", value: "<span>" },
+      { type: "text", text: "hi here" },
+    ]);
+  });
+
+  it("parses simple inline html elements as structured tokens", () => {
+    expect(parseInline("Text with <span class=\"chip\">hi</span> here")).toEqual([
+      { type: "text", text: "Text with " },
+      {
+        type: "html-element",
+        tagName: "span",
+        attributes: { class: "chip" },
+        children: [{ type: "text", text: "hi" }],
+      },
       { type: "text", text: " here" },
     ]);
   });

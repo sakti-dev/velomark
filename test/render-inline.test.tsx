@@ -167,15 +167,30 @@ describe("RenderInline", () => {
     document.body.append(host);
 
     const dispose = render(
-      () => <RenderInline text="Text with <span>hi</span> here" />,
+      () => <RenderInline text="Text with <span>hi here" />,
       host
     );
     mountedRoots.push(dispose);
 
     const inlineHtml = host.querySelector('[data-velomark-inline-html]');
     expect(inlineHtml).not.toBeNull();
-    expect(inlineHtml?.textContent).toBe("<span>hi</span>");
-    expect(host.querySelector("span > span")).toBeNull();
+    expect(inlineHtml?.textContent).toBe("<span>");
+  });
+
+  it("renders structured inline html elements semantically", () => {
+    const host = document.createElement("div");
+    document.body.append(host);
+
+    const dispose = render(
+      () => <RenderInline text='Text with <span class="chip">hi</span> here' />,
+      host
+    );
+    mountedRoots.push(dispose);
+
+    const span = host.querySelector("span.chip");
+    expect(span).not.toBeNull();
+    expect(span?.textContent).toBe("hi");
+    expect(host.querySelector('[data-velomark-inline-html]')).toBeNull();
   });
 
   it("renders text directives with inline content", () => {

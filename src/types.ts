@@ -6,6 +6,7 @@ export type RenderBlockKind =
   | "code"
   | "container"
   | "html"
+  | "html-element"
   | "math"
   | "blockquote"
   | "list"
@@ -47,6 +48,13 @@ export interface InlineMathToken {
 export interface InlineHtmlToken {
   type: "html";
   value: string;
+}
+
+export interface InlineHtmlElementToken {
+  attributes?: Record<string, string>;
+  children: InlineToken[];
+  tagName: string;
+  type: "html-element";
 }
 
 export interface InlineDirectiveToken {
@@ -93,6 +101,7 @@ export type InlineToken =
   | InlineDeleteToken
   | InlineDirectiveToken
   | InlineEmphasisToken
+  | InlineHtmlElementToken
   | InlineFootnoteReferenceToken
   | InlineHtmlToken
   | InlineMathToken
