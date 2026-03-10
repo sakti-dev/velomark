@@ -134,7 +134,18 @@ Use the playground to:
 - inspect DOM reuse metrics
 - probe whether interaction stays stable under long streamed output
 
+The playground deliberately mirrors the desktop app theme contract:
+
+- it reuses the desktop token CSS values
+- it uses the same `.dark` root-class toggle model
+- it keeps the desktop markdown preview contract around the rendered surface
+
+This is a preview and evaluation aid for renderer work. It does **not** mean the
+published library depends on the desktop app at runtime.
+
 ## Scope boundary
 
 `velomark` is a generic Solid renderer, not a desktop-app UI kit.
 Desktop-specific styling, wrappers, and workflow UI stay in the consumer integration layer.
+The playground is the one deliberate exception: it is allowed to borrow the desktop
+theme contract so renderer changes can be judged in a realistic preview environment.
