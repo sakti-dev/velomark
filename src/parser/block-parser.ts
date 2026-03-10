@@ -1,6 +1,6 @@
-import { parseBlockBoundaries, type ParsedBlockData } from "./block-boundaries";
 import type { DraftRenderBlock } from "../model/stable-id";
 import type { ReferenceDefinitionMap } from "../types";
+import { type ParsedBlockData, parseBlockBoundaries } from "./block-boundaries";
 
 const REFERENCE_DEFINITION_RE =
   /^\[([^\]]+)\]:\s+(\S+?)(?:\s+(?:"([^"]*)"|'([^']*)'|\(([^)]*)\)))?\s*$/;
@@ -32,7 +32,9 @@ export function extractReferenceDefinitions(markdown: string): {
     }
 
     const title = match[3] ?? match[4] ?? match[5];
-    definitions[normalizeReferenceId(identifier)] = title ? { href, title } : { href };
+    definitions[normalizeReferenceId(identifier)] = title
+      ? { href, title }
+      : { href };
   }
 
   return {
@@ -55,7 +57,10 @@ function extractFootnoteDefinitions(markdown: string): {
   content: string;
   footnoteDefinitions: Record<string, DraftRenderBlock<ParsedBlockData>[]>;
 } {
-  const footnoteDefinitions: Record<string, DraftRenderBlock<ParsedBlockData>[]> = {};
+  const footnoteDefinitions: Record<
+    string,
+    DraftRenderBlock<ParsedBlockData>[]
+  > = {};
   const lines = markdown.split("\n");
   const keptLines: string[] = [];
 
@@ -98,7 +103,9 @@ function extractFootnoteDefinitions(markdown: string): {
       break;
     }
 
-    footnoteDefinitions[identifier] = parseBlockBoundaries(bodyLines.join("\n"));
+    footnoteDefinitions[identifier] = parseBlockBoundaries(
+      bodyLines.join("\n")
+    );
     index = scanIndex - 1;
   }
 
@@ -114,7 +121,9 @@ export function parseMarkdownToBlocks(markdown: string): {
   footnoteDefinitions: Record<string, DraftRenderBlock<ParsedBlockData>[]>;
 } {
   const extractedReferences = extractReferenceDefinitions(markdown);
-  const extractedFootnotes = extractFootnoteDefinitions(extractedReferences.content);
+  const extractedFootnotes = extractFootnoteDefinitions(
+    extractedReferences.content
+  );
   return {
     blocks: parseBlockBoundaries(extractedFootnotes.content),
     definitions: extractedReferences.definitions,

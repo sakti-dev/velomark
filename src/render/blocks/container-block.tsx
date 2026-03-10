@@ -1,4 +1,4 @@
-import { For, type Component } from "solid-js";
+import { type Component, For } from "solid-js";
 import { Dynamic } from "solid-js/web";
 import type { ContainerBlockData } from "../../parser/block-boundaries";
 import type { VelomarkTheme } from "../../theme/types";
@@ -60,8 +60,8 @@ export const ContainerBlock: Component<{
   if (resolvedCustomContainer) {
     return (
       <Dynamic
-        component={resolvedCustomContainer}
         attributes={props.block.data.attributes}
+        component={resolvedCustomContainer}
         name={props.block.data.name}
       >
         {renderedChildren}

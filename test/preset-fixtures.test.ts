@@ -10,13 +10,15 @@ describe("playground presets", () => {
     expect(preset).toHaveProperty("label", "Incremark Example");
     expect(preset).toHaveProperty("description");
     expect(preset).toHaveProperty("markdown");
-    expect(preset?.markdown.length ?? 0).toBeGreaterThan(8_000);
+    expect(preset?.markdown.length ?? 0).toBeGreaterThan(8000);
   });
 
   it("uses the copied incremark solid example sample as the only playground source", () => {
     const incremarkPreset = playgroundPresets[0];
 
-    expect(incremarkPreset?.markdown).toContain("# 🚀 Incremark SolidJS Example");
+    expect(incremarkPreset?.markdown).toContain(
+      "# 🚀 Incremark SolidJS Example"
+    );
     expect(incremarkPreset?.markdown).toContain("## 📊 Mermaid Charts");
     expect(incremarkPreset?.markdown).toContain("## 🎨 Custom Containers");
     expect(incremarkPreset?.markdown).toContain("## 💻 Code Highlighting");

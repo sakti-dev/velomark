@@ -1,7 +1,7 @@
 import { render } from "solid-js/web";
 import { afterEach, describe, expect, it } from "vitest";
-import { RenderInline } from "../src/render/inline/render-inline";
 import type { VelomarkContainerRendererProps } from "../src";
+import { RenderInline } from "../src/render/inline/render-inline";
 
 const mountedRoots: Array<() => void> = [];
 
@@ -33,7 +33,10 @@ describe("RenderInline", () => {
     const host = document.createElement("div");
     document.body.append(host);
 
-    const dispose = render(() => <RenderInline text="Use ~~old~~ behavior" />, host);
+    const dispose = render(
+      () => <RenderInline text="Use ~~old~~ behavior" />,
+      host
+    );
     mountedRoots.push(dispose);
 
     const strike = host.querySelector("del");
@@ -45,8 +48,9 @@ describe("RenderInline", () => {
     document.body.append(host);
 
     const dispose = render(
-      () =>
-        <RenderInline text="Logo ![alt text](https://example.com/logo.png)" />,
+      () => (
+        <RenderInline text="Logo ![alt text](https://example.com/logo.png)" />
+      ),
       host
     );
     mountedRoots.push(dispose);
@@ -62,11 +66,12 @@ describe("RenderInline", () => {
     document.body.append(host);
 
     const dispose = render(
-      () =>
+      () => (
         <RenderInline
           definitions={{ guide: { href: "https://example.com/guide" } }}
           text="Open [docs][guide]"
-        />,
+        />
+      ),
       host
     );
     mountedRoots.push(dispose);
@@ -81,13 +86,14 @@ describe("RenderInline", () => {
     document.body.append(host);
 
     const dispose = render(
-      () =>
+      () => (
         <RenderInline
           definitions={{
             docs: { href: "https://example.com/guide", title: "Guide" },
           }}
           text="Open [docs][]"
-        />,
+        />
+      ),
       host
     );
     mountedRoots.push(dispose);
@@ -103,7 +109,7 @@ describe("RenderInline", () => {
     document.body.append(host);
 
     const dispose = render(
-      () =>
+      () => (
         <RenderInline
           definitions={{
             logo: {
@@ -112,7 +118,8 @@ describe("RenderInline", () => {
             },
           }}
           text="Logo ![logo]"
-        />,
+        />
+      ),
       host
     );
     mountedRoots.push(dispose);
@@ -157,14 +164,14 @@ describe("RenderInline", () => {
     );
     mountedRoots.push(dispose);
 
-    const inlineMath = host.querySelector('[data-velomark-inline-math]');
+    const inlineMath = host.querySelector("[data-velomark-inline-math]");
     expect(inlineMath).not.toBeNull();
 
     for (let attempt = 0; attempt < 20; attempt += 1) {
       if (inlineMath?.querySelector(".katex")) {
         break;
       }
-      await new Promise(resolve => window.setTimeout(resolve, 0));
+      await new Promise((resolve) => window.setTimeout(resolve, 0));
     }
 
     expect(inlineMath?.querySelector(".katex")).not.toBeNull();
@@ -175,13 +182,16 @@ describe("RenderInline", () => {
     const host = document.createElement("div");
     document.body.append(host);
 
-    const dispose = render(() => <RenderInline text={"Broken math $\\frac{1$"} />, host);
+    const dispose = render(
+      () => <RenderInline text={"Broken math $\\frac{1$"} />,
+      host
+    );
     mountedRoots.push(dispose);
 
-    const inlineMath = host.querySelector('[data-velomark-inline-math]');
+    const inlineMath = host.querySelector("[data-velomark-inline-math]");
     expect(inlineMath).not.toBeNull();
 
-    await new Promise(resolve => window.setTimeout(resolve, 0));
+    await new Promise((resolve) => window.setTimeout(resolve, 0));
 
     expect(inlineMath?.querySelector(".katex")).toBeNull();
     expect(inlineMath?.querySelector("code")?.textContent).toBe("\\frac{1");
@@ -197,7 +207,7 @@ describe("RenderInline", () => {
     );
     mountedRoots.push(dispose);
 
-    const inlineHtml = host.querySelector('[data-velomark-inline-html]');
+    const inlineHtml = host.querySelector("[data-velomark-inline-html]");
     expect(inlineHtml).not.toBeNull();
     expect(inlineHtml?.innerHTML).toBe("<span></span>");
   });
@@ -215,7 +225,7 @@ describe("RenderInline", () => {
     const span = host.querySelector("span.chip");
     expect(span).not.toBeNull();
     expect(span?.textContent).toBe("hi");
-    expect(host.querySelector('[data-velomark-inline-html]')).toBeNull();
+    expect(host.querySelector("[data-velomark-inline-html]")).toBeNull();
   });
 
   it("renders markdown-like text inside structured inline html elements", async () => {
@@ -223,8 +233,13 @@ describe("RenderInline", () => {
     document.body.append(host);
 
     const dispose = render(
-      () =>
-        <RenderInline text={'Text with <span class="chip">**bold** and $E = mc^2$</span> here'} />,
+      () => (
+        <RenderInline
+          text={
+            'Text with <span class="chip">**bold** and $E = mc^2$</span> here'
+          }
+        />
+      ),
       host
     );
     mountedRoots.push(dispose);
@@ -237,7 +252,7 @@ describe("RenderInline", () => {
       if (chip?.querySelector(".katex")) {
         break;
       }
-      await new Promise(resolve => window.setTimeout(resolve, 0));
+      await new Promise((resolve) => window.setTimeout(resolve, 0));
     }
 
     expect(chip?.querySelector(".katex")).not.toBeNull();
@@ -248,8 +263,11 @@ describe("RenderInline", () => {
     document.body.append(host);
 
     const dispose = render(
-      () =>
-        <RenderInline text={"Text with <span class='chip' data-tone='info'>hi</span> here"} />,
+      () => (
+        <RenderInline
+          text={"Text with <span class='chip' data-tone='info'>hi</span> here"}
+        />
+      ),
       host
     );
     mountedRoots.push(dispose);
@@ -270,7 +288,9 @@ describe("RenderInline", () => {
     );
     mountedRoots.push(dispose);
 
-    const directive = host.querySelector('[data-velomark-text-directive="badge"]');
+    const directive = host.querySelector(
+      '[data-velomark-text-directive="badge"]'
+    );
     expect(directive).not.toBeNull();
     expect(directive?.getAttribute("data-velomark-attr-tone")).toBe("info");
     expect(directive?.textContent).toBe("Beta");
@@ -281,15 +301,18 @@ describe("RenderInline", () => {
     document.body.append(host);
 
     const dispose = render(
-      () =>
+      () => (
         <RenderInline
           text={":badge[Beta]{tone='info' icon=bolt emphasis=\"high\"}"}
-        />,
+        />
+      ),
       host
     );
     mountedRoots.push(dispose);
 
-    const directive = host.querySelector('[data-velomark-text-directive="badge"]');
+    const directive = host.querySelector(
+      '[data-velomark-text-directive="badge"]'
+    );
     expect(directive).not.toBeNull();
     expect(directive?.getAttribute("data-velomark-attr-tone")).toBe("info");
     expect(directive?.getAttribute("data-velomark-attr-icon")).toBe("bolt");
@@ -307,11 +330,12 @@ describe("RenderInline", () => {
     );
 
     const dispose = render(
-      () =>
+      () => (
         <RenderInline
           containers={{ badge: Badge }}
           text='See :badge[Beta]{tone="info"} now'
-        />,
+        />
+      ),
       host
     );
     mountedRoots.push(dispose);

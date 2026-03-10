@@ -53,39 +53,40 @@
   --velomark-spacing-inline-code-y: 0.1rem;
   --velomark-spacing-code-padding-x: 1rem;
   --velomark-spacing-code-padding-y: 0.875rem;
-  background: var(--velomark-color-surface-base);
-  color: var(--velomark-color-text-primary);
   font-family: var(--velomark-typography-body-font);
   line-height: var(--velomark-typography-line-height);
+  color: var(--velomark-color-text-primary);
+  background: var(--velomark-color-surface-base);
 }
 
 .velomark code {
+  padding: var(--velomark-spacing-inline-code-y)
+    var(--velomark-spacing-inline-code-x);
+  font-family: var(--velomark-typography-mono-font);
+  color: var(--velomark-color-text-primary);
   background: var(--velomark-color-surface-code);
   border-radius: var(--velomark-radius-sm);
-  color: var(--velomark-color-text-primary);
-  font-family: var(--velomark-typography-mono-font);
-  padding: var(--velomark-spacing-inline-code-y) var(--velomark-spacing-inline-code-x);
 }
 
 .velomark pre {
+  padding: var(--velomark-spacing-code-padding-y)
+    var(--velomark-spacing-code-padding-x);
+  margin: 0;
+  overflow-x: auto;
+  color: var(--velomark-color-text-primary);
   background: var(--velomark-color-surface-code);
   border: 1px solid var(--velomark-color-border-default);
   border-radius: var(--velomark-radius-lg);
   box-shadow: var(--velomark-shadow-xs);
-  color: var(--velomark-color-text-primary);
-  overflow-x: auto;
-  margin: 0;
-  padding: var(--velomark-spacing-code-padding-y)
-    var(--velomark-spacing-code-padding-x);
 }
 
 .velomark pre code {
-  background: transparent;
-  border-radius: 0;
   display: block;
-  font-family: var(--velomark-typography-mono-font);
   min-width: max-content;
   padding: 0;
+  font-family: var(--velomark-typography-mono-font);
+  background: transparent;
+  border-radius: 0;
 }
 
 .velomark [data-velomark-code-highlighted] {
@@ -97,47 +98,46 @@
 }
 
 .velomark [data-velomark-block-kind="code"] pre {
-  padding:
-    var(--velomark-spacing-code-padding-y)
+  padding: var(--velomark-spacing-code-padding-y)
     calc(var(--velomark-spacing-code-padding-x) + 2.25rem)
     calc(var(--velomark-spacing-code-padding-y) + 1.125rem)
     var(--velomark-spacing-code-padding-x);
 }
 
 .velomark [data-velomark-code-language] {
-  background: var(--velomark-color-code-language-badge-background);
-  border: 1px solid var(--velomark-color-border-default);
-  border-radius: var(--velomark-radius-pill);
-  color: var(--velomark-color-code-language-badge-foreground);
-  font-family: var(--velomark-typography-body-font);
   position: absolute;
   right: 0.75rem;
   bottom: 0.75rem;
+  padding: 0.32rem 0.55rem;
+  font-family: var(--velomark-typography-body-font);
   font-size: 0.72rem;
   font-weight: 700;
-  letter-spacing: 0.08em;
   line-height: 1;
-  padding: 0.32rem 0.55rem;
+  color: var(--velomark-color-code-language-badge-foreground);
   text-transform: uppercase;
+  letter-spacing: 0.08em;
+  background: var(--velomark-color-code-language-badge-background);
+  border: 1px solid var(--velomark-color-border-default);
+  border-radius: var(--velomark-radius-pill);
 }
 
 .velomark [data-velomark-code-copy] {
-  appearance: none;
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  display: inline-flex;
   align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  padding: 0;
+  color: var(--velomark-color-code-copy-button-foreground);
+  appearance: none;
+  cursor: pointer;
   background: var(--velomark-color-code-copy-button-background);
   border: 1px solid var(--velomark-color-border-default);
   border-radius: var(--velomark-radius-pill);
   box-shadow: var(--velomark-shadow-xs);
-  color: var(--velomark-color-code-copy-button-foreground);
-  cursor: pointer;
-  display: inline-flex;
-  justify-content: center;
-  position: absolute;
-  right: 0.75rem;
-  top: 0.75rem;
-  height: 2rem;
-  width: 2rem;
-  padding: 0;
   transition:
     background-color 120ms ease,
     border-color 120ms ease,
@@ -154,9 +154,9 @@
 }
 
 .velomark [data-velomark-code-copy][data-velomark-code-copy-state="copied"] {
+  color: var(--velomark-color-code-copy-button-copied-foreground);
   background: var(--velomark-color-code-copy-button-copied-background);
   border-color: var(--velomark-color-border-accent);
-  color: var(--velomark-color-code-copy-button-copied-foreground);
 }
 
 .velomark [data-velomark-code-copy] svg {
@@ -182,11 +182,11 @@
 }
 
 .velomark [data-velomark-block-kind="math"] [data-velomark-math-rendered] {
+  display: block;
+  padding: 0.5rem;
+  overflow-x: auto;
   background: var(--velomark-color-surface-math);
   border-radius: var(--velomark-radius-md);
-  display: block;
-  overflow-x: auto;
-  padding: 0.5rem;
 }
 
 .velomark [data-velomark-block-kind="math"] [data-velomark-math-fallback] {
@@ -196,36 +196,37 @@
 }
 
 .velomark [data-velomark-inline-math] [data-velomark-math-fallback] {
+  padding: var(--velomark-spacing-inline-code-y)
+    var(--velomark-spacing-inline-code-x);
   background: var(--velomark-color-surface-math);
   border-radius: var(--velomark-radius-sm);
-  padding: var(--velomark-spacing-inline-code-y) var(--velomark-spacing-inline-code-x);
 }
 
 .velomark blockquote {
+  padding: 0.5rem 0.875rem 0.5rem 1rem;
+  margin: 0;
+  color: var(--velomark-color-quote-foreground);
   background: var(--velomark-color-surface-quote);
   border-left: 3px solid var(--velomark-color-quote-border);
   border-radius: 0 var(--velomark-radius-md) var(--velomark-radius-md) 0;
-  color: var(--velomark-color-quote-foreground);
-  margin: 0;
-  padding: 0.5rem 0.875rem 0.5rem 1rem;
 }
 
 .velomark table {
-  border-collapse: collapse;
   width: 100%;
+  border-collapse: collapse;
 }
 
 .velomark th {
   background: var(--velomark-color-surface-table-header);
 }
 
-.velomark tbody tr:nth-child(even) td {
-  background: var(--velomark-color-surface-table-stripe);
-}
-
 .velomark th,
 .velomark td {
-  border: 1px solid var(--velomark-color-border-default);
   padding: 0.5rem 0.75rem;
   text-align: left;
+  border: 1px solid var(--velomark-color-border-default);
+}
+
+.velomark tbody tr:nth-child(even) td {
+  background: var(--velomark-color-surface-table-stripe);
 }

@@ -1,12 +1,17 @@
-import { Show, createEffect, createSignal, onCleanup, type Component } from "solid-js";
+import {
+  type Component,
+  createEffect,
+  createSignal,
+  onCleanup,
+  Show,
+} from "solid-js";
 
-let katexModulePromise:
-  | Promise<typeof import("katex")["default"]>
-  | null = null;
+let katexModulePromise: Promise<typeof import("katex")["default"]> | null =
+  null;
 
 const DEFAULT_RENDER_DELAY_MS = 0;
 
-const loadKatex = async (): Promise<typeof import("katex")["default"]> => {
+const loadKatex = (): Promise<typeof import("katex")["default"]> => {
   if (!katexModulePromise) {
     katexModulePromise = import("katex").then((module) => module.default);
   }
@@ -31,7 +36,10 @@ export const MathView: Component<{
     }
   };
 
-  const renderFormula = async (formula: string, currentRequestId: number): Promise<void> => {
+  const renderFormula = async (
+    formula: string,
+    currentRequestId: number
+  ): Promise<void> => {
     try {
       const katex = await loadKatex();
       const html = katex.renderToString(formula, {
@@ -73,7 +81,7 @@ export const MathView: Component<{
 
     setIsRendering(true);
     renderTimer = setTimeout(() => {
-      void renderFormula(formula, currentRequestId);
+      renderFormula(formula, currentRequestId);
     }, props.renderDelayMs ?? DEFAULT_RENDER_DELAY_MS);
   });
 
@@ -95,10 +103,7 @@ export const MathView: Component<{
       }
       when={renderedHtml() && !isRendering()}
     >
-      <span
-        data-velomark-math-rendered=""
-        innerHTML={renderedHtml()}
-      />
+      <span data-velomark-math-rendered="" innerHTML={renderedHtml()} />
     </Show>
   );
 };

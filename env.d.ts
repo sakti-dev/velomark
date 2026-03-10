@@ -1,18 +1,19 @@
 declare global {
   interface ImportMeta {
     env: {
-      NODE_ENV: 'production' | 'development'
-      PROD: boolean
-      DEV: boolean
-    }
+      NODE_ENV: "production" | "development";
+      PROD: boolean;
+      DEV: boolean;
+    };
   }
+  // biome-ignore lint/style/noNamespace: TypeScript ambient ProcessEnv augmentation uses the NodeJS namespace.
   namespace NodeJS {
     interface ProcessEnv {
-      NODE_ENV: 'production' | 'development'
-      PROD: boolean
-      DEV: boolean
+      DEV: boolean;
+      NODE_ENV: "production" | "development";
+      PROD: boolean;
     }
   }
 }
 
-export {}
+export {};

@@ -1,6 +1,6 @@
 import { render } from "solid-js/web";
 import { describe, expect, it } from "vitest";
-import App from "../dev/App";
+import App from "../dev/app";
 
 function getMetricValue(container: HTMLElement, label: string): string | null {
   const terms = Array.from(container.querySelectorAll("dt"));
@@ -19,10 +19,16 @@ describe("playground diagnostics strip", () => {
     expect(container.textContent).toContain("Diagnostics");
     expect(container.textContent).toContain("Total Blocks");
     expect(container.textContent).toContain("Reused");
-    expect(Number(getMetricValue(container, "Total Blocks"))).toBeGreaterThan(0);
-    expect(Number(getMetricValue(container, "Reused"))).toBeGreaterThanOrEqual(0);
+    expect(Number(getMetricValue(container, "Total Blocks"))).toBeGreaterThan(
+      0
+    );
+    expect(Number(getMetricValue(container, "Reused"))).toBeGreaterThanOrEqual(
+      0
+    );
     expect(Number(getMetricValue(container, "Replaced"))).toBe(0);
-    expect(Number(getMetricValue(container, "Appended"))).toBeGreaterThanOrEqual(0);
+    expect(
+      Number(getMetricValue(container, "Appended"))
+    ).toBeGreaterThanOrEqual(0);
 
     dispose();
     container.remove();

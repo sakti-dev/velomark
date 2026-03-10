@@ -1,20 +1,28 @@
-import { For, createEffect, createMemo, createSignal, type Component } from "solid-js";
-import { buildRenderDocument, collectRenderMetrics } from "../model/render-document";
+import {
+  type Component,
+  createEffect,
+  createMemo,
+  createSignal,
+  For,
+} from "solid-js";
+import {
+  buildRenderDocument,
+  collectRenderMetrics,
+} from "../model/render-document";
 import type { ParsedBlockData } from "../parser/block-boundaries";
-import type { VelomarkTheme } from "../theme/types";
+import { resolveTheme } from "../theme/apply-theme";
 import { generateCssVars } from "../theme/generate-css-vars";
 import type { PartialVelomarkTheme } from "../theme/merge-theme";
-import { resolveTheme } from "../theme/apply-theme";
-import type { VelomarkThemeName } from "../theme/types";
+import type { VelomarkTheme, VelomarkThemeName } from "../theme/types";
 import type {
-  VelomarkCodeBlockOptions,
   RenderDocument,
+  VelomarkCodeBlockOptions,
   VelomarkCodeBlockRendererProps,
   VelomarkContainerRendererProps,
   VelomarkDebugMetrics,
 } from "../types";
-import { RenderBlockView } from "./render-block";
 import { FootnotesSection } from "./footnotes/footnotes-section";
+import { RenderBlockView } from "./render-block";
 
 export interface VelomarkProps {
   class?: string;
@@ -32,7 +40,10 @@ export interface VelomarkProps {
 
 const BlockSlot: Component<{
   blockId: string;
-  blockLookup: () => Map<string, RenderDocument<ParsedBlockData>["blocks"][number]>;
+  blockLookup: () => Map<
+    string,
+    RenderDocument<ParsedBlockData>["blocks"][number]
+  >;
   codeBlockOptions?: VelomarkCodeBlockOptions;
   codeBlockRenderers?: Record<
     string,
@@ -84,7 +95,9 @@ export function Velomark(props: VelomarkProps) {
     setDocument((previous) => {
       const nextDocument = buildRenderDocument(previous, props.markdown);
 
-      props.onDebugMetrics?.(collectRenderMetrics(previous.blocks, nextDocument.blocks));
+      props.onDebugMetrics?.(
+        collectRenderMetrics(previous.blocks, nextDocument.blocks)
+      );
 
       return nextDocument;
     });

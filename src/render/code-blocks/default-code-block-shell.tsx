@@ -1,7 +1,7 @@
-import { createSignal, type Component, type JSX } from "solid-js";
+import { type Component, createSignal, type JSX } from "solid-js";
 import type { VelomarkCodeBlockOptions } from "../../types";
 
-const COPY_RESET_DELAY_MS = 2_000;
+const COPY_RESET_DELAY_MS = 2000;
 
 const DEFAULT_CODE_BLOCK_OPTIONS: Required<VelomarkCodeBlockOptions> = {
   copyButton: true,
@@ -32,17 +32,8 @@ const CopyIcon: Component = () => (
     viewBox="0 0 24 24"
     width="16"
   >
-    <rect
-      height="14"
-      rx="2"
-      ry="2"
-      width="14"
-      x="8"
-      y="8"
-    />
-    <path
-      d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"
-    />
+    <rect height="14" rx="2" ry="2" width="14" x="8" y="8" />
+    <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2" />
   </svg>
 );
 
@@ -87,9 +78,7 @@ export const CopyCodeButton: Component<{
       aria-label={copied() ? "Copied code" : "Copy code"}
       data-velomark-code-copy=""
       data-velomark-code-copy-state={copied() ? "copied" : "idle"}
-      onClick={() => {
-        void copyCode();
-      }}
+      onClick={() => copyCode()}
       type="button"
     >
       {copied() ? <CheckIcon /> : <CopyIcon />}

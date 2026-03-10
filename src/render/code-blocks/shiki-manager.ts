@@ -1,8 +1,4 @@
-import type {
-  BundledLanguage,
-  BundledTheme,
-  HighlighterGeneric,
-} from "shiki";
+import type { BundledLanguage, BundledTheme, HighlighterGeneric } from "shiki";
 
 interface ShikiHighlighterInfo {
   highlighter: HighlighterGeneric<BundledLanguage, BundledTheme>;
@@ -16,7 +12,10 @@ interface ResolvedShikiHighlighter {
 
 class ShikiManager {
   private static instance: ShikiManager | null = null;
-  private highlighters = new Map<BundledTheme, Promise<ShikiHighlighterInfo>>();
+  private readonly highlighters = new Map<
+    BundledTheme,
+    Promise<ShikiHighlighterInfo>
+  >();
 
   static getInstance(): ShikiManager {
     if (ShikiManager.instance === null) {
@@ -26,7 +25,7 @@ class ShikiManager {
     return ShikiManager.instance;
   }
 
-  async getHighlighter(theme: BundledTheme): Promise<ShikiHighlighterInfo> {
+  getHighlighter(theme: BundledTheme): Promise<ShikiHighlighterInfo> {
     const existing = this.highlighters.get(theme);
     if (existing) {
       return existing;

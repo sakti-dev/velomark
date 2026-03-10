@@ -12,6 +12,7 @@ import type {
   ParsedBlockData,
   TableBlockData,
 } from "../parser/block-boundaries";
+import type { VelomarkTheme } from "../theme/types";
 import type {
   ReferenceDefinitionMap,
   RenderBlock,
@@ -19,7 +20,6 @@ import type {
   VelomarkCodeBlockRendererProps,
   VelomarkContainerRendererProps,
 } from "../types";
-import type { VelomarkTheme } from "../theme/types";
 import { BlockquoteBlock } from "./blocks/blockquote-block";
 import { CodeBlock } from "./blocks/code-block";
 import { ContainerBlock } from "./blocks/container-block";
@@ -163,7 +163,9 @@ export const RenderBlockView: Component<{
               data: {
                 text:
                   "text" in (props.block.data as Record<string, unknown>)
-                    ? String((props.block.data as { text?: unknown }).text ?? "")
+                    ? String(
+                        (props.block.data as { text?: unknown }).text ?? ""
+                      )
                     : "",
               },
             } as RenderBlock<ParagraphBlockData>

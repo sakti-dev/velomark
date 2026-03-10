@@ -1,4 +1,4 @@
-import { For, type Component, type JSX } from "solid-js";
+import { type Component, For, type JSX } from "solid-js";
 import { Dynamic } from "solid-js/web";
 import type { HtmlElementChild } from "../../parser/html-element";
 import type {
@@ -9,6 +9,19 @@ import type {
 import { directiveAttributeProps } from "../directives/directive-attribute-props";
 import { HtmlElementView } from "../html-element-view";
 import { MathView } from "../math/math-view";
+
+function renderImageToken(
+  token: Extract<InlineToken, { type: "image" }>
+): JSX.Element {
+  return (
+    // biome-ignore lint/correctness/useImageSize: Markdown images do not provide intrinsic dimensions ahead of render.
+    <img alt={token.alt} loading="lazy" src={token.src} title={token.title} />
+  );
+}
+
+function assertNever(value: never): never {
+  throw new Error(`Unsupported inline token: ${JSON.stringify(value)}`);
+}
 
 export const renderInlineToken = (
   token: InlineToken,
@@ -60,8 +73,8 @@ export const renderInlineToken = (
       if (CustomContainer) {
         return (
           <Dynamic
-            component={CustomContainer}
             attributes={token.attributes}
+            component={CustomContainer}
             name={token.name}
           >
             {children}
@@ -97,9 +110,7 @@ export const renderInlineToken = (
         </em>
       );
     case "image":
-      return (
-        <img alt={token.alt} loading="lazy" src={token.src} title={token.title} />
-      );
+      return renderImageToken(token);
     case "strong":
       return (
         <strong>
@@ -121,6 +132,8 @@ export const renderInlineToken = (
           </For>
         </a>
       );
+    default:
+      return assertNever(token);
   }
 };
 

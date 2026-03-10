@@ -7,6 +7,8 @@ const UNORDERED_LIST_DETAIL_RE = /^(\s*)[-*+]\s+(.*)$/;
 const TASK_LIST_RE = /^\[( |x|X)\]\s+(.*)$/;
 const FENCE_RE = /^```([A-Za-z0-9_-]+)?\s*$/;
 const THEMATIC_BREAK_RE = /^(?:-{3,}|\*{3,}|_{3,})\s*$/;
+const TABLE_SEPARATOR_RE = /^\|?[:\- ]+\|[:\-| ]+\|?$/;
+const PIPE_RE = /\|/g;
 
 export function isBlankLine(line: string): boolean {
   return line.trim().length === 0;
@@ -77,10 +79,12 @@ export function isThematicBreak(line: string): boolean {
 
 export function isTableSeparator(line: string): boolean {
   const trimmed = line.trim();
-  return /^\|?[:\- ]+\|[:\-| ]+\|?$/.test(trimmed);
+  return TABLE_SEPARATOR_RE.test(trimmed);
 }
 
 export function looksLikeTableRow(line: string): boolean {
   const trimmed = line.trim();
-  return trimmed.includes("|") && trimmed.replace(/\|/g, "").trim().length > 0;
+  return (
+    trimmed.includes("|") && trimmed.replace(PIPE_RE, "").trim().length > 0
+  );
 }

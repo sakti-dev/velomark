@@ -1,12 +1,12 @@
+import type { Mermaid } from "mermaid";
 import {
+  type Component,
   createEffect,
   createSignal,
   onCleanup,
   onMount,
-  type Component,
 } from "solid-js";
 import { isServer } from "solid-js/web";
-import type { Mermaid } from "mermaid";
 import type { CodeBlockData } from "../../parser/block-boundaries";
 import { toMermaidThemeVariables } from "../../theme/to-mermaid-theme";
 import type { VelomarkTheme } from "../../theme/types";
@@ -74,7 +74,7 @@ export const MermaidBlock: Component<{
     activeRenderToken = renderToken;
     setRenderFailed(false);
 
-    void instance
+    instance
       .render(nextChartId(), source)
       .then(({ svg }) => {
         if (activeRenderToken !== renderToken) {
@@ -104,10 +104,7 @@ export const MermaidBlock: Component<{
       data-velomark-mermaid=""
     >
       {!renderFailed() && diagramSvg().length > 0 ? (
-        <div
-          data-velomark-mermaid-diagram=""
-          innerHTML={diagramSvg()}
-        />
+        <div data-velomark-mermaid-diagram="" innerHTML={diagramSvg()} />
       ) : (
         <pre>
           <code>{code()}</code>

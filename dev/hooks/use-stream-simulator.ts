@@ -48,8 +48,8 @@ export function createStreamSimulator(options: StreamSimulatorOptions) {
   return {
     chunks,
     snapshots,
-    async collect(): Promise<string[]> {
-      return snapshots;
+    collect(): Promise<string[]> {
+      return Promise.resolve(snapshots);
     },
   };
 }

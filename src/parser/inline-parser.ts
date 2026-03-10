@@ -5,6 +5,10 @@ import {
 } from "./html-element";
 
 const ESCAPABLE_CHARACTERS = new Set(["\\", "*", "`", "[", "]", "(", ")"]);
+const PAIRED_INLINE_HTML_RE = /^<([A-Za-z][A-Za-z0-9-]*)(\s[^>]*)?>.*?<\/\1>/;
+const VOID_INLINE_HTML_RE = /^<([A-Za-z][A-Za-z0-9-]*)(\s[^>]*)?\/?>/;
+const TEXT_DIRECTIVE_RE =
+  /^:([A-Za-z][A-Za-z0-9_-]*)\[([^\]]*)\](?:\{([^}]*)\})?/;
 
 function appendText(tokens: InlineToken[], text: string): void {
   if (!text) {
@@ -163,9 +167,7 @@ function parseInlineMath(source: string, start: number) {
 
 function parseInlineHtml(source: string, start: number) {
   const remainder = source.slice(start);
-  const pairedMatch = remainder.match(
-    /^<([A-Za-z][A-Za-z0-9-]*)(\s[^>]*)?>.*?<\/\1>/
-  );
+  const pairedMatch = remainder.match(PAIRED_INLINE_HTML_RE);
   if (pairedMatch?.[0]) {
     return {
       value: pairedMatch[0],
@@ -173,7 +175,7 @@ function parseInlineHtml(source: string, start: number) {
     };
   }
 
-  const voidMatch = remainder.match(/^<([A-Za-z][A-Za-z0-9-]*)(\s[^>]*)?\/?>/);
+  const voidMatch = remainder.match(VOID_INLINE_HTML_RE);
   if (voidMatch?.[0]) {
     return {
       value: voidMatch[0],
@@ -184,7 +186,9 @@ function parseInlineHtml(source: string, start: number) {
   return null;
 }
 
-function parseDirectiveAttributes(attributes: string | undefined): Record<string, string> {
+function parseDirectiveAttributes(
+  attributes: string | undefined
+): Record<string, string> {
   if (!attributes) {
     return {};
   }
@@ -205,14 +209,16 @@ function parseDirectiveAttributes(attributes: string | undefined): Record<string
 }
 
 function parseTextDirective(source: string, start: number) {
-  if (source[start] !== ":" || source[start + 1] === ":" || source[start + 1] === " ") {
+  if (
+    source[start] !== ":" ||
+    source[start + 1] === ":" ||
+    source[start + 1] === " "
+  ) {
     return null;
   }
 
   const remainder = source.slice(start);
-  const match = remainder.match(
-    /^:([A-Za-z][A-Za-z0-9_-]*)\[([^\]]*)\](?:\{([^}]*)\})?/
-  );
+  const match = remainder.match(TEXT_DIRECTIVE_RE);
   if (!match?.[0]) {
     return null;
   }
@@ -225,6 +231,7 @@ function parseTextDirective(source: string, start: number) {
   };
 }
 
+// biome-ignore lint/complexity/noExcessiveCognitiveComplexity: Inline markdown parsing is implemented as a single-pass tokenizer for streaming updates.
 export function parseInline(
   source: string,
   definitions: ReferenceDefinitionMap = {}
@@ -455,7 +462,8 @@ export function parseInline(
 
       const shortcutParsed = parseShortcutReferenceImage(source, index);
       if (shortcutParsed && source[shortcutParsed.end] !== "(") {
-        const definition = definitions[normalizeReferenceId(shortcutParsed.alt)];
+        const definition =
+          definitions[normalizeReferenceId(shortcutParsed.alt)];
         if (definition) {
           tokens.push({
             type: "image",

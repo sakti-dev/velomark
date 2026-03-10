@@ -1,11 +1,14 @@
 import { createSignal, onCleanup } from "solid-js";
-import { buildRenderDocument, collectRenderMetrics } from "../../src/model/render-document";
-import { createStreamSimulator } from "./use-stream-simulator";
+import {
+  buildRenderDocument,
+  collectRenderMetrics,
+} from "../../src/model/render-document";
 import type {
   PlaygroundBenchmarkResult,
   PlaygroundBenchmarkState,
   PlaygroundStreamMode,
 } from "../types/playground";
+import { createStreamSimulator } from "./use-stream-simulator";
 
 const BENCHMARK_MODES: PlaygroundStreamMode[] = ["append", "rewrite-tail"];
 const BENCHMARK_STEP_DELAY_MS = 1;
@@ -19,7 +22,11 @@ function roundToTwoDecimals(value: number): number {
   return Math.round(value * 100) / 100;
 }
 
-function measureMode(markdown: string, chunkSize: number, mode: PlaygroundStreamMode): PlaygroundBenchmarkResult {
+function measureMode(
+  markdown: string,
+  chunkSize: number,
+  mode: PlaygroundStreamMode
+): PlaygroundBenchmarkResult {
   const simulator = createStreamSimulator({
     chunkSize,
     content: markdown,
@@ -37,12 +44,17 @@ function measureMode(markdown: string, chunkSize: number, mode: PlaygroundStream
     const start = performance.now();
     const nextDocument = buildRenderDocument(previousDocument, snapshot);
     const duration = performance.now() - start;
-    const metrics = collectRenderMetrics(previousDocument.blocks, nextDocument.blocks);
+    const metrics = collectRenderMetrics(
+      previousDocument.blocks,
+      nextDocument.blocks
+    );
 
     durations.push(duration);
     aggregate = {
-      appendedBlockCount: aggregate.appendedBlockCount + metrics.appendedBlockCount,
-      replacedBlockCount: aggregate.replacedBlockCount + metrics.replacedBlockCount,
+      appendedBlockCount:
+        aggregate.appendedBlockCount + metrics.appendedBlockCount,
+      replacedBlockCount:
+        aggregate.replacedBlockCount + metrics.replacedBlockCount,
       reusedBlockCount: aggregate.reusedBlockCount + metrics.reusedBlockCount,
     };
     previousDocument = nextDocument;
@@ -53,7 +65,10 @@ function measureMode(markdown: string, chunkSize: number, mode: PlaygroundStream
 
   return {
     ...aggregate,
-    averageUpdateMs: durations.length > 0 ? roundToTwoDecimals(totalDuration / durations.length) : 0,
+    averageUpdateMs:
+      durations.length > 0
+        ? roundToTwoDecimals(totalDuration / durations.length)
+        : 0,
     maxUpdateMs: roundToTwoDecimals(maxUpdateMs),
     mode,
     updates: durations.length,

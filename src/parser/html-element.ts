@@ -35,6 +35,7 @@ const VOID_ELEMENTS = new Set([
 
 const ATTRIBUTE_RE =
   /([A-Za-z_:][A-Za-z0-9:._-]*)(?:=(?:"([^"]*)"|'([^']*)'|([^\s"'=<>`]+)))?/g;
+const SIMPLE_HTML_OPEN_TAG_RE = /^<([A-Za-z][A-Za-z0-9-]*)(\s[^>]*)?>/;
 
 export function parseHtmlAttributes(source: string): Record<string, string> {
   const attributes: Record<string, string> = {};
@@ -88,8 +89,8 @@ function findClosingTag(source: string, tagName: string, from: number): number {
 export function parseSimpleHtmlElement(
   source: string
 ): { length: number; node: HtmlElementNode } | null {
-  const openMatch = source.match(/^<([A-Za-z][A-Za-z0-9-]*)(\s[^>]*)?>/);
-  if (!openMatch?.[0] || !openMatch[1]) {
+  const openMatch = source.match(SIMPLE_HTML_OPEN_TAG_RE);
+  if (!(openMatch?.[0] && openMatch[1])) {
     return null;
   }
 
@@ -166,7 +167,10 @@ export function htmlElementChildrenToInlineTokens(
       type: "html-element",
       tagName: child.node.tagName,
       attributes: child.node.attributes,
-      children: htmlElementChildrenToInlineTokens(child.node.children, parseInline),
+      children: htmlElementChildrenToInlineTokens(
+        child.node.children,
+        parseInline
+      ),
     });
   }
 

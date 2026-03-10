@@ -1,5 +1,5 @@
-import { Dynamic } from "solid-js/web";
 import type { Component } from "solid-js";
+import { Dynamic } from "solid-js/web";
 import type { CodeBlockData } from "../../parser/block-boundaries";
 import type { VelomarkTheme } from "../../theme/types";
 import type {
@@ -33,8 +33,8 @@ export const CodeBlock: Component<{
   if (resolvedCustomRenderer) {
     return (
       <Dynamic
-        component={resolvedCustomRenderer}
         code={props.block.data.code}
+        component={resolvedCustomRenderer}
         language={language()}
       />
     );

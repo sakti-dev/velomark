@@ -1,9 +1,10 @@
 import type { VelomarkTheme } from "./types";
 
 const parseHexChannel = (value: string): number => Number.parseInt(value, 16);
+const HEX_PREFIX_RE = /^#/;
 
 const toRgb = (hexColor: string): [number, number, number] | null => {
-  const normalized = hexColor.trim().replace(/^#/, "");
+  const normalized = hexColor.trim().replace(HEX_PREFIX_RE, "");
 
   if (normalized.length === 3) {
     return [
@@ -33,7 +34,7 @@ const relativeLuminance = (hexColor: string): number => {
 
   const linearized = rgb.map((channel) => {
     const normalized = channel / 255;
-    return normalized <= 0.03928
+    return normalized <= 0.039_28
       ? normalized / 12.92
       : ((normalized + 0.055) / 1.055) ** 2.4;
   });
@@ -58,8 +59,8 @@ export interface VelomarkMermaidThemeVariables {
   edgeLabelBackground: string;
   lineColor: string;
   mainBkg: string;
-  nodeBorder: string;
   nodeBkg: string;
+  nodeBorder: string;
   nodeTextColor: string;
   noteBkgColor: string;
   noteBorderColor: string;
@@ -70,10 +71,10 @@ export interface VelomarkMermaidThemeVariables {
   secondaryBorderColor: string;
   secondaryColor: string;
   secondaryTextColor: string;
-  textColor: string;
   tertiaryBorderColor: string;
   tertiaryColor: string;
   tertiaryTextColor: string;
+  textColor: string;
 }
 
 export const toMermaidThemeVariables = (

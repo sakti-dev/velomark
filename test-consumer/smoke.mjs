@@ -1,5 +1,5 @@
-import { createRequire } from "node:module";
 import { existsSync, readFileSync } from "node:fs";
+import { createRequire } from "node:module";
 import path from "node:path";
 
 const require = createRequire(import.meta.url);
@@ -15,7 +15,7 @@ if (!existsSync(builtHtmlPath)) {
 
 const builtHtml = readFileSync(builtHtmlPath, "utf8");
 
-if (!builtHtml.includes("<script type=\"module\" crossorigin")) {
+if (!builtHtml.includes('<script type="module" crossorigin')) {
   throw new Error("Expected Vite consumer build to emit a module script tag");
 }
 

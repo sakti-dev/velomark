@@ -1,25 +1,52 @@
-import type { BundledTheme, HighlighterGeneric, ThemedToken } from "shiki";
-import { For, Show, createEffect, createSignal, on, type Component } from "solid-js";
+import type {
+  BundledLanguage,
+  BundledTheme,
+  HighlighterGeneric,
+  ThemedToken,
+} from "shiki";
+import {
+  type Component,
+  createEffect,
+  createSignal,
+  For,
+  on,
+  Show,
+} from "solid-js";
 import { getShikiManager } from "./shiki-manager";
 
 const DEFAULT_HIGHLIGHT_THEME = "github-dark";
 const isBrowser = typeof window !== "undefined";
+const FONT_STYLE_ITALIC_FLAG = 1;
+const FONT_STYLE_BOLD_FLAG = 2;
+const FONT_STYLE_UNDERLINE_FLAG = 4;
+
+function hasFontStyleFlag(fontStyle: number, flag: number): boolean {
+  // biome-ignore lint/suspicious/noBitwiseOperators: Shiki exposes fontStyle as a bit flag mask.
+  return (fontStyle & flag) !== 0;
+}
 
 export const HighlightedCodeBlock: Component<{
   code: string;
   language?: string;
   theme?: string;
 }> = (props) => {
-  const [highlightedTokens, setHighlightedTokens] = createSignal<ThemedToken[][]>([]);
+  const [highlightedTokens, setHighlightedTokens] = createSignal<
+    ThemedToken[][]
+  >([]);
   const [streamError, setStreamError] = createSignal(false);
   const [resolvedLanguage, setResolvedLanguage] = createSignal("text");
-  const [resolvedTheme, setResolvedTheme] = createSignal(DEFAULT_HIGHLIGHT_THEME);
-  const [highlighter, setHighlighter] =
-    createSignal<HighlighterGeneric<any, any> | null>(null);
+  const [resolvedTheme, setResolvedTheme] = createSignal(
+    DEFAULT_HIGHLIGHT_THEME
+  );
+  const [highlighter, setHighlighter] = createSignal<HighlighterGeneric<
+    BundledLanguage,
+    BundledTheme
+  > | null>(null);
   let requestId = 0;
 
-  const highlightCode = async (): Promise<void> => {
-    if (!isBrowser || highlighter() === null) {
+  const highlightCode = (): void => {
+    const currentHighlighter = highlighter();
+    if (!isBrowser || currentHighlighter === null) {
       return;
     }
 
@@ -27,7 +54,7 @@ export const HighlightedCodeBlock: Component<{
     const currentRequestId = requestId;
 
     try {
-      const tokens = highlighter()!.codeToTokensBase(props.code, {
+      const tokens = currentHighlighter.codeToTokensBase(props.code, {
         lang: resolvedLanguage(),
         theme: resolvedTheme(),
       });
@@ -67,7 +94,7 @@ export const HighlightedCodeBlock: Component<{
           setResolvedTheme(nextTheme);
           setHighlighter(resolved.highlighter);
           setStreamError(false);
-          void highlightCode();
+          highlightCode();
         } catch {
           setHighlightedTokens([]);
           setStreamError(true);
@@ -77,15 +104,22 @@ export const HighlightedCodeBlock: Component<{
     )
   );
 
-  createEffect(() => {
-    void props.code;
-    void highlightCode();
-  });
+  createEffect(
+    on(
+      () => props.code,
+      () => {
+        highlightCode();
+      }
+    )
+  );
 
   return (
     <pre>
-      <code data-velomark-code-highlighted={!streamError() ? "" : undefined}>
-        <Show when={!streamError() && highlightedTokens().length > 0} fallback={props.code}>
+      <code data-velomark-code-highlighted={streamError() ? undefined : ""}>
+        <Show
+          fallback={props.code}
+          when={!streamError() && highlightedTokens().length > 0}
+        >
           <For each={highlightedTokens()}>
             {(line, lineIndex) => (
               <>
@@ -94,7 +128,9 @@ export const HighlightedCodeBlock: Component<{
                     <span style={buildTokenStyle(token)}>{token.content}</span>
                   )}
                 </For>
-                <Show when={lineIndex() < highlightedTokens().length - 1}>{"\n"}</Show>
+                <Show when={lineIndex() < highlightedTokens().length - 1}>
+                  {"\n"}
+                </Show>
               </>
             )}
           </For>
@@ -112,15 +148,15 @@ const buildTokenStyle = (token: ThemedToken): Record<string, string> => {
   }
 
   if (typeof token.fontStyle === "number") {
-    if ((token.fontStyle & 1) !== 0) {
+    if (hasFontStyleFlag(token.fontStyle, FONT_STYLE_ITALIC_FLAG)) {
       style["font-style"] = "italic";
     }
 
-    if ((token.fontStyle & 2) !== 0) {
+    if (hasFontStyleFlag(token.fontStyle, FONT_STYLE_BOLD_FLAG)) {
       style["font-weight"] = "700";
     }
 
-    if ((token.fontStyle & 4) !== 0) {
+    if (hasFontStyleFlag(token.fontStyle, FONT_STYLE_UNDERLINE_FLAG)) {
       style["text-decoration"] = "underline";
     }
   }

@@ -1,21 +1,21 @@
-import { assignStableBlockIds } from "./stable-id";
-import {
-  type BlockquoteBlockData,
-  type HeadingBlockData,
-  type ParsedBlockData,
-  type ListBlockData,
-  type ParagraphBlockData,
-  type TableBlockData,
+import type {
+  BlockquoteBlockData,
+  HeadingBlockData,
+  ListBlockData,
+  ParagraphBlockData,
+  ParsedBlockData,
+  TableBlockData,
 } from "../parser/block-boundaries";
 import { parseMarkdownToBlocks } from "../parser/block-parser";
-import type { DraftRenderBlock } from "./stable-id";
+import { parseInline } from "../parser/inline-parser";
 import type {
   InlineToken,
   RenderBlock,
   RenderDocument,
   VelomarkDebugMetrics,
 } from "../types";
-import { parseInline } from "../parser/inline-parser";
+import type { DraftRenderBlock } from "./stable-id";
+import { assignStableBlockIds } from "./stable-id";
 
 function canReuseBlock<TData>(
   previous: RenderBlock<TData> | undefined,
@@ -36,7 +36,8 @@ export function buildRenderDocument(
   markdown: string
 ): RenderDocument<ParsedBlockData> {
   const previousBlocks = previousDocument?.blocks ?? [];
-  const previousFootnoteDefinitions = previousDocument?.footnoteDefinitions ?? {};
+  const previousFootnoteDefinitions =
+    previousDocument?.footnoteDefinitions ?? {};
   const {
     blocks: draftBlocks,
     definitions,
@@ -48,19 +49,26 @@ export function buildRenderDocument(
     return canReuseBlock(previousBlock, block) ? previousBlock : block;
   });
   const footnoteDefinitions = Object.fromEntries(
-    Object.entries(draftFootnoteDefinitions).map(([identifier, draftBlocks]) => {
-      const previousFootnoteBlocks = previousFootnoteDefinitions[identifier] ?? [];
-      const nextBlocks = assignStableBlockIds(previousFootnoteBlocks, draftBlocks).map(
-        (block, index) => {
+    Object.entries(draftFootnoteDefinitions).map(
+      ([identifier, draftBlocks]) => {
+        const previousFootnoteBlocks =
+          previousFootnoteDefinitions[identifier] ?? [];
+        const nextBlocks = assignStableBlockIds(
+          previousFootnoteBlocks,
+          draftBlocks
+        ).map((block, index) => {
           const previousBlock = previousFootnoteBlocks[index];
           return canReuseBlock(previousBlock, block) ? previousBlock : block;
-        }
-      );
+        });
 
-      return [identifier, nextBlocks];
-    })
+        return [identifier, nextBlocks];
+      }
+    )
   );
-  const footnoteReferenceOrder = collectFootnoteReferenceOrder(blocks, definitions);
+  const footnoteReferenceOrder = collectFootnoteReferenceOrder(
+    blocks,
+    definitions
+  );
 
   return {
     blocks,
@@ -122,7 +130,9 @@ function collectBlockTextFragments(
       );
       break;
     case "blockquote":
-      fragments.push(...(block as RenderBlock<BlockquoteBlockData>).data.paragraphs);
+      fragments.push(
+        ...(block as RenderBlock<BlockquoteBlockData>).data.paragraphs
+      );
       break;
     case "list":
       collectTextFragmentsFromList(
@@ -152,7 +162,11 @@ function collectFootnoteReferenceOrder(
     fragments.length = 0;
     collectBlockTextFragments(block, fragments);
     for (const fragment of fragments) {
-      collectInlineFootnoteReferences(parseInline(fragment, definitions), seen, order);
+      collectInlineFootnoteReferences(
+        parseInline(fragment, definitions),
+        seen,
+        order
+      );
     }
   }
 

@@ -1,4 +1,4 @@
-import { For, type Component } from "solid-js";
+import { type Component, For } from "solid-js";
 import type { ListBlockData } from "../../parser/block-boundaries";
 import type {
   ReferenceDefinitionMap,
@@ -67,20 +67,14 @@ export const ListBlock: Component<{
   if (props.block.data.ordered) {
     return (
       <ol {...commonProps}>
-        <For each={items()}>
-          {(item) => (
-            <li>{renderItemContent(item)}</li>
-          )}
-        </For>
+        <For each={items()}>{(item) => <li>{renderItemContent(item)}</li>}</For>
       </ol>
     );
   }
 
   return (
     <ul {...commonProps}>
-      <For each={items()}>
-        {(item) => <li>{renderItemContent(item)}</li>}
-      </For>
+      <For each={items()}>{(item) => <li>{renderItemContent(item)}</li>}</For>
     </ul>
   );
 };

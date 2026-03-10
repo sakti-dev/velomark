@@ -1,6 +1,6 @@
 import { render } from "solid-js/web";
 import { describe, expect, it } from "vitest";
-import App from "../dev/App";
+import App from "../dev/app";
 
 describe("playground selection probe", () => {
   it("disables the selection probe in normal non-debug mode", () => {
@@ -8,8 +8,8 @@ describe("playground selection probe", () => {
     document.body.append(container);
 
     const dispose = render(() => <App />, container);
-    const probeButton = Array.from(container.querySelectorAll("button")).find((button) =>
-      button.textContent?.includes("Probe selection")
+    const probeButton = Array.from(container.querySelectorAll("button")).find(
+      (button) => button.textContent?.includes("Probe selection")
     ) as HTMLButtonElement;
 
     expect(probeButton).toBeTruthy();

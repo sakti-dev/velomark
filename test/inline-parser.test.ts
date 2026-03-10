@@ -48,7 +48,9 @@ describe("parseInline", () => {
   });
 
   it("parses inline images", () => {
-    expect(parseInline("Logo ![alt text](https://example.com/logo.png)")).toEqual([
+    expect(
+      parseInline("Logo ![alt text](https://example.com/logo.png)")
+    ).toEqual([
       { type: "text", text: "Logo " },
       {
         type: "image",
@@ -246,7 +248,7 @@ describe("parseInline", () => {
   });
 
   it("parses simple inline html elements as structured tokens", () => {
-    expect(parseInline("Text with <span class=\"chip\">hi</span> here")).toEqual([
+    expect(parseInline('Text with <span class="chip">hi</span> here')).toEqual([
       { type: "text", text: "Text with " },
       {
         type: "html-element",

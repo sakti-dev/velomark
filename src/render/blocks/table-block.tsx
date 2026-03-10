@@ -1,4 +1,4 @@
-import { For, type Component } from "solid-js";
+import { type Component, For } from "solid-js";
 import type { TableBlockData } from "../../parser/block-boundaries";
 import type {
   ReferenceDefinitionMap,

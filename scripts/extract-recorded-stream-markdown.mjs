@@ -4,7 +4,7 @@ import { extractMarkdownFromRecordedFixture } from "./extract-recorded-stream-ma
 
 const [, , inputPath, outputPath] = process.argv;
 
-if (!inputPath || !outputPath) {
+if (!(inputPath && outputPath)) {
   throw new Error(
     "Usage: node scripts/extract-recorded-stream-markdown.mjs <input-json> <output-md>"
   );

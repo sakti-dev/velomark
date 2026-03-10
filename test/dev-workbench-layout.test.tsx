@@ -1,6 +1,6 @@
 import { render } from "solid-js/web";
 import { describe, expect, it } from "vitest";
-import App from "../dev/App";
+import App from "../dev/app";
 
 describe("playground workbench layout", () => {
   it("renders a compact diagnostics strip instead of separate diagnostic panels", () => {
@@ -14,19 +14,21 @@ describe("playground workbench layout", () => {
     expect(container.textContent).not.toContain("Selection Probe");
     expect(container.textContent).not.toContain("BenchmarkMeasure");
     expect(
-      container.querySelector('.renderer-surface .markdown-content[data-component="markdown"]')
+      container.querySelector(
+        '.renderer-surface .markdown-content[data-component="markdown"]'
+      )
     ).not.toBeNull();
 
     const shell = container.querySelector(".playground-shell");
-    const workbenchPanel = Array.from(container.querySelectorAll("section")).find((section) =>
-      section.textContent?.includes("Workbench")
-    );
-    const diagnosticsPanel = Array.from(container.querySelectorAll("section")).find((section) =>
-      section.textContent?.includes("Diagnostics")
-    );
-    const rendererPanel = Array.from(container.querySelectorAll("section")).find((section) =>
-      section.textContent?.includes("Renderer Viewport")
-    );
+    const workbenchPanel = Array.from(
+      container.querySelectorAll("section")
+    ).find((section) => section.textContent?.includes("Workbench"));
+    const diagnosticsPanel = Array.from(
+      container.querySelectorAll("section")
+    ).find((section) => section.textContent?.includes("Diagnostics"));
+    const rendererPanel = Array.from(
+      container.querySelectorAll("section")
+    ).find((section) => section.textContent?.includes("Renderer Viewport"));
     const lightButton = Array.from(container.querySelectorAll("button")).find(
       (button) => button.textContent?.trim() === "Light"
     );

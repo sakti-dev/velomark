@@ -50,11 +50,6 @@ export interface VelomarkTheme {
       nodeForeground: string;
     };
   };
-  typography: {
-    bodyFont: string;
-    monoFont: string;
-    lineHeight: string;
-  };
   radius: {
     sm: string;
     md: string;
@@ -71,6 +66,11 @@ export interface VelomarkTheme {
     inlineCodeY: string;
     codePaddingX: string;
     codePaddingY: string;
+  };
+  typography: {
+    bodyFont: string;
+    monoFont: string;
+    lineHeight: string;
   };
 }
 

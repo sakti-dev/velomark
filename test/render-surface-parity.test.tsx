@@ -8,9 +8,15 @@ import { Velomark } from "../src";
 const mountedRoots: Array<() => void> = [];
 
 const loadParityFixture = (fileName: string): string =>
-  readFileSync(resolve(process.cwd(), "test/fixtures/parity", fileName), "utf8");
+  readFileSync(
+    resolve(process.cwd(), "test/fixtures/parity", fileName),
+    "utf8"
+  );
 
-const waitFor = async (predicate: () => boolean, attempts = 200): Promise<void> => {
+const waitFor = async (
+  predicate: () => boolean,
+  attempts = 200
+): Promise<void> => {
   for (let index = 0; index < attempts; index += 1) {
     if (predicate()) {
       return;
@@ -40,7 +46,7 @@ describe("velomark render-surface parity harness", () => {
     );
     mountedRoots.push(dispose);
 
-    const inlineMath = host.querySelector('[data-velomark-inline-math]');
+    const inlineMath = host.querySelector("[data-velomark-inline-math]");
     expect(inlineMath).not.toBeNull();
 
     await waitFor(() => inlineMath?.querySelector(".katex") !== null);
@@ -81,7 +87,7 @@ describe("velomark render-surface parity harness", () => {
     expect(chip?.getAttribute("data-tone")).toBe("info");
     expect(chip?.querySelector("strong")?.textContent).toBe("hot");
     expect(chip?.textContent).toContain("path with");
-    expect(host.querySelector('[data-velomark-inline-html]')).toBeNull();
+    expect(host.querySelector("[data-velomark-inline-html]")).toBeNull();
   });
 
   it("renders nested block html elements semantically", async () => {
@@ -118,13 +124,17 @@ describe("velomark render-surface parity harness", () => {
 
     const container = host.querySelector('[data-velomark-container="info"]');
     expect(container).not.toBeNull();
-    expect(container?.getAttribute("data-velomark-attr-title")).toBe("Information");
+    expect(container?.getAttribute("data-velomark-attr-title")).toBe(
+      "Information"
+    );
     expect(container?.getAttribute("data-velomark-attr-tone")).toBe("info");
     expect(container?.getAttribute("data-velomark-attr-emphasis")).toBe("high");
     expect(container?.querySelector("p")?.textContent).toBe("Alpha paragraph.");
     expect(container?.querySelectorAll("ul > li")).toHaveLength(2);
 
-    const leaf = container?.querySelector('[data-velomark-leaf-directive="callout"]');
+    const leaf = container?.querySelector(
+      '[data-velomark-leaf-directive="callout"]'
+    );
     expect(leaf).not.toBeNull();
     expect(leaf?.getAttribute("data-velomark-attr-title")).toBe("Heads up");
     expect(leaf?.getAttribute("data-velomark-attr-tone")).toBe("warn");
@@ -153,12 +163,14 @@ describe("velomark render-surface parity harness", () => {
     const host = document.createElement("div");
     document.body.append(host);
     const finalFixture = loadParityFixture("streaming-code-growth.md");
-    const [markdown, setMarkdown] = createSignal([
-      "```ts",
-      'import { createSignal } from "solid-js";',
-      "",
-      'type Status = "idle" | "streaming" | "done";',
-    ].join("\n"));
+    const [markdown, setMarkdown] = createSignal(
+      [
+        "```ts",
+        'import { createSignal } from "solid-js";',
+        "",
+        'type Status = "idle" | "streaming" | "done";',
+      ].join("\n")
+    );
 
     const dispose = render(() => <Velomark markdown={markdown()} />, host);
     mountedRoots.push(dispose);
@@ -166,8 +178,8 @@ describe("velomark render-surface parity harness", () => {
     setMarkdown(finalFixture);
     await waitFor(
       () =>
-        (host.querySelectorAll('[data-velomark-code-highlighted] span').length ?? 0) >
-          0 &&
+        (host.querySelectorAll("[data-velomark-code-highlighted] span")
+          .length ?? 0) > 0 &&
         (host.querySelector("pre > code")?.textContent ?? "").includes(
           "createSessionLabel"
         )
@@ -177,8 +189,7 @@ describe("velomark render-surface parity harness", () => {
       "createSessionLabel"
     );
     expect(
-      host.querySelectorAll('[data-velomark-code-highlighted] span').length
+      host.querySelectorAll("[data-velomark-code-highlighted] span").length
     ).toBeGreaterThan(0);
   });
-
 });

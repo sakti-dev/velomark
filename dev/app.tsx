@@ -1,15 +1,15 @@
-import { createSignal, onCleanup, type Component } from "solid-js";
+import { type Component, createSignal, onCleanup } from "solid-js";
+import type { VelomarkDebugMetrics } from "../src/types";
 import { DiagnosticsStrip } from "./components/diagnostics-strip";
 import { PlaygroundShell } from "./components/playground-shell";
 import { RendererPanel } from "./components/renderer-panel";
 import { WorkbenchControlsPanel } from "./components/workbench-controls-panel";
 import { playgroundPresets } from "./fixtures/presets";
 import { usePlaygroundMetrics } from "./hooks/use-playground-metrics";
+import { usePlaygroundTheme } from "./hooks/use-playground-theme";
 import { useSelectionProbe } from "./hooks/use-selection-probe";
 import { createStreamSimulator } from "./hooks/use-stream-simulator";
-import { usePlaygroundTheme } from "./hooks/use-playground-theme";
 import type { PlaygroundPreset } from "./types/playground";
-import type { VelomarkDebugMetrics } from "../src/types";
 
 const initialPreset = playgroundPresets[0];
 const DEFAULT_STREAM_CONTROLS = {
@@ -26,22 +26,25 @@ const EMPTY_DEBUG_METRICS: VelomarkDebugMetrics = {
 };
 
 const App: Component = () => {
-  const [activePresetId, setActivePresetId] = createSignal<PlaygroundPreset["id"]>(
-    initialPreset?.id ?? "incremark-solid-example"
-  );
+  const [activePresetId, setActivePresetId] = createSignal<
+    PlaygroundPreset["id"]
+  >(initialPreset?.id ?? "incremark-solid-example");
   const [markdown, setMarkdown] = createSignal(
     initialPreset?.markdown ?? "# Velomark Playground"
   );
   const [renderedMarkdown, setRenderedMarkdown] = createSignal(markdown());
   const [isStreaming, setIsStreaming] = createSignal(false);
-  const [streamControls, setStreamControls] = createSignal(DEFAULT_STREAM_CONTROLS);
+  const [streamControls, setStreamControls] = createSignal(
+    DEFAULT_STREAM_CONTROLS
+  );
   const [debugMetrics, setDebugMetrics] = createSignal(EMPTY_DEBUG_METRICS);
   const { setTheme, theme } = usePlaygroundTheme();
   const { benchmarkState, runBenchmark } = usePlaygroundMetrics({
     chunkSize: () => streamControls().chunkSize,
     markdown,
   });
-  const { probeSelection, reevaluateSelection, selectionProbeState } = useSelectionProbe();
+  const { probeSelection, reevaluateSelection, selectionProbeState } =
+    useSelectionProbe();
   let activeTimer: ReturnType<typeof setTimeout> | undefined;
   let rendererSurface: HTMLDivElement | undefined;
 
@@ -67,7 +70,9 @@ const App: Component = () => {
 
   const handleReset = () => {
     clearStreaming();
-    const preset = playgroundPresets.find((entry) => entry.id === activePresetId()) ?? initialPreset;
+    const preset =
+      playgroundPresets.find((entry) => entry.id === activePresetId()) ??
+      initialPreset;
     const nextMarkdown = preset?.markdown ?? "# Velomark Playground";
 
     setMarkdown(nextMarkdown);

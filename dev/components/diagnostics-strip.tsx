@@ -1,7 +1,7 @@
-import { For, type Component } from "solid-js";
+import { type Component, For } from "solid-js";
+import type { VelomarkDebugMetrics } from "../../src/types";
 import type { SelectionProbeState } from "../hooks/use-selection-probe";
 import type { PlaygroundBenchmarkState } from "../types/playground";
-import type { VelomarkDebugMetrics } from "../../src/types";
 
 export interface DiagnosticsStripProps {
   benchmarkState: PlaygroundBenchmarkState;
@@ -13,7 +13,9 @@ function selectionLabel(probeState: SelectionProbeState): string {
   if (!probeState.hasSelection) {
     return "No";
   }
-  return probeState.anchorNodeConnected && !probeState.anchorBlockReplaced ? "Yes" : "No";
+  return probeState.anchorNodeConnected && !probeState.anchorBlockReplaced
+    ? "Yes"
+    : "No";
 }
 
 export const DiagnosticsStrip: Component<DiagnosticsStripProps> = (props) => {
@@ -35,8 +37,10 @@ export const DiagnosticsStrip: Component<DiagnosticsStripProps> = (props) => {
   return (
     <section class="flex min-w-0 flex-col gap-4 rounded-xl border border-border bg-card p-4 shadow-xs">
       <header class="flex flex-col gap-1">
-        <h2 class="text-lg font-semibold tracking-tight text-foreground">Diagnostics</h2>
-        <p class="text-sm leading-6 text-muted-foreground">
+        <h2 class="font-semibold text-foreground text-lg tracking-tight">
+          Diagnostics
+        </h2>
+        <p class="text-muted-foreground text-sm leading-6">
           Compact reuse and stability signals while the renderer updates.
         </p>
       </header>
@@ -45,10 +49,12 @@ export const DiagnosticsStrip: Component<DiagnosticsStripProps> = (props) => {
         <For each={metrics()}>
           {(metric) => (
             <div class="rounded-lg border border-border bg-background p-3">
-              <dt class="text-xs font-medium uppercase tracking-[0.12em] text-muted-foreground">
+              <dt class="font-medium text-muted-foreground text-xs uppercase tracking-[0.12em]">
                 {metric.label}
               </dt>
-              <dd class="mt-1 text-sm font-semibold text-foreground">{metric.value}</dd>
+              <dd class="mt-1 font-semibold text-foreground text-sm">
+                {metric.value}
+              </dd>
             </div>
           )}
         </For>

@@ -8,11 +8,11 @@ import {
   defaultTheme,
   generateCssVars,
   mergeTheme,
+  Velomark,
+  type VelomarkTheme,
   velomarkColors,
   velomarkTokens,
-  type VelomarkTheme,
 } from "../src";
-import { Velomark } from "../src";
 import { toMermaidThemeVariables } from "../src/theme/to-mermaid-theme";
 
 describe("velomark theme surface", () => {
@@ -104,8 +104,12 @@ describe("velomark theme surface", () => {
   });
 
   it("keeps dark preset meaningfully different from the default preset", () => {
-    expect(darkTheme.color.text.primary).not.toBe(defaultTheme.color.text.primary);
-    expect(darkTheme.color.surface.base).not.toBe(defaultTheme.color.surface.base);
+    expect(darkTheme.color.text.primary).not.toBe(
+      defaultTheme.color.text.primary
+    );
+    expect(darkTheme.color.surface.base).not.toBe(
+      defaultTheme.color.surface.base
+    );
     expect(darkTheme.color.code.copyButtonBackground).not.toBe(
       defaultTheme.color.code.copyButtonBackground
     );
@@ -158,7 +162,9 @@ describe("velomark theme surface", () => {
     const lightMermaidTheme = toMermaidThemeVariables(defaultTheme);
     const darkMermaidTheme = toMermaidThemeVariables(darkTheme);
 
-    expect(lightMermaidTheme.background).toBe(defaultTheme.color.diagram.background);
+    expect(lightMermaidTheme.background).toBe(
+      defaultTheme.color.diagram.background
+    );
     expect(lightMermaidTheme.nodeBkg).toBe(
       defaultTheme.color.diagram.nodeBackground
     );
@@ -179,9 +185,9 @@ describe("velomark theme surface", () => {
     expect(
       element.style.getPropertyValue("--velomark-color-text-primary")
     ).toBe(darkTheme.color.text.primary);
-    expect(element.style.getPropertyValue("--velomark-color-surface-base")).toBe(
-      darkTheme.color.surface.base
-    );
+    expect(
+      element.style.getPropertyValue("--velomark-color-surface-base")
+    ).toBe(darkTheme.color.surface.base);
     expect(element.style.getPropertyValue("--velomark-radius-md")).toBe(
       darkTheme.radius.md
     );
@@ -195,11 +201,13 @@ describe("velomark theme surface", () => {
       () => Velomark({ markdown: "Hello", theme: "dark" }),
       host
     );
-    const root = host.querySelector("[data-velomark-root]") as HTMLDivElement | null;
+    const root = host.querySelector(
+      "[data-velomark-root]"
+    ) as HTMLDivElement | null;
 
-    expect(
-      root?.style.getPropertyValue("--velomark-color-text-primary")
-    ).toBe(darkTheme.color.text.primary);
+    expect(root?.style.getPropertyValue("--velomark-color-text-primary")).toBe(
+      darkTheme.color.text.primary
+    );
     expect(root?.style.getPropertyValue("--velomark-color-surface-base")).toBe(
       darkTheme.color.surface.base
     );
@@ -226,7 +234,9 @@ describe("velomark theme surface", () => {
         }),
       host
     );
-    const root = host.querySelector("[data-velomark-root]") as HTMLDivElement | null;
+    const root = host.querySelector(
+      "[data-velomark-root]"
+    ) as HTMLDivElement | null;
 
     expect(root?.style.getPropertyValue("--velomark-color-text-primary")).toBe(
       "#123456"

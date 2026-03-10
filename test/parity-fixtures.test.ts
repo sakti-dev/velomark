@@ -49,7 +49,11 @@ const loadParityFixture = (fileName: string): string =>
 describe("velomark parity fixtures", () => {
   it("includes the expected parity fixture set", () => {
     for (const fixture of PARITY_FIXTURES) {
-      const filePath = resolve(process.cwd(), "test/fixtures/parity", fixture.fileName);
+      const filePath = resolve(
+        process.cwd(),
+        "test/fixtures/parity",
+        fixture.fileName
+      );
       expect(existsSync(filePath)).toBe(true);
     }
   });

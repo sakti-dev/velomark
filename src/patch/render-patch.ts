@@ -25,7 +25,10 @@ export function planRenderPatch(
   while (
     unchangedPrefixCount < previousBlocks.length &&
     unchangedPrefixCount < nextBlocks.length &&
-    areSameBlock(previousBlocks[unchangedPrefixCount], nextBlocks[unchangedPrefixCount])
+    areSameBlock(
+      previousBlocks[unchangedPrefixCount],
+      nextBlocks[unchangedPrefixCount]
+    )
   ) {
     unchangedPrefixCount += 1;
   }

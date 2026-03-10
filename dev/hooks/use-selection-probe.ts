@@ -2,8 +2,8 @@ import { createSignal } from "solid-js";
 
 export interface SelectionProbeState {
   anchorBlockId: string | null;
-  anchorNodeConnected: boolean;
   anchorBlockReplaced: boolean;
+  anchorNodeConnected: boolean;
   hasSelection: boolean;
   statusMessage: string;
 }
@@ -16,7 +16,10 @@ const INITIAL_STATE: SelectionProbeState = {
   statusMessage: "No selection captured",
 };
 
-function statesEqual(left: SelectionProbeState, right: SelectionProbeState): boolean {
+function statesEqual(
+  left: SelectionProbeState,
+  right: SelectionProbeState
+): boolean {
   return (
     left.anchorBlockId === right.anchorBlockId &&
     left.anchorBlockReplaced === right.anchorBlockReplaced &&
@@ -33,7 +36,9 @@ function findAnchorBlock(selection: Selection | null): HTMLElement | null {
   }
 
   const element =
-    anchorNode.nodeType === Node.ELEMENT_NODE ? (anchorNode as Element) : anchorNode.parentElement;
+    anchorNode.nodeType === Node.ELEMENT_NODE
+      ? (anchorNode as Element)
+      : anchorNode.parentElement;
 
   return element?.closest("[data-velomark-block-id]") as HTMLElement | null;
 }
@@ -47,8 +52,10 @@ export function useSelectionProbe() {
     const anchorBlock = findAnchorBlock(selection);
     anchorNode = selection?.anchorNode ?? null;
 
-    if (!anchorNode || !anchorBlock) {
-      setState((previous) => (statesEqual(previous, INITIAL_STATE) ? previous : INITIAL_STATE));
+    if (!(anchorNode && anchorBlock)) {
+      setState((previous) =>
+        statesEqual(previous, INITIAL_STATE) ? previous : INITIAL_STATE
+      );
       return;
     }
 
@@ -57,22 +64,31 @@ export function useSelectionProbe() {
       anchorBlockReplaced: false,
       anchorNodeConnected: anchorNode.isConnected,
       hasSelection: true,
-      statusMessage: anchorNode.isConnected ? "Selection stable" : "Selection replaced",
+      statusMessage: anchorNode.isConnected
+        ? "Selection stable"
+        : "Selection replaced",
     };
 
-    setState((previous) => (statesEqual(previous, nextState) ? previous : nextState));
+    setState((previous) =>
+      statesEqual(previous, nextState) ? previous : nextState
+    );
   };
 
-  const reevaluateSelection = (rendererSurface: HTMLElement | null | undefined) => {
+  const reevaluateSelection = (
+    rendererSurface: HTMLElement | null | undefined
+  ) => {
     const previousState = state();
-    if (!previousState.hasSelection || !previousState.anchorBlockId || !anchorNode) {
+    if (
+      !(previousState.hasSelection && previousState.anchorBlockId && anchorNode)
+    ) {
       return;
     }
 
     const anchorBlock = rendererSurface?.querySelector(
       `[data-velomark-block-id="${previousState.anchorBlockId}"]`
     );
-    const anchorNodeConnected = anchorNode.isConnected && Boolean(rendererSurface?.contains(anchorNode));
+    const anchorNodeConnected =
+      anchorNode.isConnected && Boolean(rendererSurface?.contains(anchorNode));
     const anchorBlockReplaced = !anchorBlock;
 
     const nextState = {
@@ -81,10 +97,14 @@ export function useSelectionProbe() {
       anchorNodeConnected,
       hasSelection: true,
       statusMessage:
-        anchorNodeConnected && !anchorBlockReplaced ? "Selection stable" : "Selection replaced",
+        anchorNodeConnected && !anchorBlockReplaced
+          ? "Selection stable"
+          : "Selection replaced",
     };
 
-    setState((previous) => (statesEqual(previous, nextState) ? previous : nextState));
+    setState((previous) =>
+      statesEqual(previous, nextState) ? previous : nextState
+    );
   };
 
   return {

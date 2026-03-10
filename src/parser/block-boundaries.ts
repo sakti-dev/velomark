@@ -1,7 +1,5 @@
-import type { RenderBlock } from "../types";
 import type { DraftRenderBlock } from "../model/stable-id";
-import type { HtmlElementChild } from "./html-element";
-import { parseSimpleHtmlElement } from "./html-element";
+import type { RenderBlock } from "../types";
 import {
   isBlankLine,
   isTableSeparator,
@@ -16,6 +14,8 @@ import {
   matchUnorderedList,
   matchUnorderedListDetail,
 } from "./context";
+import type { HtmlElementChild } from "./html-element";
+import { parseSimpleHtmlElement } from "./html-element";
 
 export interface ParagraphBlockData {
   text: string;
@@ -32,8 +32,8 @@ export interface BlockquoteBlockData {
 }
 
 export interface ListItemData {
-  children?: ListChildBlock[];
   checked?: boolean;
+  children?: ListChildBlock[];
   text: string;
 }
 
@@ -73,7 +73,7 @@ export interface ContainerBlockData {
   name: string;
 }
 
-export interface ThematicBreakBlockData {}
+export type ThematicBreakBlockData = Record<string, never>;
 
 export type TableColumnAlign = "center" | "left" | "right";
 
@@ -103,8 +103,11 @@ interface LineInfo {
   text: string;
 }
 
-const CONTAINER_START_RE = /^:::\s*([A-Za-z][A-Za-z0-9_-]*)(?:\{([^}]*)\})?\s*$/;
+const CONTAINER_START_RE =
+  /^:::\s*([A-Za-z][A-Za-z0-9_-]*)(?:\{([^}]*)\})?\s*$/;
 const LEAF_DIRECTIVE_RE = /^::\s*([A-Za-z][A-Za-z0-9_-]*)(?:\{([^}]*)\})?\s*$/;
+const TABLE_ALIGN_LEADING_PIPE_RE = /^\|/;
+const TABLE_ALIGN_TRAILING_PIPE_RE = /\|$/;
 
 function buildLineInfos(markdown: string): LineInfo[] {
   const lines: LineInfo[] = [];
@@ -127,7 +130,9 @@ function buildLineInfos(markdown: string): LineInfo[] {
   return lines;
 }
 
-function parseDirectiveAttributes(attributes: string | undefined): Record<string, string> {
+function parseDirectiveAttributes(
+  attributes: string | undefined
+): Record<string, string> {
   if (!attributes) {
     return {};
   }
@@ -150,8 +155,8 @@ function parseDirectiveAttributes(attributes: string | undefined): Record<string
 function parseTableAlignments(separatorLine: string): TableColumnAlign[] {
   return separatorLine
     .trim()
-    .replace(/^\|/, "")
-    .replace(/\|$/, "")
+    .replace(TABLE_ALIGN_LEADING_PIPE_RE, "")
+    .replace(TABLE_ALIGN_TRAILING_PIPE_RE, "")
     .split("|")
     .map((segment) => {
       const trimmed = segment.trim();
@@ -165,7 +170,7 @@ function parseTableAlignments(separatorLine: string): TableColumnAlign[] {
         return "right";
       }
       return "left";
-  });
+    });
 }
 
 function countLeadingSpaces(text: string): number {
@@ -210,6 +215,7 @@ function buildBlock<TData extends ParsedBlockData>(
   };
 }
 
+// biome-ignore lint/complexity/noExcessiveCognitiveComplexity: Block parsing is intentionally implemented as a single streaming-oriented state machine.
 export function parseBlockBoundaries(
   markdown: string
 ): DraftRenderBlock<ParsedBlockData>[] {
@@ -418,7 +424,10 @@ export function parseBlockBoundaries(
       !trimmedLine.startsWith("<!--")
     ) {
       const structuredElement = parseSimpleHtmlElement(trimmedLine);
-      if (structuredElement && structuredElement.length === trimmedLine.length) {
+      if (
+        structuredElement &&
+        structuredElement.length === trimmedLine.length
+      ) {
         blocks.push(
           buildBlock(
             "html-element",
@@ -565,7 +574,11 @@ export function parseBlockBoundaries(
             break;
           }
 
-          childLines.push(childLine.text.slice(Math.min(baseIndent + 2, childLine.text.length)));
+          childLines.push(
+            childLine.text.slice(
+              Math.min(baseIndent + 2, childLine.text.length)
+            )
+          );
           childSourceEnd = childLine.end;
           scanIndex += 1;
         }
@@ -681,16 +694,15 @@ export function parseBlockBoundaries(
         break;
       }
       if (
-        matchHeading(scanLine.text) ||
-        matchFence(scanLine.text) ||
-        matchBlockquote(scanLine.text) ||
-        matchOrderedList(scanLine.text) ||
-        matchUnorderedList(scanLine.text) ||
-        isThematicBreak(scanLine.text)
+        (matchHeading(scanLine.text) ||
+          matchFence(scanLine.text) ||
+          matchBlockquote(scanLine.text) ||
+          matchOrderedList(scanLine.text) ||
+          matchUnorderedList(scanLine.text) ||
+          isThematicBreak(scanLine.text)) &&
+        scanIndex !== lineIndex
       ) {
-        if (scanIndex !== lineIndex) {
-          break;
-        }
+        break;
       }
       const tableLookahead = lines[scanIndex + 1];
       if (

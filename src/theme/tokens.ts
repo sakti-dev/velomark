@@ -1,9 +1,10 @@
-import { darkTheme } from "./dark-theme";
-import { defaultTheme } from "./default-theme";
-import { velomarkColors } from "./colors";
+import { darkTheme as darkThemePreset } from "./dark-theme";
+import { defaultTheme as defaultThemePreset } from "./default-theme";
 
-export { velomarkColors };
-export { darkTheme, defaultTheme };
+// biome-ignore lint/performance/noBarrelFile: This module intentionally groups theme presets and tokens for the public API.
+export { velomarkColors } from "./colors";
+export { darkTheme } from "./dark-theme";
+export { defaultTheme } from "./default-theme";
 
 export const velomarkTokens = {
   radius: "0.5rem",
@@ -15,6 +16,6 @@ export const velomarkTokens = {
 } as const;
 
 export const velomarkThemePresets = {
-  dark: darkTheme,
-  default: defaultTheme,
+  dark: darkThemePreset,
+  default: defaultThemePreset,
 } as const;

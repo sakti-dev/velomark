@@ -1,6 +1,6 @@
-import { For, Show, type Component } from "solid-js";
-import type { SelectionProbeState } from "../hooks/use-selection-probe";
+import { type Component, For, Show } from "solid-js";
 import type { PlaygroundTheme } from "../hooks/use-playground-theme";
+import type { SelectionProbeState } from "../hooks/use-selection-probe";
 import type {
   PlaygroundBenchmarkState,
   PlaygroundPreset,
@@ -32,7 +32,9 @@ const STREAM_MODES: Array<{ label: string; value: PlaygroundStreamMode }> = [
   { label: "Rewrite Tail", value: "rewrite-tail" },
 ];
 
-export const WorkbenchControlsPanel: Component<WorkbenchControlsPanelProps> = (props) => {
+export const WorkbenchControlsPanel: Component<WorkbenchControlsPanelProps> = (
+  props
+) => {
   const updateControls = (patch: Partial<PlaygroundStreamControls>) => {
     props.onControlsChange({
       ...props.controls,
@@ -50,8 +52,10 @@ export const WorkbenchControlsPanel: Component<WorkbenchControlsPanelProps> = (p
   return (
     <section class="flex min-w-0 flex-col gap-4 rounded-xl border border-border bg-card p-4 shadow-xs">
       <header class="flex flex-col gap-1">
-        <h2 class="text-lg font-semibold tracking-tight text-foreground">Workbench</h2>
-        <p class="text-sm leading-6 text-muted-foreground">
+        <h2 class="font-semibold text-foreground text-lg tracking-tight">
+          Workbench
+        </h2>
+        <p class="text-muted-foreground text-sm leading-6">
           Pick a replay preset, run the stream, and inspect compact diagnostics.
         </p>
       </header>
@@ -72,7 +76,9 @@ export const WorkbenchControlsPanel: Component<WorkbenchControlsPanelProps> = (p
         <button
           aria-pressed={props.theme === "dark"}
           class={
-            props.theme === "dark" ? `${baseButtonClass} ${activeButtonClass}` : baseButtonClass
+            props.theme === "dark"
+              ? `${baseButtonClass} ${activeButtonClass}`
+              : baseButtonClass
           }
           onClick={() => props.onThemeChange("dark")}
           type="button"
@@ -103,7 +109,9 @@ export const WorkbenchControlsPanel: Component<WorkbenchControlsPanelProps> = (p
 
       <div class="grid grid-cols-1 gap-3 xl:grid-cols-3">
         <label class="flex min-w-0 flex-col gap-2">
-          <span class="text-sm font-medium text-muted-foreground">Chunk Size</span>
+          <span class="font-medium text-muted-foreground text-sm">
+            Chunk Size
+          </span>
           <input
             class={fieldClass}
             min="1"
@@ -118,7 +126,9 @@ export const WorkbenchControlsPanel: Component<WorkbenchControlsPanelProps> = (p
         </label>
 
         <label class="flex min-w-0 flex-col gap-2">
-          <span class="text-sm font-medium text-muted-foreground">Interval (ms)</span>
+          <span class="font-medium text-muted-foreground text-sm">
+            Interval (ms)
+          </span>
           <input
             class={fieldClass}
             min="1"
@@ -133,7 +143,7 @@ export const WorkbenchControlsPanel: Component<WorkbenchControlsPanelProps> = (p
         </label>
 
         <label class="flex min-w-0 flex-col gap-2">
-          <span class="text-sm font-medium text-muted-foreground">Mode</span>
+          <span class="font-medium text-muted-foreground text-sm">Mode</span>
           <select
             class={fieldClass}
             onInput={(event) => {
@@ -151,7 +161,11 @@ export const WorkbenchControlsPanel: Component<WorkbenchControlsPanelProps> = (p
       </div>
 
       <div class="flex flex-wrap gap-2">
-        <button class={baseButtonClass} onClick={props.onRenderOnce} type="button">
+        <button
+          class={baseButtonClass}
+          onClick={props.onRenderOnce}
+          type="button"
+        >
           Render once
         </button>
         <button
@@ -179,11 +193,13 @@ export const WorkbenchControlsPanel: Component<WorkbenchControlsPanelProps> = (p
           onClick={props.onRunBenchmark}
           type="button"
         >
-          {props.benchmarkState.isRunning ? "Running benchmark..." : "Run benchmark"}
+          {props.benchmarkState.isRunning
+            ? "Running benchmark..."
+            : "Run benchmark"}
         </button>
       </div>
 
-      <div class="flex flex-wrap gap-3 text-sm text-muted-foreground">
+      <div class="flex flex-wrap gap-3 text-muted-foreground text-sm">
         <span>
           {props.selectionProbeEnabled
             ? props.probeState.statusMessage

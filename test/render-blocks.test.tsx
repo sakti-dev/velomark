@@ -1,12 +1,15 @@
 import { createSignal } from "solid-js";
 import { render } from "solid-js/web";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { Velomark } from "../src";
 import type { VelomarkContainerRendererProps } from "../src";
+import { Velomark } from "../src";
 
 const mountedRoots: Array<() => void> = [];
 
-const waitFor = async (predicate: () => boolean, attempts = 100): Promise<void> => {
+const waitFor = async (
+  predicate: () => boolean,
+  attempts = 100
+): Promise<void> => {
   for (let index = 0; index < attempts; index += 1) {
     if (predicate()) {
       return;
@@ -92,9 +95,11 @@ describe("Velomark block rendering", () => {
     const host = document.createElement("div");
     document.body.append(host);
 
-    const markdown = ["> First quoted paragraph", ">", "> Second quoted paragraph"].join(
-      "\n"
-    );
+    const markdown = [
+      "> First quoted paragraph",
+      ">",
+      "> Second quoted paragraph",
+    ].join("\n");
 
     const dispose = render(() => <Velomark markdown={markdown} />, host);
     mountedRoots.push(dispose);
@@ -140,19 +145,21 @@ describe("Velomark block rendering", () => {
 
     const shell = host.querySelector('[data-velomark-block-kind="code"]');
     expect(shell?.tagName).toBe("DIV");
-    expect(shell?.querySelector('[data-velomark-code-header]')).toBeNull();
-    expect(shell?.querySelector('[data-velomark-code-language]')?.textContent).toBe(
-      "ts"
-    );
+    expect(shell?.querySelector("[data-velomark-code-header]")).toBeNull();
+    expect(
+      shell?.querySelector("[data-velomark-code-language]")?.textContent
+    ).toBe("ts");
     expect(shell?.querySelector("pre > code")?.textContent).toBe(
       "const answer = 42;"
     );
     const copyButton = shell?.querySelector(
-      '[data-velomark-code-copy]'
+      "[data-velomark-code-copy]"
     ) as HTMLButtonElement | null;
     expect(copyButton).not.toBeNull();
     expect(copyButton?.getAttribute("aria-label")).toBe("Copy code");
-    expect(copyButton?.querySelector('[data-velomark-code-copy-icon="copy"]')).not.toBeNull();
+    expect(
+      copyButton?.querySelector('[data-velomark-code-copy-icon="copy"]')
+    ).not.toBeNull();
   });
 
   it("renders highlighted code tokens for supported languages", async () => {
@@ -167,18 +174,22 @@ describe("Velomark block rendering", () => {
 
     await waitFor(
       () =>
-        (host.querySelectorAll('[data-velomark-code-highlighted] span').length ?? 0) >
-        0,
+        (host.querySelectorAll("[data-velomark-code-highlighted] span")
+          .length ?? 0) > 0,
       500
     );
 
     const shell = host.querySelector('[data-velomark-block-kind="code"]');
-    const highlighted = shell?.querySelector('[data-velomark-code-highlighted]');
-    expect(highlighted).not.toBeNull();
-    expect(shell?.querySelectorAll('[data-velomark-code-highlighted] span').length).toBeGreaterThan(
-      0
+    const highlighted = shell?.querySelector(
+      "[data-velomark-code-highlighted]"
     );
-    expect(highlighted?.querySelectorAll(':scope > span').length).toBeGreaterThan(1);
+    expect(highlighted).not.toBeNull();
+    expect(
+      shell?.querySelectorAll("[data-velomark-code-highlighted] span").length
+    ).toBeGreaterThan(0);
+    expect(
+      highlighted?.querySelectorAll(":scope > span").length
+    ).toBeGreaterThan(1);
   });
 
   it("omits the language badge and header for unlabeled code fences", () => {
@@ -192,10 +203,10 @@ describe("Velomark block rendering", () => {
     mountedRoots.push(dispose);
 
     const shell = host.querySelector('[data-velomark-block-kind="code"]');
-    expect(shell?.querySelector('[data-velomark-code-header]')).toBeNull();
-    expect(shell?.querySelector('[data-velomark-code-language]')).toBeNull();
+    expect(shell?.querySelector("[data-velomark-code-header]")).toBeNull();
+    expect(shell?.querySelector("[data-velomark-code-language]")).toBeNull();
     expect(shell?.querySelector("pre > code")?.textContent).toBe("plain text");
-    expect(shell?.querySelector('[data-velomark-code-copy]')).not.toBeNull();
+    expect(shell?.querySelector("[data-velomark-code-copy]")).not.toBeNull();
   });
 
   it("allows default code block copy controls to be disabled", () => {
@@ -203,20 +214,21 @@ describe("Velomark block rendering", () => {
     document.body.append(host);
 
     const dispose = render(
-      () =>
+      () => (
         <Velomark
           codeBlockOptions={{ copyButton: false }}
           markdown={"```ts\nconst answer = 42;\n```"}
-        />,
+        />
+      ),
       host
     );
     mountedRoots.push(dispose);
 
     const shell = host.querySelector('[data-velomark-block-kind="code"]');
-    expect(shell?.querySelector('[data-velomark-code-language]')?.textContent).toBe(
-      "ts"
-    );
-    expect(shell?.querySelector('[data-velomark-code-copy]')).toBeNull();
+    expect(
+      shell?.querySelector("[data-velomark-code-language]")?.textContent
+    ).toBe("ts");
+    expect(shell?.querySelector("[data-velomark-code-copy]")).toBeNull();
   });
 
   it("shows copied feedback after the copy action succeeds", async () => {
@@ -239,9 +251,11 @@ describe("Velomark block rendering", () => {
     mountedRoots.push(dispose);
 
     const copyButton = host.querySelector(
-      '[data-velomark-code-copy]'
+      "[data-velomark-code-copy]"
     ) as HTMLButtonElement | null;
-    expect(copyButton?.querySelector('[data-velomark-code-copy-icon="copy"]')).not.toBeNull();
+    expect(
+      copyButton?.querySelector('[data-velomark-code-copy-icon="copy"]')
+    ).not.toBeNull();
 
     copyButton?.click();
     await Promise.resolve();
@@ -249,18 +263,22 @@ describe("Velomark block rendering", () => {
     await vi.advanceTimersByTimeAsync(1);
 
     expect(clipboard.writeText).toHaveBeenCalledWith("const answer = 42;");
-    expect(host.querySelector('[data-velomark-code-copy]')?.getAttribute("aria-label")).toBe(
-      "Copied code"
-    );
+    expect(
+      host
+        .querySelector("[data-velomark-code-copy]")
+        ?.getAttribute("aria-label")
+    ).toBe("Copied code");
     expect(
       host.querySelector('[data-velomark-code-copy-icon="check"]')
     ).not.toBeNull();
 
-    await vi.advanceTimersByTimeAsync(2_000);
+    await vi.advanceTimersByTimeAsync(2000);
 
-    expect(host.querySelector('[data-velomark-code-copy]')?.getAttribute("aria-label")).toBe(
-      "Copy code"
-    );
+    expect(
+      host
+        .querySelector("[data-velomark-code-copy]")
+        ?.getAttribute("aria-label")
+    ).toBe("Copy code");
     expect(
       host.querySelector('[data-velomark-code-copy-icon="copy"]')
     ).not.toBeNull();
@@ -271,19 +289,20 @@ describe("Velomark block rendering", () => {
     document.body.append(host);
 
     const dispose = render(
-      () =>
+      () => (
         <Velomark
           markdown={[
             "| Left | Center | Right |",
             "| :--- | :----: | ---: |",
             "| A | B | C |",
           ].join("\n")}
-        />,
+        />
+      ),
       host
     );
     mountedRoots.push(dispose);
 
-    const wrapper = host.querySelector('[data-velomark-table-wrapper]');
+    const wrapper = host.querySelector("[data-velomark-table-wrapper]");
     expect(wrapper).not.toBeNull();
 
     const headers = Array.from(host.querySelectorAll("thead th"));
@@ -304,12 +323,16 @@ describe("Velomark block rendering", () => {
     document.body.append(host);
 
     const dispose = render(
-      () =>
+      () => (
         <Velomark
-          markdown={["- Parent", "  - Child A", "  - Child B", "- Sibling"].join(
-            "\n"
-          )}
-        />,
+          markdown={[
+            "- Parent",
+            "  - Child A",
+            "  - Child B",
+            "- Sibling",
+          ].join("\n")}
+        />
+      ),
       host
     );
     mountedRoots.push(dispose);
@@ -328,7 +351,7 @@ describe("Velomark block rendering", () => {
     document.body.append(host);
 
     const dispose = render(
-      () =>
+      () => (
         <Velomark
           markdown={[
             "See [docs][guide] and ![logo][brand].",
@@ -336,7 +359,8 @@ describe("Velomark block rendering", () => {
             "[guide]: https://example.com/guide",
             "[brand]: https://example.com/logo.png",
           ].join("\n")}
-        />,
+        />
+      ),
       host
     );
     mountedRoots.push(dispose);
@@ -357,7 +381,7 @@ describe("Velomark block rendering", () => {
     document.body.append(host);
 
     const dispose = render(
-      () =>
+      () => (
         <Velomark
           markdown={[
             "Open [docs][] and ![logo].",
@@ -365,7 +389,8 @@ describe("Velomark block rendering", () => {
             '[docs]: https://example.com/guide "Guide"',
             '[logo]: https://example.com/logo.png "Brand logo"',
           ].join("\n")}
-        />,
+        />
+      ),
       host
     );
     mountedRoots.push(dispose);
@@ -386,7 +411,7 @@ describe("Velomark block rendering", () => {
     document.body.append(host);
 
     const dispose = render(
-      () =>
+      () => (
         <Velomark
           markdown={[
             "Alpha[^b] and beta[^a].",
@@ -394,16 +419,17 @@ describe("Velomark block rendering", () => {
             "[^a]: First footnote body.",
             "[^b]: Second footnote body.",
           ].join("\n")}
-        />,
+        />
+      ),
       host
     );
     mountedRoots.push(dispose);
 
-    const footnotes = host.querySelector('[data-velomark-footnotes]');
+    const footnotes = host.querySelector("[data-velomark-footnotes]");
     expect(footnotes).not.toBeNull();
 
     const items = Array.from(
-      host.querySelectorAll('[data-velomark-footnotes] ol > li')
+      host.querySelectorAll("[data-velomark-footnotes] ol > li")
     );
     expect(items).toHaveLength(2);
     expect(items[0]?.getAttribute("id")).toBe("fn-b");
@@ -420,7 +446,7 @@ describe("Velomark block rendering", () => {
     document.body.append(host);
 
     const dispose = render(
-      () =>
+      () => (
         <Velomark
           markdown={[
             "Alpha[^list].",
@@ -432,12 +458,13 @@ describe("Velomark block rendering", () => {
             "",
             "    Closing paragraph.",
           ].join("\n")}
-        />,
+        />
+      ),
       host
     );
     mountedRoots.push(dispose);
 
-    const footnoteItem = host.querySelector('#fn-list');
+    const footnoteItem = host.querySelector("#fn-list");
     expect(footnoteItem).not.toBeNull();
     expect(footnoteItem?.querySelectorAll("p")).toHaveLength(2);
     expect(footnoteItem?.querySelectorAll("ul > li")).toHaveLength(2);
@@ -450,10 +477,11 @@ describe("Velomark block rendering", () => {
     document.body.append(host);
 
     const dispose = render(
-      () =>
+      () => (
         <Velomark
           markdown={["$$", "E = mc^2 + \\frac{a}{b}", "$$"].join("\n")}
-        />,
+        />
+      ),
       host
     );
     mountedRoots.push(dispose);
@@ -493,7 +521,9 @@ describe("Velomark block rendering", () => {
     await Promise.resolve();
 
     expect(mathBlock?.querySelector(".katex-display")).toBeNull();
-    expect(mathBlock?.querySelector("pre > code")?.textContent).toBe("\\frac{1");
+    expect(mathBlock?.querySelector("pre > code")?.textContent).toBe(
+      "\\frac{1"
+    );
   });
 
   it("renders mermaid code blocks directly as diagram blocks", async () => {
@@ -519,20 +549,21 @@ describe("Velomark block rendering", () => {
     }
 
     const dispose = render(
-      () =>
-        <Velomark markdown={"```mermaid\ngraph TD\nA-->B\n```"} />,
+      () => <Velomark markdown={"```mermaid\ngraph TD\nA-->B\n```"} />,
       host
     );
     mountedRoots.push(dispose);
 
-    const mermaidBlock = host.querySelector('[data-velomark-mermaid]');
+    const mermaidBlock = host.querySelector("[data-velomark-mermaid]");
     expect(mermaidBlock).not.toBeNull();
-    expect(mermaidBlock?.getAttribute("data-velomark-language")).toBe("mermaid");
+    expect(mermaidBlock?.getAttribute("data-velomark-language")).toBe(
+      "mermaid"
+    );
     for (let attempt = 0; attempt < 20; attempt += 1) {
       if (mermaidBlock?.querySelector("[data-velomark-mermaid-diagram]")) {
         break;
       }
-      await new Promise(resolve => window.setTimeout(resolve, 10));
+      await new Promise((resolve) => window.setTimeout(resolve, 10));
     }
 
     expect(
@@ -542,9 +573,13 @@ describe("Velomark block rendering", () => {
     expect(mermaidBlock?.querySelector("pre > code")).toBeNull();
     expect(mermaidBlock?.querySelector("pre")).toBeNull();
     expect(mermaidBlock?.querySelector("code")).toBeNull();
-    expect(mermaidBlock?.querySelector('[data-velomark-code-header]')).toBeNull();
-    expect(mermaidBlock?.querySelector('[data-velomark-code-view-toggle]')).toBeNull();
-    expect(mermaidBlock?.querySelector('[data-velomark-code-copy]')).toBeNull();
+    expect(
+      mermaidBlock?.querySelector("[data-velomark-code-header]")
+    ).toBeNull();
+    expect(
+      mermaidBlock?.querySelector("[data-velomark-code-view-toggle]")
+    ).toBeNull();
+    expect(mermaidBlock?.querySelector("[data-velomark-code-copy]")).toBeNull();
   });
 
   it("keeps mermaid fences as source blocks until the stream closes the fence", async () => {
@@ -573,9 +608,11 @@ describe("Velomark block rendering", () => {
     const dispose = render(() => <Velomark markdown={markdown()} />, host);
     mountedRoots.push(dispose);
 
-    const mermaidBlock = host.querySelector('[data-velomark-mermaid]');
+    const mermaidBlock = host.querySelector("[data-velomark-mermaid]");
     expect(mermaidBlock).not.toBeNull();
-    expect(mermaidBlock?.querySelector("[data-velomark-mermaid-diagram]")).toBeNull();
+    expect(
+      mermaidBlock?.querySelector("[data-velomark-mermaid-diagram]")
+    ).toBeNull();
     expect(mermaidBlock?.querySelector("pre > code")?.textContent).toContain(
       "graph TD"
     );
@@ -608,13 +645,15 @@ describe("Velomark block rendering", () => {
     await Promise.resolve();
     await Promise.resolve();
 
-    const mermaidBlock = host.querySelector('[data-velomark-mermaid]');
+    const mermaidBlock = host.querySelector("[data-velomark-mermaid]");
     expect(mermaidBlock).not.toBeNull();
     expect(
       mermaidBlock?.querySelector("[data-velomark-mermaid-diagram]")
     ).toBeNull();
-    expect(mermaidBlock?.querySelector('[data-velomark-code-header]')).toBeNull();
-    expect(mermaidBlock?.querySelector('[data-velomark-code-copy]')).toBeNull();
+    expect(
+      mermaidBlock?.querySelector("[data-velomark-code-header]")
+    ).toBeNull();
+    expect(mermaidBlock?.querySelector("[data-velomark-code-copy]")).toBeNull();
     expect(mermaidBlock?.querySelector("pre > code")?.textContent).toContain(
       "not a valid diagram"
     );
@@ -629,11 +668,12 @@ describe("Velomark block rendering", () => {
     );
 
     const dispose = render(
-      () =>
+      () => (
         <Velomark
           codeBlockRenderers={{ mermaid: MermaidOverride }}
           markdown={"```mermaid\ngraph TD\nA-->B\n```"}
-        />,
+        />
+      ),
       host
     );
     mountedRoots.push(dispose);
@@ -641,7 +681,7 @@ describe("Velomark block rendering", () => {
     const custom = host.querySelector("[data-custom-mermaid]");
     expect(custom?.getAttribute("data-custom-mermaid")).toBe("mermaid");
     expect(custom?.textContent).toContain("graph TD");
-    expect(host.querySelector('[data-velomark-mermaid]')).toBeNull();
+    expect(host.querySelector("[data-velomark-mermaid]")).toBeNull();
   });
 
   it("renders raw html blocks as explicit source shells", () => {
@@ -671,7 +711,9 @@ describe("Velomark block rendering", () => {
     );
     mountedRoots.push(dispose);
 
-    const element = host.querySelector('[data-velomark-block-kind="html-element"]');
+    const element = host.querySelector(
+      '[data-velomark-block-kind="html-element"]'
+    );
     expect(element).not.toBeNull();
     expect(element?.querySelector("div.note")).not.toBeNull();
     expect(element?.querySelector("div.note > p")?.textContent).toBe("Alpha");
@@ -683,19 +725,24 @@ describe("Velomark block rendering", () => {
     document.body.append(host);
 
     const dispose = render(
-      () =>
+      () => (
         <Velomark
           markdown={
             "<div class='note'><p>Use **bold** and [docs](https://example.com) with $E = mc^2$.</p></div>"
           }
-        />,
+        />
+      ),
       host
     );
     mountedRoots.push(dispose);
 
-    const element = host.querySelector('[data-velomark-block-kind="html-element"]');
+    const element = host.querySelector(
+      '[data-velomark-block-kind="html-element"]'
+    );
     expect(element).not.toBeNull();
-    expect(element?.querySelector("div.note p strong")?.textContent).toBe("bold");
+    expect(element?.querySelector("div.note p strong")?.textContent).toBe(
+      "bold"
+    );
     expect(element?.querySelector("div.note p a")?.getAttribute("href")).toBe(
       "https://example.com"
     );
@@ -704,7 +751,7 @@ describe("Velomark block rendering", () => {
       if (element?.querySelector(".katex")) {
         break;
       }
-      await new Promise(resolve => window.setTimeout(resolve, 0));
+      await new Promise((resolve) => window.setTimeout(resolve, 0));
     }
 
     expect(element?.querySelector(".katex")).not.toBeNull();
@@ -715,7 +762,7 @@ describe("Velomark block rendering", () => {
     document.body.append(host);
 
     const dispose = render(
-      () =>
+      () => (
         <Velomark
           markdown={[
             ':::info{title="Information"}',
@@ -725,14 +772,17 @@ describe("Velomark block rendering", () => {
             "- Item two",
             ":::",
           ].join("\n")}
-        />,
+        />
+      ),
       host
     );
     mountedRoots.push(dispose);
 
     const container = host.querySelector('[data-velomark-container="info"]');
     expect(container).not.toBeNull();
-    expect(container?.getAttribute("data-velomark-attr-title")).toBe("Information");
+    expect(container?.getAttribute("data-velomark-attr-title")).toBe(
+      "Information"
+    );
     expect(container?.querySelector("p")?.textContent).toBe("Alpha paragraph.");
     expect(container?.querySelectorAll("ul > li")).toHaveLength(2);
   });
@@ -742,7 +792,7 @@ describe("Velomark block rendering", () => {
     document.body.append(host);
 
     const dispose = render(
-      () =>
+      () => (
         <Velomark
           markdown={[
             ":::info{title='Information' tone=info emphasis=\"high\"}",
@@ -751,14 +801,17 @@ describe("Velomark block rendering", () => {
             "",
             "::callout{title='Heads up' tone=warn}",
           ].join("\n")}
-        />,
+        />
+      ),
       host
     );
     mountedRoots.push(dispose);
 
     const container = host.querySelector('[data-velomark-container="info"]');
     expect(container).not.toBeNull();
-    expect(container?.getAttribute("data-velomark-attr-title")).toBe("Information");
+    expect(container?.getAttribute("data-velomark-attr-title")).toBe(
+      "Information"
+    );
     expect(container?.getAttribute("data-velomark-attr-tone")).toBe("info");
     expect(container?.getAttribute("data-velomark-attr-emphasis")).toBe("high");
 
@@ -773,13 +826,16 @@ describe("Velomark block rendering", () => {
     document.body.append(host);
 
     const InfoContainer = (props: VelomarkContainerRendererProps) => (
-      <section data-custom-container={props.name} data-title={props.attributes?.title}>
+      <section
+        data-custom-container={props.name}
+        data-title={props.attributes?.title}
+      >
         {props.children}
       </section>
     );
 
     const dispose = render(
-      () =>
+      () => (
         <Velomark
           containers={{ info: InfoContainer }}
           markdown={[
@@ -787,7 +843,8 @@ describe("Velomark block rendering", () => {
             "Alpha paragraph.",
             ":::",
           ].join("\n")}
-        />,
+        />
+      ),
       host
     );
     mountedRoots.push(dispose);
@@ -809,8 +866,12 @@ describe("Velomark block rendering", () => {
     );
     mountedRoots.push(dispose);
 
-    const directive = host.querySelector('[data-velomark-leaf-directive="callout"]');
+    const directive = host.querySelector(
+      '[data-velomark-leaf-directive="callout"]'
+    );
     expect(directive).not.toBeNull();
-    expect(directive?.getAttribute("data-velomark-attr-title")).toBe("Heads up");
+    expect(directive?.getAttribute("data-velomark-attr-title")).toBe(
+      "Heads up"
+    );
   });
 });

@@ -1,7 +1,14 @@
-import { existsSync, mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync } from "node:fs";
+import { execFileSync } from "node:child_process";
+import {
+  existsSync,
+  mkdirSync,
+  readdirSync,
+  readFileSync,
+  rmSync,
+  writeFileSync,
+} from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { execFileSync } from "node:child_process";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const repoRoot = path.resolve(__dirname, "..");
@@ -34,7 +41,9 @@ try {
   run("pnpm", ["run", "build"], repoRoot);
   run("pnpm", ["pack", "--pack-destination", vendorRoot], repoRoot);
 
-  const tarballName = readdirSync(vendorRoot).find((entry) => entry.endsWith(".tgz"));
+  const tarballName = readdirSync(vendorRoot).find((entry) =>
+    entry.endsWith(".tgz")
+  );
   if (!tarballName) {
     throw new Error(`Expected a packed tarball in ${vendorRoot}`);
   }
@@ -44,9 +53,16 @@ try {
     ...consumerManifest.dependencies,
     velomark: `file:./vendor/${tarballName}`,
   };
-  writeFileSync(consumerManifestPath, `${JSON.stringify(consumerManifest, null, 2)}\n`);
+  writeFileSync(
+    consumerManifestPath,
+    `${JSON.stringify(consumerManifest, null, 2)}\n`
+  );
 
-  run("pnpm", ["install", "--ignore-workspace", "--no-frozen-lockfile"], consumerRoot);
+  run(
+    "pnpm",
+    ["install", "--ignore-workspace", "--no-frozen-lockfile"],
+    consumerRoot
+  );
   run("pnpm", ["run", "build"], consumerRoot);
   run("node", ["smoke.mjs"], consumerRoot);
 } finally {

@@ -1,6 +1,6 @@
 import { render } from "solid-js/web";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import App from "../dev/App";
+import App from "../dev/app";
 
 describe("playground benchmark panel", () => {
   afterEach(() => {
@@ -14,8 +14,8 @@ describe("playground benchmark panel", () => {
     document.body.append(container);
 
     const dispose = render(() => <App />, container);
-    const runButton = Array.from(container.querySelectorAll("button")).find((button) =>
-      button.textContent?.includes("Run benchmark")
+    const runButton = Array.from(container.querySelectorAll("button")).find(
+      (button) => button.textContent?.includes("Run benchmark")
     ) as HTMLButtonElement;
 
     expect(runButton).toBeTruthy();
@@ -25,7 +25,7 @@ describe("playground benchmark panel", () => {
     await vi.advanceTimersByTimeAsync(0);
     expect(container.textContent).toContain("Running 1 / 2");
 
-    await vi.advanceTimersByTimeAsync(1_000);
+    await vi.advanceTimersByTimeAsync(1000);
 
     expect(container.textContent).toContain("Completed");
     expect(container.textContent).toContain("Benchmark");
