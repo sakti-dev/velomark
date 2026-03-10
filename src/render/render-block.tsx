@@ -44,6 +44,7 @@ export const RenderBlockView: Component<{
       return (
         <ParagraphBlock
           block={props.block as RenderBlock<ParagraphBlockData>}
+          containers={props.containers}
           debug={props.debug}
           definitions={props.definitions}
           index={props.index}
@@ -53,6 +54,7 @@ export const RenderBlockView: Component<{
       return (
         <HeadingBlock
           block={props.block as RenderBlock<HeadingBlockData>}
+          containers={props.containers}
           debug={props.debug}
           definitions={props.definitions}
           index={props.index}
@@ -62,6 +64,7 @@ export const RenderBlockView: Component<{
       return (
         <BlockquoteBlock
           block={props.block as RenderBlock<BlockquoteBlockData>}
+          containers={props.containers}
           debug={props.debug}
           definitions={props.definitions}
           index={props.index}
@@ -71,6 +74,7 @@ export const RenderBlockView: Component<{
       return (
         <ListBlock
           block={props.block as RenderBlock<ListBlockData>}
+          containers={props.containers}
           debug={props.debug}
           definitions={props.definitions}
           index={props.index}
@@ -124,6 +128,7 @@ export const RenderBlockView: Component<{
       return (
         <TableBlock
           block={props.block as RenderBlock<TableBlockData>}
+          containers={props.containers}
           debug={props.debug}
           definitions={props.definitions}
           index={props.index}
@@ -144,6 +149,7 @@ export const RenderBlockView: Component<{
               },
             } as RenderBlock<ParagraphBlockData>
           }
+          containers={props.containers}
           debug={props.debug}
           definitions={props.definitions}
           index={props.index}

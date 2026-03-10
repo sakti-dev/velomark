@@ -71,7 +71,16 @@ export const ContainerBlock: Component<{
       data-velomark-block-id={props.debug ? props.block.id : undefined}
       data-velomark-block-index={props.index}
       data-velomark-block-kind={props.block.kind}
-      data-velomark-container={props.block.data.name}
+      data-velomark-container={
+        props.block.data.directiveType === "container"
+          ? props.block.data.name
+          : undefined
+      }
+      data-velomark-leaf-directive={
+        props.block.data.directiveType === "leaf"
+          ? props.block.data.name
+          : undefined
+      }
     >
       {renderedChildren}
     </div>

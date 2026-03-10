@@ -61,6 +61,7 @@ export interface HtmlBlockData {
 export interface ContainerBlockData {
   attributes?: Record<string, string>;
   children: DraftRenderBlock<ParsedBlockData>[];
+  directiveType: "container" | "leaf";
   name: string;
 }
 
@@ -94,6 +95,7 @@ interface LineInfo {
 }
 
 const CONTAINER_START_RE = /^:::\s*([A-Za-z][A-Za-z0-9_-]*)(?:\{([^}]*)\})?\s*$/;
+const LEAF_DIRECTIVE_RE = /^::\s*([A-Za-z][A-Za-z0-9_-]*)(?:\{([^}]*)\})?\s*$/;
 
 function buildLineInfos(markdown: string): LineInfo[] {
   const lines: LineInfo[] = [];
@@ -332,6 +334,30 @@ export function parseBlockBoundaries(
     }
 
     const trimmedLine = line.text.trim();
+    const leafDirectiveMatch = trimmedLine.match(LEAF_DIRECTIVE_RE);
+    if (leafDirectiveMatch) {
+      const name = leafDirectiveMatch[1] ?? "directive";
+      const attributes = parseDirectiveAttributes(leafDirectiveMatch[2]);
+
+      blocks.push(
+        buildBlock(
+          "container",
+          line.start,
+          line.end,
+          lineIndex === lines.length - 1,
+          `leaf-directive:${name}:${JSON.stringify(attributes)}`,
+          {
+            name,
+            attributes,
+            directiveType: "leaf",
+            children: [],
+          }
+        )
+      );
+      lineIndex += 1;
+      continue;
+    }
+
     const containerMatch = trimmedLine.match(CONTAINER_START_RE);
     if (containerMatch) {
       const sourceStart = line.start;
@@ -368,6 +394,7 @@ export function parseBlockBoundaries(
         data: {
           name,
           attributes,
+          directiveType: "container",
           children: parseBlockBoundaries(childMarkdown),
         },
       });

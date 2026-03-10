@@ -180,6 +180,46 @@ function parseInlineHtml(source: string, start: number) {
   return null;
 }
 
+function parseDirectiveAttributes(attributes: string | undefined): Record<string, string> {
+  if (!attributes) {
+    return {};
+  }
+
+  const result: Record<string, string> = {};
+  const attributeRe = /([A-Za-z][A-Za-z0-9_-]*)="([^"]*)"/g;
+
+  for (const match of attributes.matchAll(attributeRe)) {
+    const key = match[1];
+    const value = match[2];
+    if (key && value !== undefined) {
+      result[key] = value;
+    }
+  }
+
+  return result;
+}
+
+function parseTextDirective(source: string, start: number) {
+  if (source[start] !== ":" || source[start + 1] === ":" || source[start + 1] === " ") {
+    return null;
+  }
+
+  const remainder = source.slice(start);
+  const match = remainder.match(
+    /^:([A-Za-z][A-Za-z0-9_-]*)\[([^\]]*)\](?:\{([^}]*)\})?/
+  );
+  if (!match?.[0]) {
+    return null;
+  }
+
+  return {
+    name: match[1] ?? "",
+    label: match[2] ?? "",
+    attributes: parseDirectiveAttributes(match[3]),
+    end: start + match[0].length,
+  };
+}
+
 export function parseInline(
   source: string,
   definitions: ReferenceDefinitionMap = {}
@@ -238,6 +278,20 @@ export function parseInline(
       const parsed = parseInlineHtml(source, index);
       if (parsed) {
         tokens.push({ type: "html", value: parsed.value });
+        index = parsed.end;
+        continue;
+      }
+    }
+
+    if (current === ":") {
+      const parsed = parseTextDirective(source, index);
+      if (parsed) {
+        tokens.push({
+          type: "text-directive",
+          name: parsed.name,
+          attributes: parsed.attributes,
+          children: parseInline(parsed.label, definitions),
+        });
         index = parsed.end;
         continue;
       }

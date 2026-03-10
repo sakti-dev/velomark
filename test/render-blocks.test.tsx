@@ -471,4 +471,19 @@ describe("Velomark block rendering", () => {
     expect(custom?.textContent).toContain("Alpha paragraph.");
     expect(host.querySelector('[data-velomark-container="info"]')).toBeNull();
   });
+
+  it("renders leaf directives as standalone container shells", () => {
+    const host = document.createElement("div");
+    document.body.append(host);
+
+    const dispose = render(
+      () => <Velomark markdown={'::callout{title="Heads up"}'} />,
+      host
+    );
+    mountedRoots.push(dispose);
+
+    const directive = host.querySelector('[data-velomark-leaf-directive="callout"]');
+    expect(directive).not.toBeNull();
+    expect(directive?.getAttribute("data-velomark-attr-title")).toBe("Heads up");
+  });
 });

@@ -1,8 +1,16 @@
 import { For, type Component, type JSX } from "solid-js";
+import { Dynamic } from "solid-js/web";
 import { parseInline } from "../../parser/inline-parser";
-import type { InlineToken, ReferenceDefinitionMap } from "../../types";
+import type {
+  InlineToken,
+  ReferenceDefinitionMap,
+  VelomarkContainerRendererProps,
+} from "../../types";
 
-function renderToken(token: InlineToken): JSX.Element {
+function renderToken(
+  token: InlineToken,
+  containers?: Record<string, Component<VelomarkContainerRendererProps>>
+): JSX.Element {
   switch (token.type) {
     case "break":
       return <br />;
@@ -24,18 +32,45 @@ function renderToken(token: InlineToken): JSX.Element {
       );
     case "html":
       return <span data-velomark-inline-html="">{token.value}</span>;
+    case "text-directive": {
+      const CustomContainer = containers?.[token.name];
+      const children = (
+        <For each={token.children}>{(child) => renderToken(child, containers)}</For>
+      );
+
+      if (CustomContainer) {
+        return (
+          <Dynamic
+            component={CustomContainer}
+            attributes={token.attributes}
+            name={token.name}
+          >
+            {children}
+          </Dynamic>
+        );
+      }
+
+      return (
+        <span
+          data-velomark-attr-tone={token.attributes?.tone}
+          data-velomark-text-directive={token.name}
+        >
+          {children}
+        </span>
+      );
+    }
     case "code":
       return <code>{token.text}</code>;
     case "delete":
       return (
         <del>
-          <For each={token.children}>{(child) => renderToken(child)}</For>
+          <For each={token.children}>{(child) => renderToken(child, containers)}</For>
         </del>
       );
     case "emphasis":
       return (
         <em>
-          <For each={token.children}>{(child) => renderToken(child)}</For>
+          <For each={token.children}>{(child) => renderToken(child, containers)}</For>
         </em>
       );
     case "image":
@@ -45,7 +80,7 @@ function renderToken(token: InlineToken): JSX.Element {
     case "strong":
       return (
         <strong>
-          <For each={token.children}>{(child) => renderToken(child)}</For>
+          <For each={token.children}>{(child) => renderToken(child, containers)}</For>
         </strong>
       );
     case "link":
@@ -56,17 +91,18 @@ function renderToken(token: InlineToken): JSX.Element {
           target="_blank"
           title={token.title}
         >
-          <For each={token.children}>{(child) => renderToken(child)}</For>
+          <For each={token.children}>{(child) => renderToken(child, containers)}</For>
         </a>
       );
   }
 }
 
 export const RenderInline: Component<{
+  containers?: Record<string, Component<VelomarkContainerRendererProps>>;
   definitions?: ReferenceDefinitionMap;
   text: string;
 }> = (props) => {
   const tokens = () => parseInline(props.text, props.definitions);
 
-  return <For each={tokens()}>{(token) => renderToken(token)}</For>;
+  return <For each={tokens()}>{(token) => renderToken(token, props.containers)}</For>;
 };

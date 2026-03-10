@@ -1,6 +1,7 @@
 import { render } from "solid-js/web";
 import { afterEach, describe, expect, it } from "vitest";
 import { RenderInline } from "../src/render/inline/render-inline";
+import type { VelomarkContainerRendererProps } from "../src";
 
 const mountedRoots: Array<() => void> = [];
 
@@ -175,6 +176,48 @@ describe("RenderInline", () => {
     expect(inlineHtml).not.toBeNull();
     expect(inlineHtml?.textContent).toBe("<span>hi</span>");
     expect(host.querySelector("span > span")).toBeNull();
+  });
+
+  it("renders text directives with inline content", () => {
+    const host = document.createElement("div");
+    document.body.append(host);
+
+    const dispose = render(
+      () => <RenderInline text='See :badge[Beta]{tone="info"} now' />,
+      host
+    );
+    mountedRoots.push(dispose);
+
+    const directive = host.querySelector('[data-velomark-text-directive="badge"]');
+    expect(directive).not.toBeNull();
+    expect(directive?.getAttribute("data-velomark-attr-tone")).toBe("info");
+    expect(directive?.textContent).toBe("Beta");
+  });
+
+  it("allows custom renderers for text directives", () => {
+    const host = document.createElement("div");
+    document.body.append(host);
+
+    const Badge = (props: VelomarkContainerRendererProps) => (
+      <mark data-custom-inline={props.name} data-tone={props.attributes?.tone}>
+        {props.children}
+      </mark>
+    );
+
+    const dispose = render(
+      () =>
+        <RenderInline
+          containers={{ badge: Badge }}
+          text='See :badge[Beta]{tone="info"} now'
+        />,
+      host
+    );
+    mountedRoots.push(dispose);
+
+    const custom = host.querySelector("[data-custom-inline]");
+    expect(custom?.getAttribute("data-custom-inline")).toBe("badge");
+    expect(custom?.getAttribute("data-tone")).toBe("info");
+    expect(custom?.textContent).toBe("Beta");
   });
 
   it("renders hard line break tokens as br elements", () => {

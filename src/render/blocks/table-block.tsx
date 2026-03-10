@@ -1,10 +1,15 @@
 import { For, type Component } from "solid-js";
 import type { TableBlockData } from "../../parser/block-boundaries";
-import type { ReferenceDefinitionMap, RenderBlock } from "../../types";
+import type {
+  ReferenceDefinitionMap,
+  RenderBlock,
+  VelomarkContainerRendererProps,
+} from "../../types";
 import { RenderInline } from "../inline/render-inline";
 
 export const TableBlock: Component<{
   block: RenderBlock<TableBlockData>;
+  containers?: Record<string, Component<VelomarkContainerRendererProps>>;
   debug?: boolean;
   definitions?: ReferenceDefinitionMap;
   index: number;
@@ -25,7 +30,11 @@ export const TableBlock: Component<{
             <For each={header()}>
               {(cell, index) => (
                 <th data-velomark-align={align(index())}>
-                  <RenderInline definitions={props.definitions} text={cell} />
+                  <RenderInline
+                    containers={props.containers}
+                    definitions={props.definitions}
+                    text={cell}
+                  />
                 </th>
               )}
             </For>
@@ -38,7 +47,11 @@ export const TableBlock: Component<{
                 <For each={row}>
                   {(cell, index) => (
                     <td data-velomark-align={align(index())}>
-                      <RenderInline definitions={props.definitions} text={cell} />
+                      <RenderInline
+                        containers={props.containers}
+                        definitions={props.definitions}
+                        text={cell}
+                      />
                     </td>
                   )}
                 </For>

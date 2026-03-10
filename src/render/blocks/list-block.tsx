@@ -1,10 +1,15 @@
 import { For, type Component } from "solid-js";
 import type { ListBlockData } from "../../parser/block-boundaries";
-import type { ReferenceDefinitionMap, RenderBlock } from "../../types";
+import type {
+  ReferenceDefinitionMap,
+  RenderBlock,
+  VelomarkContainerRendererProps,
+} from "../../types";
 import { RenderInline } from "../inline/render-inline";
 
 export const ListBlock: Component<{
   block: RenderBlock<ListBlockData>;
+  containers?: Record<string, Component<VelomarkContainerRendererProps>>;
   debug?: boolean;
   definitions?: ReferenceDefinitionMap;
   index: number;
@@ -20,12 +25,20 @@ export const ListBlock: Component<{
   const renderItemContent = (item: ListBlockData["items"][number]) => (
     <>
       {item.checked === undefined ? (
-        <RenderInline definitions={props.definitions} text={item.text} />
+        <RenderInline
+          containers={props.containers}
+          definitions={props.definitions}
+          text={item.text}
+        />
       ) : (
         <label>
           <input checked={item.checked} disabled type="checkbox" />
           <span>
-            <RenderInline definitions={props.definitions} text={item.text} />
+            <RenderInline
+              containers={props.containers}
+              definitions={props.definitions}
+              text={item.text}
+            />
           </span>
         </label>
       )}
@@ -41,6 +54,7 @@ export const ListBlock: Component<{
               fingerprint: `${props.block.fingerprint}:${child.kind}:${item.text}`,
               data: child.data,
             }}
+            containers={props.containers}
             debug={props.debug}
             definitions={props.definitions}
             index={props.index}

@@ -49,6 +49,13 @@ export interface InlineHtmlToken {
   value: string;
 }
 
+export interface InlineDirectiveToken {
+  attributes?: Record<string, string>;
+  children: InlineToken[];
+  name: string;
+  type: "text-directive";
+}
+
 export interface InlineImageToken {
   alt: string;
   src: string;
@@ -84,6 +91,7 @@ export type InlineToken =
   | InlineBreakToken
   | InlineCodeToken
   | InlineDeleteToken
+  | InlineDirectiveToken
   | InlineEmphasisToken
   | InlineFootnoteReferenceToken
   | InlineHtmlToken

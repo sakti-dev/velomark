@@ -1,10 +1,15 @@
 import { For, type Component } from "solid-js";
 import type { BlockquoteBlockData } from "../../parser/block-boundaries";
-import type { ReferenceDefinitionMap, RenderBlock } from "../../types";
+import type {
+  ReferenceDefinitionMap,
+  RenderBlock,
+  VelomarkContainerRendererProps,
+} from "../../types";
 import { RenderInline } from "../inline/render-inline";
 
 export const BlockquoteBlock: Component<{
   block: RenderBlock<BlockquoteBlockData>;
+  containers?: Record<string, Component<VelomarkContainerRendererProps>>;
   debug?: boolean;
   definitions?: ReferenceDefinitionMap;
   index: number;
@@ -18,7 +23,11 @@ export const BlockquoteBlock: Component<{
       <For each={props.block.data.paragraphs}>
         {(paragraph) => (
           <p>
-            <RenderInline definitions={props.definitions} text={paragraph} />
+            <RenderInline
+              containers={props.containers}
+              definitions={props.definitions}
+              text={paragraph}
+            />
           </p>
         )}
       </For>
