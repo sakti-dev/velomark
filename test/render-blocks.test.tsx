@@ -1,12 +1,13 @@
 import { createSignal } from "solid-js";
 import { render } from "solid-js/web";
-import { afterEach, describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { Velomark } from "../src";
 import type { VelomarkContainerRendererProps } from "../src";
 
 const mountedRoots: Array<() => void> = [];
 
 afterEach(() => {
+  vi.useRealTimers();
   while (mountedRoots.length > 0) {
     mountedRoots.pop()?.();
   }
@@ -130,10 +131,11 @@ describe("Velomark block rendering", () => {
     expect(shell?.querySelector('[data-velomark-code-language]')?.textContent).toBe(
       "ts"
     );
+    expect(shell?.querySelector('[data-velomark-code-header]')).not.toBeNull();
     expect(shell?.querySelector("pre > code")?.textContent).toBe(
       "const answer = 42;"
     );
-    expect(shell?.querySelector('[data-velomark-code-copy]')).not.toBeNull();
+    expect(shell?.querySelector('[data-velomark-code-copy]')?.textContent).toBe("Copy");
   });
 
   it("omits the language label for unlabeled code fences", () => {
@@ -171,6 +173,46 @@ describe("Velomark block rendering", () => {
       "ts"
     );
     expect(shell?.querySelector('[data-velomark-code-copy]')).toBeNull();
+  });
+
+  it("shows copied feedback after the copy action succeeds", async () => {
+    vi.useFakeTimers();
+    const clipboard = {
+      writeText: vi.fn(async () => undefined),
+    };
+    Object.defineProperty(window.navigator, "clipboard", {
+      configurable: true,
+      value: clipboard,
+    });
+
+    const host = document.createElement("div");
+    document.body.append(host);
+
+    const dispose = render(
+      () => <Velomark markdown={"```ts\nconst answer = 42;\n```"} />,
+      host
+    );
+    mountedRoots.push(dispose);
+
+    const copyButton = host.querySelector(
+      '[data-velomark-code-copy]'
+    ) as HTMLButtonElement | null;
+    expect(copyButton?.textContent).toBe("Copy");
+
+    copyButton?.click();
+    await Promise.resolve();
+    await Promise.resolve();
+
+    expect(clipboard.writeText).toHaveBeenCalledWith("const answer = 42;");
+    expect(
+      host.querySelector('[data-velomark-code-copy]')?.textContent
+    ).toBe("Copied");
+
+    await vi.advanceTimersByTimeAsync(1_500);
+
+    expect(
+      host.querySelector('[data-velomark-code-copy]')?.textContent
+    ).toBe("Copy");
   });
 
   it("renders tables with a generic wrapper and column alignment", () => {

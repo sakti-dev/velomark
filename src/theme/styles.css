@@ -3,6 +3,8 @@
   --velomark-color-muted: #94a3b8;
   --velomark-color-border: #334155;
   --velomark-color-accent: #38bdf8;
+  --velomark-color-surface: #111827;
+  --velomark-color-surface-strong: #0b1220;
   --velomark-color-code-bg: #0f172a;
   --velomark-block-gap: 1rem;
   --velomark-radius: 0.5rem;
@@ -18,9 +20,77 @@
 .velomark pre {
   background: var(--velomark-color-code-bg);
   border: 1px solid var(--velomark-color-border);
-  border-radius: var(--velomark-radius);
+  border-radius: 0 0 var(--velomark-radius) var(--velomark-radius);
   overflow-x: auto;
+  margin: 0;
   padding: 0.875rem 1rem;
+}
+
+.velomark [data-velomark-code-header] {
+  align-items: center;
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--velomark-color-surface) 94%, white 6%),
+    var(--velomark-color-surface-strong)
+  );
+  border: 1px solid var(--velomark-color-border);
+  border-bottom: 0;
+  border-radius: var(--velomark-radius) var(--velomark-radius) 0 0;
+  display: flex;
+  gap: 0.75rem;
+  justify-content: space-between;
+  min-height: 2.5rem;
+  padding: 0.5rem 0.75rem;
+}
+
+.velomark [data-velomark-code-language] {
+  color: var(--velomark-color-muted);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.velomark [data-velomark-code-actions] {
+  align-items: center;
+  display: inline-flex;
+  gap: 0.45rem;
+}
+
+.velomark [data-velomark-code-copy],
+.velomark [data-velomark-code-view-toggle] {
+  appearance: none;
+  background: color-mix(in srgb, var(--velomark-color-surface) 86%, white 14%);
+  border: 1px solid color-mix(in srgb, var(--velomark-color-border) 78%, white 22%);
+  border-radius: 999px;
+  color: var(--velomark-color-text);
+  cursor: pointer;
+  font-size: 0.73rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  line-height: 1;
+  padding: 0.42rem 0.72rem;
+  transition:
+    background-color 120ms ease,
+    border-color 120ms ease,
+    transform 120ms ease;
+}
+
+.velomark [data-velomark-code-copy]:hover,
+.velomark [data-velomark-code-view-toggle]:hover {
+  background: color-mix(in srgb, var(--velomark-color-surface) 70%, white 30%);
+  border-color: color-mix(in srgb, var(--velomark-color-accent) 35%, var(--velomark-color-border) 65%);
+}
+
+.velomark [data-velomark-code-copy]:active,
+.velomark [data-velomark-code-view-toggle]:active {
+  transform: translateY(1px);
+}
+
+.velomark [data-velomark-code-copy][data-velomark-code-copy-state="copied"] {
+  background: color-mix(in srgb, var(--velomark-color-accent) 24%, var(--velomark-color-surface) 76%);
+  border-color: color-mix(in srgb, var(--velomark-color-accent) 55%, var(--velomark-color-border) 45%);
+  color: white;
 }
 
 .velomark a {
