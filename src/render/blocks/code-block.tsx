@@ -42,7 +42,6 @@ export const CodeBlock: Component<{
     return (
       <MermaidBlock
         block={props.block}
-        codeBlockOptions={props.codeBlockOptions}
         debug={props.debug}
         index={props.index}
       />

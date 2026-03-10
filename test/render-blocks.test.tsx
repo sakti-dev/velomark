@@ -480,7 +480,7 @@ describe("Velomark block rendering", () => {
     expect(mathBlock?.querySelector("pre > code")?.textContent).toBe("\\frac{1");
   });
 
-  it("renders mermaid code blocks with a diagram shell", async () => {
+  it("renders mermaid code blocks directly as diagram blocks", async () => {
     const host = document.createElement("div");
     document.body.append(host);
     const svgPrototype = window.SVGElement.prototype as SVGElement & {
@@ -524,11 +524,14 @@ describe("Velomark block rendering", () => {
     ).not.toBeNull();
     expect(mermaidBlock?.querySelector("svg")).not.toBeNull();
     expect(mermaidBlock?.querySelector("pre > code")).toBeNull();
+    expect(mermaidBlock?.querySelector("pre")).toBeNull();
+    expect(mermaidBlock?.querySelector("code")).toBeNull();
+    expect(mermaidBlock?.querySelector('[data-velomark-code-header]')).toBeNull();
     expect(mermaidBlock?.querySelector('[data-velomark-code-view-toggle]')).toBeNull();
     expect(mermaidBlock?.querySelector('[data-velomark-code-copy]')).toBeNull();
   });
 
-  it("falls back to source shell when mermaid rendering fails", async () => {
+  it("falls back to bare source when mermaid rendering fails", async () => {
     const host = document.createElement("div");
     document.body.append(host);
 
@@ -546,6 +549,8 @@ describe("Velomark block rendering", () => {
     expect(
       mermaidBlock?.querySelector("[data-velomark-mermaid-diagram]")
     ).toBeNull();
+    expect(mermaidBlock?.querySelector('[data-velomark-code-header]')).toBeNull();
+    expect(mermaidBlock?.querySelector('[data-velomark-code-copy]')).toBeNull();
     expect(mermaidBlock?.querySelector("pre > code")?.textContent).toContain(
       "not a valid diagram"
     );
