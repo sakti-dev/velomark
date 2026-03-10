@@ -45,6 +45,25 @@ function parseLink(source: string, start: number) {
   };
 }
 
+function parseImage(source: string, start: number) {
+  if (source[start] !== "!" || source[start + 1] !== "[") {
+    return null;
+  }
+  const altEnd = source.indexOf("]", start + 2);
+  if (altEnd === -1 || source[altEnd + 1] !== "(") {
+    return null;
+  }
+  const srcEnd = source.indexOf(")", altEnd + 2);
+  if (srcEnd === -1) {
+    return null;
+  }
+  return {
+    alt: source.slice(start + 2, altEnd),
+    src: source.slice(altEnd + 2, srcEnd),
+    end: srcEnd + 1,
+  };
+}
+
 export function parseInline(source: string): InlineToken[] {
   const tokens: InlineToken[] = [];
   let index = 0;
@@ -141,6 +160,19 @@ export function parseInline(source: string): InlineToken[] {
           type: "link",
           href: parsed.href,
           children: parseInline(parsed.label),
+        });
+        index = parsed.end;
+        continue;
+      }
+    }
+
+    if (current === "!") {
+      const parsed = parseImage(source, index);
+      if (parsed) {
+        tokens.push({
+          type: "image",
+          alt: parsed.alt,
+          src: parsed.src,
         });
         index = parsed.end;
         continue;

@@ -38,4 +38,21 @@ describe("RenderInline", () => {
     const strike = host.querySelector("del");
     expect(strike?.textContent).toBe("old");
   });
+
+  it("renders inline images with alt and lazy loading", () => {
+    const host = document.createElement("div");
+    document.body.append(host);
+
+    const dispose = render(
+      () =>
+        <RenderInline text="Logo ![alt text](https://example.com/logo.png)" />,
+      host
+    );
+    mountedRoots.push(dispose);
+
+    const image = host.querySelector("img");
+    expect(image?.getAttribute("src")).toBe("https://example.com/logo.png");
+    expect(image?.getAttribute("alt")).toBe("alt text");
+    expect(image?.getAttribute("loading")).toBe("lazy");
+  });
 });

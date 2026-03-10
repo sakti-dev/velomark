@@ -47,6 +47,17 @@ describe("parseInline", () => {
     ]);
   });
 
+  it("parses inline images", () => {
+    expect(parseInline("Logo ![alt text](https://example.com/logo.png)")).toEqual([
+      { type: "text", text: "Logo " },
+      {
+        type: "image",
+        alt: "alt text",
+        src: "https://example.com/logo.png",
+      },
+    ]);
+  });
+
   it("preserves escaped punctuation as literal text", () => {
     expect(parseInline(String.raw`\*literal\* \[link\]`)).toEqual([
       { type: "text", text: "*literal* [link]" },

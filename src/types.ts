@@ -25,6 +25,12 @@ export interface InlineDeleteToken {
   type: "delete";
 }
 
+export interface InlineImageToken {
+  alt: string;
+  src: string;
+  type: "image";
+}
+
 export interface InlineLinkToken {
   children: InlineToken[];
   href: string;
@@ -45,6 +51,7 @@ export type InlineToken =
   | InlineCodeToken
   | InlineDeleteToken
   | InlineEmphasisToken
+  | InlineImageToken
   | InlineLinkToken
   | InlineStrongToken
   | InlineTextToken;

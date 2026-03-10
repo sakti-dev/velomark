@@ -20,6 +20,8 @@ function renderToken(token: InlineToken): JSX.Element {
           <For each={token.children}>{(child) => renderToken(child)}</For>
         </em>
       );
+    case "image":
+      return <img alt={token.alt} loading="lazy" src={token.src} />;
     case "strong":
       return (
         <strong>
