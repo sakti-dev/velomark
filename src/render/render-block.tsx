@@ -8,7 +8,7 @@ import type {
   ParsedBlockData,
   TableBlockData,
 } from "../parser/block-boundaries";
-import type { RenderBlock } from "../types";
+import type { ReferenceDefinitionMap, RenderBlock } from "../types";
 import { BlockquoteBlock } from "./blocks/blockquote-block";
 import { CodeBlock } from "./blocks/code-block";
 import { HeadingBlock } from "./blocks/heading-block";
@@ -20,6 +20,7 @@ import { ThematicBreakBlock } from "./blocks/thematic-break-block";
 export const RenderBlockView: Component<{
   block: RenderBlock<ParsedBlockData>;
   debug?: boolean;
+  definitions?: ReferenceDefinitionMap;
   index: number;
 }> = (props) => {
   switch (props.block.kind) {
@@ -28,6 +29,7 @@ export const RenderBlockView: Component<{
         <ParagraphBlock
           block={props.block as RenderBlock<ParagraphBlockData>}
           debug={props.debug}
+          definitions={props.definitions}
           index={props.index}
         />
       );
@@ -36,6 +38,7 @@ export const RenderBlockView: Component<{
         <HeadingBlock
           block={props.block as RenderBlock<HeadingBlockData>}
           debug={props.debug}
+          definitions={props.definitions}
           index={props.index}
         />
       );
@@ -44,6 +47,7 @@ export const RenderBlockView: Component<{
         <BlockquoteBlock
           block={props.block as RenderBlock<BlockquoteBlockData>}
           debug={props.debug}
+          definitions={props.definitions}
           index={props.index}
         />
       );
@@ -52,6 +56,7 @@ export const RenderBlockView: Component<{
         <ListBlock
           block={props.block as RenderBlock<ListBlockData>}
           debug={props.debug}
+          definitions={props.definitions}
           index={props.index}
         />
       );
@@ -76,6 +81,7 @@ export const RenderBlockView: Component<{
         <TableBlock
           block={props.block as RenderBlock<TableBlockData>}
           debug={props.debug}
+          definitions={props.definitions}
           index={props.index}
         />
       );
@@ -95,6 +101,7 @@ export const RenderBlockView: Component<{
             } as RenderBlock<ParagraphBlockData>
           }
           debug={props.debug}
+          definitions={props.definitions}
           index={props.index}
         />
       );

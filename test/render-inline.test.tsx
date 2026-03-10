@@ -55,4 +55,23 @@ describe("RenderInline", () => {
     expect(image?.getAttribute("alt")).toBe("alt text");
     expect(image?.getAttribute("loading")).toBe("lazy");
   });
+
+  it("renders resolved reference-style links", () => {
+    const host = document.createElement("div");
+    document.body.append(host);
+
+    const dispose = render(
+      () =>
+        <RenderInline
+          definitions={{ guide: { href: "https://example.com/guide" } }}
+          text="Open [docs][guide]"
+        />,
+      host
+    );
+    mountedRoots.push(dispose);
+
+    const link = host.querySelector("a");
+    expect(link?.getAttribute("href")).toBe("https://example.com/guide");
+    expect(link?.textContent).toBe("docs");
+  });
 });

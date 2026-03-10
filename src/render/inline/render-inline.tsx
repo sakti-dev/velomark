@@ -1,6 +1,6 @@
 import { For, type Component, type JSX } from "solid-js";
 import { parseInline } from "../../parser/inline-parser";
-import type { InlineToken } from "../../types";
+import type { InlineToken, ReferenceDefinitionMap } from "../../types";
 
 function renderToken(token: InlineToken): JSX.Element {
   switch (token.type) {
@@ -37,8 +37,11 @@ function renderToken(token: InlineToken): JSX.Element {
   }
 }
 
-export const RenderInline: Component<{ text: string }> = (props) => {
-  const tokens = () => parseInline(props.text);
+export const RenderInline: Component<{
+  definitions?: ReferenceDefinitionMap;
+  text: string;
+}> = (props) => {
+  const tokens = () => parseInline(props.text, props.definitions);
 
   return <For each={tokens()}>{(token) => renderToken(token)}</For>;
 };

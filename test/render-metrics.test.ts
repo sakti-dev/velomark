@@ -4,8 +4,8 @@ import { parseMarkdownToBlocks } from "../src/parser/block-parser";
 
 describe("render metrics", () => {
   it("reports reused and appended blocks for append-only updates", () => {
-    const previousBlocks = parseMarkdownToBlocks("Alpha");
-    const nextBlocks = parseMarkdownToBlocks("Alpha\n\nBeta");
+    const previousBlocks = parseMarkdownToBlocks("Alpha").blocks;
+    const nextBlocks = parseMarkdownToBlocks("Alpha\n\nBeta").blocks;
 
     const metrics = collectRenderMetrics(previousBlocks, nextBlocks);
 
@@ -16,8 +16,8 @@ describe("render metrics", () => {
   });
 
   it("reports replaced suffix blocks for tail rewrites", () => {
-    const previousBlocks = parseMarkdownToBlocks("Alpha\n\nBeta");
-    const nextBlocks = parseMarkdownToBlocks("Alpha\n\nGamma");
+    const previousBlocks = parseMarkdownToBlocks("Alpha\n\nBeta").blocks;
+    const nextBlocks = parseMarkdownToBlocks("Alpha\n\nGamma").blocks;
 
     const metrics = collectRenderMetrics(previousBlocks, nextBlocks);
 

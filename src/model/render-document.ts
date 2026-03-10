@@ -29,7 +29,7 @@ export function buildRenderDocument(
   markdown: string
 ): RenderDocument<ParsedBlockData> {
   const previousBlocks = previousDocument?.blocks ?? [];
-  const draftBlocks = parseMarkdownToBlocks(markdown);
+  const { blocks: draftBlocks, definitions } = parseMarkdownToBlocks(markdown);
   const nextBlocksWithIds = assignStableBlockIds(previousBlocks, draftBlocks);
   const blocks = nextBlocksWithIds.map((block, index) => {
     const previousBlock = previousBlocks[index];
@@ -38,6 +38,7 @@ export function buildRenderDocument(
 
   return {
     blocks,
+    definitions,
     version: (previousDocument?.version ?? 0) + 1,
   };
 }

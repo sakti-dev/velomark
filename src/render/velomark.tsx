@@ -33,7 +33,12 @@ export function Velomark(props: VelomarkProps) {
     >
       <For each={document().blocks}>
         {(block, index) => (
-          <RenderBlockView block={block} debug={props.debug} index={index()} />
+          <RenderBlockView
+            block={block}
+            debug={props.debug}
+            definitions={document().definitions}
+            index={index()}
+          />
         )}
       </For>
     </div>

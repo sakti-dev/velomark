@@ -1,11 +1,12 @@
 import type { Component } from "solid-js";
 import type { ParagraphBlockData } from "../../parser/block-boundaries";
-import type { RenderBlock } from "../../types";
+import type { ReferenceDefinitionMap, RenderBlock } from "../../types";
 import { RenderInline } from "../inline/render-inline";
 
 export const ParagraphBlock: Component<{
   block: RenderBlock<ParagraphBlockData>;
   debug?: boolean;
+  definitions?: ReferenceDefinitionMap;
   index: number;
 }> = (props) => {
   return (
@@ -14,7 +15,7 @@ export const ParagraphBlock: Component<{
       data-velomark-block-index={props.index}
       data-velomark-block-kind={props.block.kind}
     >
-      <RenderInline text={props.block.data.text} />
+      <RenderInline definitions={props.definitions} text={props.block.data.text} />
     </p>
   );
 };

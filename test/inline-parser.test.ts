@@ -58,6 +58,36 @@ describe("parseInline", () => {
     ]);
   });
 
+  it("resolves reference-style links with provided definitions", () => {
+    expect(
+      parseInline("Open [docs][guide]", {
+        guide: { href: "https://example.com/guide" },
+      })
+    ).toEqual([
+      { type: "text", text: "Open " },
+      {
+        type: "link",
+        href: "https://example.com/guide",
+        children: [{ type: "text", text: "docs" }],
+      },
+    ]);
+  });
+
+  it("resolves reference-style images with provided definitions", () => {
+    expect(
+      parseInline("Logo ![alt text][logo]", {
+        logo: { href: "https://example.com/logo.png" },
+      })
+    ).toEqual([
+      { type: "text", text: "Logo " },
+      {
+        type: "image",
+        alt: "alt text",
+        src: "https://example.com/logo.png",
+      },
+    ]);
+  });
+
   it("preserves escaped punctuation as literal text", () => {
     expect(parseInline(String.raw`\*literal\* \[link\]`)).toEqual([
       { type: "text", text: "*literal* [link]" },

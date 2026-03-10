@@ -1,4 +1,4 @@
-import type { InlineToken } from "../types";
+import type { InlineToken, ReferenceDefinitionMap } from "../types";
 
 const ESCAPABLE_CHARACTERS = new Set(["\\", "*", "`", "[", "]", "(", ")"]);
 
@@ -64,7 +64,49 @@ function parseImage(source: string, start: number) {
   };
 }
 
-export function parseInline(source: string): InlineToken[] {
+function normalizeReferenceId(identifier: string): string {
+  return identifier.trim().toLowerCase();
+}
+
+function parseReferenceLink(source: string, start: number) {
+  const labelEnd = source.indexOf("]", start + 1);
+  if (labelEnd === -1 || source[labelEnd + 1] !== "[") {
+    return null;
+  }
+  const referenceEnd = source.indexOf("]", labelEnd + 2);
+  if (referenceEnd === -1) {
+    return null;
+  }
+  return {
+    label: source.slice(start + 1, labelEnd),
+    reference: source.slice(labelEnd + 2, referenceEnd),
+    end: referenceEnd + 1,
+  };
+}
+
+function parseReferenceImage(source: string, start: number) {
+  if (source[start] !== "!" || source[start + 1] !== "[") {
+    return null;
+  }
+  const altEnd = source.indexOf("]", start + 2);
+  if (altEnd === -1 || source[altEnd + 1] !== "[") {
+    return null;
+  }
+  const referenceEnd = source.indexOf("]", altEnd + 2);
+  if (referenceEnd === -1) {
+    return null;
+  }
+  return {
+    alt: source.slice(start + 2, altEnd),
+    reference: source.slice(altEnd + 2, referenceEnd),
+    end: referenceEnd + 1,
+  };
+}
+
+export function parseInline(
+  source: string,
+  definitions: ReferenceDefinitionMap = {}
+): InlineToken[] {
   const tokens: InlineToken[] = [];
   let index = 0;
 
@@ -98,7 +140,7 @@ export function parseInline(source: string): InlineToken[] {
       if (parsed) {
         tokens.push({
           type: "delete",
-          children: parseInline(parsed.content),
+          children: parseInline(parsed.content, definitions),
         });
         index = parsed.end;
         continue;
@@ -110,7 +152,7 @@ export function parseInline(source: string): InlineToken[] {
       if (parsed) {
         tokens.push({
           type: "strong",
-          children: parseInline(parsed.content),
+          children: parseInline(parsed.content, definitions),
         });
         index = parsed.end;
         continue;
@@ -122,7 +164,7 @@ export function parseInline(source: string): InlineToken[] {
       if (parsed) {
         tokens.push({
           type: "strong",
-          children: parseInline(parsed.content),
+          children: parseInline(parsed.content, definitions),
         });
         index = parsed.end;
         continue;
@@ -134,7 +176,7 @@ export function parseInline(source: string): InlineToken[] {
       if (parsed) {
         tokens.push({
           type: "emphasis",
-          children: parseInline(parsed.content),
+          children: parseInline(parsed.content, definitions),
         });
         index = parsed.end;
         continue;
@@ -146,7 +188,7 @@ export function parseInline(source: string): InlineToken[] {
       if (parsed) {
         tokens.push({
           type: "emphasis",
-          children: parseInline(parsed.content),
+          children: parseInline(parsed.content, definitions),
         });
         index = parsed.end;
         continue;
@@ -154,12 +196,27 @@ export function parseInline(source: string): InlineToken[] {
     }
 
     if (current === "[") {
+      const referenceParsed = parseReferenceLink(source, index);
+      if (referenceParsed) {
+        const definition =
+          definitions[normalizeReferenceId(referenceParsed.reference)];
+        if (definition) {
+          tokens.push({
+            type: "link",
+            href: definition.href,
+            children: parseInline(referenceParsed.label, definitions),
+          });
+          index = referenceParsed.end;
+          continue;
+        }
+      }
+
       const parsed = parseLink(source, index);
       if (parsed) {
         tokens.push({
           type: "link",
           href: parsed.href,
-          children: parseInline(parsed.label),
+          children: parseInline(parsed.label, definitions),
         });
         index = parsed.end;
         continue;
@@ -167,6 +224,21 @@ export function parseInline(source: string): InlineToken[] {
     }
 
     if (current === "!") {
+      const referenceParsed = parseReferenceImage(source, index);
+      if (referenceParsed) {
+        const definition =
+          definitions[normalizeReferenceId(referenceParsed.reference)];
+        if (definition) {
+          tokens.push({
+            type: "image",
+            alt: referenceParsed.alt,
+            src: definition.href,
+          });
+          index = referenceParsed.end;
+          continue;
+        }
+      }
+
       const parsed = parseImage(source, index);
       if (parsed) {
         tokens.push({

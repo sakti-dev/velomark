@@ -205,4 +205,33 @@ describe("Velomark block rendering", () => {
     expect(nestedItems[0]?.textContent).toContain("Child A");
     expect(nestedItems[1]?.textContent).toContain("Child B");
   });
+
+  it("resolves reference-style links and images at the document level", () => {
+    const host = document.createElement("div");
+    document.body.append(host);
+
+    const dispose = render(
+      () =>
+        <Velomark
+          markdown={[
+            "See [docs][guide] and ![logo][brand].",
+            "",
+            "[guide]: https://example.com/guide",
+            "[brand]: https://example.com/logo.png",
+          ].join("\n")}
+        />,
+      host
+    );
+    mountedRoots.push(dispose);
+
+    const link = host.querySelector("p a");
+    expect(link?.getAttribute("href")).toBe("https://example.com/guide");
+    expect(link?.textContent).toBe("docs");
+
+    const image = host.querySelector("p img");
+    expect(image?.getAttribute("src")).toBe("https://example.com/logo.png");
+    expect(image?.getAttribute("alt")).toBe("logo");
+    expect(host.textContent).not.toContain("[guide]:");
+    expect(host.textContent).not.toContain("[brand]:");
+  });
 });

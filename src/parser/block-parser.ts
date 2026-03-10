@@ -1,8 +1,50 @@
 import { parseBlockBoundaries, type ParsedBlockData } from "./block-boundaries";
 import type { DraftRenderBlock } from "../model/stable-id";
+import type { ReferenceDefinitionMap } from "../types";
 
-export function parseMarkdownToBlocks(
-  markdown: string
-): DraftRenderBlock<ParsedBlockData>[] {
-  return parseBlockBoundaries(markdown);
+const REFERENCE_DEFINITION_RE = /^\[([^\]]+)\]:\s+(\S+)(?:\s+.+)?$/;
+
+function normalizeReferenceId(identifier: string): string {
+  return identifier.trim().toLowerCase();
+}
+
+export function extractReferenceDefinitions(markdown: string): {
+  content: string;
+  definitions: ReferenceDefinitionMap;
+} {
+  const definitions: ReferenceDefinitionMap = {};
+  const keptLines: string[] = [];
+
+  for (const line of markdown.split("\n")) {
+    const match = line.match(REFERENCE_DEFINITION_RE);
+    if (!match) {
+      keptLines.push(line);
+      continue;
+    }
+
+    const identifier = match[1];
+    const href = match[2];
+    if (!(identifier && href)) {
+      keptLines.push(line);
+      continue;
+    }
+
+    definitions[normalizeReferenceId(identifier)] = { href };
+  }
+
+  return {
+    content: keptLines.join("\n"),
+    definitions,
+  };
+}
+
+export function parseMarkdownToBlocks(markdown: string): {
+  blocks: DraftRenderBlock<ParsedBlockData>[];
+  definitions: ReferenceDefinitionMap;
+} {
+  const { content, definitions } = extractReferenceDefinitions(markdown);
+  return {
+    blocks: parseBlockBoundaries(content),
+    definitions,
+  };
 }

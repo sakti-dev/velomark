@@ -31,6 +31,12 @@ export interface InlineImageToken {
   type: "image";
 }
 
+export interface ReferenceDefinition {
+  href: string;
+}
+
+export type ReferenceDefinitionMap = Record<string, ReferenceDefinition>;
+
 export interface InlineLinkToken {
   children: InlineToken[];
   href: string;
@@ -68,6 +74,7 @@ export interface RenderBlock<TData = unknown> {
 
 export interface RenderDocument<TData = unknown> {
   blocks: RenderBlock<TData>[];
+  definitions: ReferenceDefinitionMap;
   version: number;
 }
 

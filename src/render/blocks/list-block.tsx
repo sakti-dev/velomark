@@ -1,11 +1,12 @@
 import { For, type Component } from "solid-js";
 import type { ListBlockData } from "../../parser/block-boundaries";
-import type { RenderBlock } from "../../types";
+import type { ReferenceDefinitionMap, RenderBlock } from "../../types";
 import { RenderInline } from "../inline/render-inline";
 
 export const ListBlock: Component<{
   block: RenderBlock<ListBlockData>;
   debug?: boolean;
+  definitions?: ReferenceDefinitionMap;
   index: number;
 }> = (props) => {
   const commonProps = {
@@ -19,12 +20,12 @@ export const ListBlock: Component<{
   const renderItemContent = (item: ListBlockData["items"][number]) => (
     <>
       {item.checked === undefined ? (
-        <RenderInline text={item.text} />
+        <RenderInline definitions={props.definitions} text={item.text} />
       ) : (
         <label>
           <input checked={item.checked} disabled type="checkbox" />
           <span>
-            <RenderInline text={item.text} />
+            <RenderInline definitions={props.definitions} text={item.text} />
           </span>
         </label>
       )}
@@ -41,6 +42,7 @@ export const ListBlock: Component<{
               data: child.data,
             }}
             debug={props.debug}
+            definitions={props.definitions}
             index={props.index}
           />
         )}
