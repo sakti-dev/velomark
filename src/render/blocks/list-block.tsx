@@ -16,24 +16,44 @@ export const ListBlock: Component<{
   } as const;
 
   const items = () => props.block.data.items;
+  const renderItemContent = (item: ListBlockData["items"][number]) => (
+    <>
+      {item.checked === undefined ? (
+        <RenderInline text={item.text} />
+      ) : (
+        <label>
+          <input checked={item.checked} disabled type="checkbox" />
+          <span>
+            <RenderInline text={item.text} />
+          </span>
+        </label>
+      )}
+      <For each={item.children ?? []}>
+        {(child) => (
+          <ListBlock
+            block={{
+              id: `${props.block.id}:${child.kind}:${item.text}`,
+              kind: child.kind,
+              sourceStart: props.block.sourceStart,
+              sourceEnd: props.block.sourceEnd,
+              status: props.block.status,
+              fingerprint: `${props.block.fingerprint}:${child.kind}:${item.text}`,
+              data: child.data,
+            }}
+            debug={props.debug}
+            index={props.index}
+          />
+        )}
+      </For>
+    </>
+  );
 
   if (props.block.data.ordered) {
     return (
       <ol {...commonProps}>
         <For each={items()}>
           {(item) => (
-            <li>
-              {item.checked === undefined ? (
-                <RenderInline text={item.text} />
-              ) : (
-                <label>
-                  <input checked={item.checked} disabled type="checkbox" />
-                  <span>
-                    <RenderInline text={item.text} />
-                  </span>
-                </label>
-              )}
-            </li>
+            <li>{renderItemContent(item)}</li>
           )}
         </For>
       </ol>
@@ -43,20 +63,7 @@ export const ListBlock: Component<{
   return (
     <ul {...commonProps}>
       <For each={items()}>
-        {(item) => (
-          <li>
-            {item.checked === undefined ? (
-              <RenderInline text={item.text} />
-            ) : (
-              <label>
-                <input checked={item.checked} disabled type="checkbox" />
-                <span>
-                  <RenderInline text={item.text} />
-                </span>
-              </label>
-            )}
-          </li>
-        )}
+        {(item) => <li>{renderItemContent(item)}</li>}
       </For>
     </ul>
   );

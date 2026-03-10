@@ -9,8 +9,10 @@ import {
   matchFence,
   matchHeading,
   matchOrderedList,
+  matchOrderedListDetail,
   matchTaskListItem,
   matchUnorderedList,
+  matchUnorderedListDetail,
 } from "./context";
 
 export interface ParagraphBlockData {
@@ -28,8 +30,14 @@ export interface BlockquoteBlockData {
 }
 
 export interface ListItemData {
+  children?: ListChildBlock[];
   checked?: boolean;
   text: string;
+}
+
+export interface ListChildBlock {
+  data: ListBlockData;
+  kind: "list";
 }
 
 export interface ListBlockData {
@@ -107,7 +115,31 @@ function parseTableAlignments(separatorLine: string): TableColumnAlign[] {
         return "right";
       }
       return "left";
-    });
+  });
+}
+
+function countLeadingSpaces(text: string): number {
+  let count = 0;
+  while (count < text.length && text[count] === " ") {
+    count += 1;
+  }
+  return count;
+}
+
+function fingerprintListItems(items: ListItemData[]): string {
+  return items
+    .map((item) => {
+      const taskPrefix =
+        item.checked === undefined ? "" : `[${item.checked ? "x" : " "}]`;
+      const childFingerprint = item.children
+        ?.map((child) => `list(${fingerprintListItems(child.data.items)})`)
+        .join(",");
+
+      return childFingerprint
+        ? `${taskPrefix}${item.text}{${childFingerprint}}`
+        : `${taskPrefix}${item.text}`;
+    })
+    .join("|");
 }
 
 function buildBlock<TData extends ParsedBlockData>(
@@ -270,32 +302,80 @@ export function parseBlockBoundaries(
       const items: ListItemData[] = [];
       let scanIndex = lineIndex;
       let sourceEnd = line.end;
+      const baseIndent = ordered
+        ? (matchOrderedListDetail(line.text)?.indent ?? 0)
+        : (matchUnorderedListDetail(line.text)?.indent ?? 0);
 
       while (scanIndex < lines.length) {
         const scanLine = lines[scanIndex];
         if (!scanLine) {
           break;
         }
-        const orderedMatch = matchOrderedList(scanLine.text);
-        const unorderedMatch = matchUnorderedList(scanLine.text);
+        const orderedMatch = ordered
+          ? matchOrderedListDetail(scanLine.text)
+          : null;
+        const unorderedMatch = ordered
+          ? null
+          : matchUnorderedListDetail(scanLine.text);
         const match = ordered ? orderedMatch : unorderedMatch;
-        if (!match) {
+        if (!match || match.indent !== baseIndent) {
           break;
         }
-        const itemText = match[1] ?? "";
+        const itemText = match.text;
         const taskItem = matchTaskListItem(itemText);
-        items.push(
-          taskItem
-            ? {
-                checked: taskItem.checked,
-                text: taskItem.text,
-              }
-            : {
-                text: itemText,
-              }
-        );
-        sourceEnd = scanLine.end;
+        const item: ListItemData = taskItem
+          ? {
+              checked: taskItem.checked,
+              text: taskItem.text,
+            }
+          : {
+              text: itemText,
+            };
         scanIndex += 1;
+
+        const childLines: string[] = [];
+        let childSourceEnd = sourceEnd;
+        while (scanIndex < lines.length) {
+          const childLine = lines[scanIndex];
+          if (!childLine) {
+            break;
+          }
+          const childOrdered = matchOrderedListDetail(childLine.text);
+          const childUnordered = matchUnorderedListDetail(childLine.text);
+          const sameLevelMatch = ordered ? childOrdered : childUnordered;
+          if (sameLevelMatch && sameLevelMatch.indent === baseIndent) {
+            break;
+          }
+          const rawIndent = countLeadingSpaces(childLine.text);
+          if (!isBlankLine(childLine.text) && rawIndent <= baseIndent) {
+            break;
+          }
+
+          childLines.push(childLine.text.slice(Math.min(baseIndent + 2, childLine.text.length)));
+          childSourceEnd = childLine.end;
+          scanIndex += 1;
+        }
+
+        if (childLines.length > 0) {
+          const childMarkdown = childLines.join("\n");
+          const childBlocks = parseBlockBoundaries(childMarkdown);
+          const nestedLists: ListChildBlock[] = [];
+          for (const childBlock of childBlocks) {
+            if (childBlock.kind !== "list") {
+              continue;
+            }
+            nestedLists.push({
+              kind: "list",
+              data: childBlock.data as ListBlockData,
+            });
+          }
+          if (nestedLists.length > 0) {
+            item.children = nestedLists;
+          }
+        }
+
+        items.push(item);
+        sourceEnd = childLines.length > 0 ? childSourceEnd : scanLine.end;
       }
 
       blocks.push(
@@ -304,11 +384,7 @@ export function parseBlockBoundaries(
           sourceStart,
           sourceEnd,
           scanIndex >= lines.length,
-          `list:${ordered ? "ordered" : "unordered"}:${items
-            .map((item) =>
-              item.checked === undefined ? item.text : `${item.checked ? "x" : " "}:${item.text}`
-            )
-            .join("|")}`,
+          `list:${ordered ? "ordered" : "unordered"}:${fingerprintListItems(items)}`,
           { ordered, items }
         )
       );

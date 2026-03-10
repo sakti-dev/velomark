@@ -181,4 +181,28 @@ describe("Velomark block rendering", () => {
     expect(cells[1]?.getAttribute("data-velomark-align")).toBe("center");
     expect(cells[2]?.getAttribute("data-velomark-align")).toBe("right");
   });
+
+  it("renders nested unordered lists inside list items", () => {
+    const host = document.createElement("div");
+    document.body.append(host);
+
+    const dispose = render(
+      () =>
+        <Velomark
+          markdown={["- Parent", "  - Child A", "  - Child B", "- Sibling"].join(
+            "\n"
+          )}
+        />,
+      host
+    );
+    mountedRoots.push(dispose);
+
+    const topLevelItems = host.querySelectorAll(":scope > .velomark > ul > li");
+    expect(topLevelItems).toHaveLength(2);
+
+    const nestedItems = host.querySelectorAll("ul ul > li");
+    expect(nestedItems).toHaveLength(2);
+    expect(nestedItems[0]?.textContent).toContain("Child A");
+    expect(nestedItems[1]?.textContent).toContain("Child B");
+  });
 });

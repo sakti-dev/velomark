@@ -112,6 +112,33 @@ describe("parseBlockBoundaries", () => {
     });
   });
 
+  it("parses nested unordered lists inside list items", () => {
+    const blocks = parseBlockBoundaries(
+      ["- Parent", "  - Child A", "  - Child B", "- Sibling"].join("\n")
+    );
+
+    expect(blocks).toHaveLength(1);
+    expect(blocks[0]?.kind).toBe("list");
+    expect(blocks[0]?.data).toMatchObject({
+      ordered: false,
+      items: [
+        {
+          text: "Parent",
+          children: [
+            {
+              kind: "list",
+              data: {
+                ordered: false,
+                items: [{ text: "Child A" }, { text: "Child B" }],
+              },
+            },
+          ],
+        },
+        { text: "Sibling" },
+      ],
+    });
+  });
+
   it("parses table column alignment from the separator row", () => {
     const blocks = parseBlockBoundaries(
       [
