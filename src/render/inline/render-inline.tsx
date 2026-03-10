@@ -16,6 +16,12 @@ function renderToken(token: InlineToken): JSX.Element {
           </a>
         </sup>
       );
+    case "inline-math":
+      return (
+        <span data-velomark-inline-math="">
+          <code>{token.value}</code>
+        </span>
+      );
     case "code":
       return <code>{token.text}</code>;
     case "delete":

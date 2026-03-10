@@ -146,6 +146,21 @@ describe("RenderInline", () => {
     expect(footnoteRef?.textContent).toBe("[1]");
   });
 
+  it("renders inline math with a semantic fallback shell", () => {
+    const host = document.createElement("div");
+    document.body.append(host);
+
+    const dispose = render(
+      () => <RenderInline text="Energy is $E = mc^2$ today" />,
+      host
+    );
+    mountedRoots.push(dispose);
+
+    const inlineMath = host.querySelector('[data-velomark-inline-math]');
+    expect(inlineMath).not.toBeNull();
+    expect(inlineMath?.querySelector("code")?.textContent).toBe("E = mc^2");
+  });
+
   it("renders hard line break tokens as br elements", () => {
     const host = document.createElement("div");
     document.body.append(host);

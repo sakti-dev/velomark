@@ -2,6 +2,7 @@ export type RenderBlockKind =
   | "paragraph"
   | "heading"
   | "code"
+  | "math"
   | "blockquote"
   | "list"
   | "thematic-break"
@@ -32,6 +33,11 @@ export interface InlineBreakToken {
 export interface InlineFootnoteReferenceToken {
   identifier: string;
   type: "footnote-reference";
+}
+
+export interface InlineMathToken {
+  type: "inline-math";
+  value: string;
 }
 
 export interface InlineImageToken {
@@ -71,6 +77,7 @@ export type InlineToken =
   | InlineDeleteToken
   | InlineEmphasisToken
   | InlineFootnoteReferenceToken
+  | InlineMathToken
   | InlineImageToken
   | InlineLinkToken
   | InlineStrongToken

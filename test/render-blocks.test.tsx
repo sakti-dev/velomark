@@ -327,4 +327,36 @@ describe("Velomark block rendering", () => {
     expect(footnoteItem?.textContent).toContain("Intro paragraph.");
     expect(footnoteItem?.textContent).toContain("Closing paragraph.");
   });
+
+  it("renders block math with a generic fallback shell", () => {
+    const host = document.createElement("div");
+    document.body.append(host);
+
+    const dispose = render(
+      () =>
+        <Velomark
+          markdown={["$$", "E = mc^2", "\\frac{a}{b} = c", "$$"].join("\n")}
+        />,
+      host
+    );
+    mountedRoots.push(dispose);
+
+    const mathBlock = host.querySelector('[data-velomark-block-kind="math"]');
+    expect(mathBlock).not.toBeNull();
+    expect(mathBlock?.querySelector("pre > code")?.textContent).toContain("E = mc^2");
+    expect(mathBlock?.querySelector("pre > code")?.textContent).toContain(
+      "\\frac{a}{b} = c"
+    );
+  });
+
+  it("renders single-line block math", () => {
+    const host = document.createElement("div");
+    document.body.append(host);
+
+    const dispose = render(() => <Velomark markdown={"$$E = mc^2$$"} />, host);
+    mountedRoots.push(dispose);
+
+    const mathBlock = host.querySelector('[data-velomark-block-kind="math"]');
+    expect(mathBlock?.querySelector("pre > code")?.textContent).toBe("E = mc^2");
+  });
 });

@@ -50,6 +50,10 @@ export interface CodeBlockData {
   language?: string;
 }
 
+export interface MathBlockData {
+  value: string;
+}
+
 export interface ThematicBreakBlockData {}
 
 export type TableColumnAlign = "center" | "left" | "right";
@@ -65,6 +69,7 @@ export type ParsedBlockData =
   | BlockquoteBlockData
   | ListBlockData
   | CodeBlockData
+  | MathBlockData
   | ThematicBreakBlockData
   | TableBlockData;
 
@@ -235,6 +240,62 @@ export function parseBlockBoundaries(
       });
       lineIndex = scanIndex;
       continue;
+    }
+
+    if (line.text.trim().startsWith("$$")) {
+      const trimmed = line.text.trim();
+      const sourceStart = line.start;
+
+      if (trimmed !== "$$" && trimmed.endsWith("$$")) {
+        const value = trimmed.slice(2, -2).trim();
+        blocks.push(
+          buildBlock(
+            "math",
+            sourceStart,
+            line.end,
+            lineIndex === lines.length - 1,
+            `math:${value}`,
+            { value }
+          )
+        );
+        lineIndex += 1;
+        continue;
+      }
+
+      if (trimmed === "$$") {
+        const valueLines: string[] = [];
+        let scanIndex = lineIndex + 1;
+        let sourceEnd = line.end;
+        let closed = false;
+
+        while (scanIndex < lines.length) {
+          const scanLine = lines[scanIndex];
+          if (!scanLine) {
+            break;
+          }
+          if (scanLine.text.trim() === "$$") {
+            sourceEnd = scanLine.end;
+            closed = true;
+            scanIndex += 1;
+            break;
+          }
+          valueLines.push(scanLine.text);
+          sourceEnd = scanLine.end;
+          scanIndex += 1;
+        }
+
+        const value = valueLines.join("\n");
+        blocks.push({
+          kind: "math",
+          sourceStart,
+          sourceEnd,
+          status: closed ? "complete" : "streaming",
+          fingerprint: `math:${value}`,
+          data: { value },
+        });
+        lineIndex = scanIndex;
+        continue;
+      }
     }
 
     const blockquoteMatch = matchBlockquote(line.text);

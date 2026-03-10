@@ -143,6 +143,20 @@ function parseFootnoteReference(source: string, start: number) {
   };
 }
 
+function parseInlineMath(source: string, start: number) {
+  if (source[start] !== "$" || source[start + 1] === "$") {
+    return null;
+  }
+  const end = source.indexOf("$", start + 1);
+  if (end === -1 || end === start + 1) {
+    return null;
+  }
+  return {
+    value: source.slice(start + 1, end),
+    end: end + 1,
+  };
+}
+
 export function parseInline(
   source: string,
   definitions: ReferenceDefinitionMap = {}
@@ -183,6 +197,15 @@ export function parseInline(
       const parsed = parseDelimited(source, index, "`");
       if (parsed) {
         tokens.push({ type: "code", text: parsed.content });
+        index = parsed.end;
+        continue;
+      }
+    }
+
+    if (current === "$") {
+      const parsed = parseInlineMath(source, index);
+      if (parsed) {
+        tokens.push({ type: "inline-math", value: parsed.value });
         index = parsed.end;
         continue;
       }

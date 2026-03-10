@@ -4,6 +4,7 @@ import type {
   CodeBlockData,
   HeadingBlockData,
   ListBlockData,
+  MathBlockData,
   ParagraphBlockData,
   ParsedBlockData,
   TableBlockData,
@@ -13,6 +14,7 @@ import { BlockquoteBlock } from "./blocks/blockquote-block";
 import { CodeBlock } from "./blocks/code-block";
 import { HeadingBlock } from "./blocks/heading-block";
 import { ListBlock } from "./blocks/list-block";
+import { MathBlock } from "./blocks/math-block";
 import { ParagraphBlock } from "./blocks/paragraph-block";
 import { TableBlock } from "./blocks/table-block";
 import { ThematicBreakBlock } from "./blocks/thematic-break-block";
@@ -64,6 +66,14 @@ export const RenderBlockView: Component<{
       return (
         <CodeBlock
           block={props.block as RenderBlock<CodeBlockData>}
+          debug={props.debug}
+          index={props.index}
+        />
+      );
+    case "math":
+      return (
+        <MathBlock
+          block={props.block as RenderBlock<MathBlockData>}
           debug={props.debug}
           index={props.index}
         />

@@ -222,4 +222,18 @@ describe("parseInline", () => {
       { type: "text", text: " Beta" },
     ]);
   });
+
+  it("parses inline math with dollar delimiters", () => {
+    expect(parseInline("Energy is $E = mc^2$ today")).toEqual([
+      { type: "text", text: "Energy is " },
+      { type: "inline-math", value: "E = mc^2" },
+      { type: "text", text: " today" },
+    ]);
+  });
+
+  it("does not parse unmatched price markers as inline math", () => {
+    expect(parseInline("Price is $100")).toEqual([
+      { type: "text", text: "Price is $100" },
+    ]);
+  });
 });
