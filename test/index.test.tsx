@@ -1,9 +1,13 @@
+import { readFileSync } from "node:fs";
+import { resolve } from "node:path";
 import { createRoot } from "solid-js";
 import { isServer, render } from "solid-js/web";
 import { describe, expect, it } from "vitest";
 import App from "../dev/App";
 import * as entry from "../src";
 import { Velomark } from "../src";
+
+const DEV_STYLES_PATH = resolve(__dirname, "../dev/styles.css");
 
 describe("environment", () => {
   it("runs on client", () => {
@@ -47,5 +51,12 @@ describe("Velomark", () => {
 
     dispose();
     container.remove();
+  });
+
+  it("keeps the playground stylesheet free of a private color palette", () => {
+    const source = readFileSync(DEV_STYLES_PATH, "utf8");
+
+    expect(source).not.toMatch(/#[\da-fA-F]{3,8}\b/);
+    expect(source).not.toMatch(/\brgba?\(/);
   });
 });
