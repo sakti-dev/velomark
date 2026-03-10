@@ -66,6 +66,107 @@ sequenceDiagram
     C-->>U: Real-time render
 ```
 
+### Class Diagram
+
+```mermaid
+classDiagram
+  class RenderDocument {
+    +blocks: RenderBlock[]
+    +definitions: ReferenceDefinitionMap
+    +version: number
+  }
+  class RenderBlock {
+    +id: string
+    +kind: string
+    +fingerprint: string
+  }
+  RenderDocument --> RenderBlock
+```
+
+### State Diagram
+
+```mermaid
+stateDiagram-v2
+  [*] --> Research
+  Research --> Scope
+  Scope --> TechnicalPlan
+  TechnicalPlan --> WorkPlan
+  WorkPlan --> Build
+  Build --> [*]
+```
+
+### ER Diagram
+
+```mermaid
+erDiagram
+  TASK_SESSION ||--o{ PROJECT_KEYPOINT : creates
+  TASK_SESSION {
+    string id
+    string runtimeMode
+    string status
+  }
+  PROJECT_KEYPOINT {
+    string id
+    string milestone
+    string summary
+  }
+```
+
+### Journey
+
+```mermaid
+journey
+  title Manual renderer review
+  section Playground
+    Load replay preset: 5: User
+    Toggle Mermaid preview: 4: User
+    Copy code block: 4: User
+  section Confidence
+    Verify selection stability: 5: User
+    Check packed consumer build: 4: Maintainer
+```
+
+### Gantt
+
+```mermaid
+gantt
+  title Velomark roadmap slice
+  dateFormat  YYYY-MM-DD
+  section Core
+  Syntax parity         :done,    syntax, 2026-03-08, 2d
+  Code block UX         :active,  ux,     2026-03-10, 2d
+  Edge-case corpus      :         corpus, 2026-03-12, 2d
+```
+
+### Mindmap
+
+```mermaid
+mindmap
+  root((Velomark))
+    Streaming
+      Append-first
+      Stable identity
+      Suffix-only rewrites
+    Syntax
+      Tables
+      Footnotes
+      Directives
+      Mermaid
+    UX
+      Copy
+      Preview
+      Source
+```
+
+### Pie
+
+```mermaid
+pie title Renderer focus
+  "Streaming correctness" : 45
+  "Syntax coverage" : 30
+  "Public ergonomics" : 25
+```
+
 ## 📝 GFM Features
 
 Incremark supports all GitHub Flavored Markdown (GFM) features.

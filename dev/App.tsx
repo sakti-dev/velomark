@@ -27,7 +27,7 @@ const EMPTY_DEBUG_METRICS: VelomarkDebugMetrics = {
 
 const App: Component = () => {
   const [activePresetId, setActivePresetId] = createSignal<PlaygroundPreset["id"]>(
-    initialPreset?.id ?? "chat-response"
+    initialPreset?.id ?? "incremark-solid-example"
   );
   const [markdown, setMarkdown] = createSignal(
     initialPreset?.markdown ?? "# Velomark Playground"

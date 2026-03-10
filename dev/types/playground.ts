@@ -1,13 +1,5 @@
 export interface PlaygroundPreset {
-  id:
-    | "agent-replay"
-    | "incremark-solid-example"
-    | "recorded-chat-replay"
-    | "chat-response"
-    | "mermaid-gallery"
-    | "code-heavy"
-    | "list-table"
-    | "mixed-long";
+  id: "incremark-solid-example";
   label: string;
   description: string;
   markdown: string;

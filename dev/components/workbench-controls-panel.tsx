@@ -81,23 +81,25 @@ export const WorkbenchControlsPanel: Component<WorkbenchControlsPanelProps> = (p
         </button>
       </div>
 
-      <div class="flex flex-wrap gap-2">
-        <For each={props.presets}>
-          {(preset) => (
-            <button
-              class={
-                preset.id === props.activePresetId
-                  ? `${baseButtonClass} ${activeButtonClass}`
-                  : baseButtonClass
-              }
-              onClick={() => props.onPresetSelect(preset)}
-              type="button"
-            >
-              {preset.label}
-            </button>
-          )}
-        </For>
-      </div>
+      <Show when={props.presets.length > 1}>
+        <div class="flex flex-wrap gap-2">
+          <For each={props.presets}>
+            {(preset) => (
+              <button
+                class={
+                  preset.id === props.activePresetId
+                    ? `${baseButtonClass} ${activeButtonClass}`
+                    : baseButtonClass
+                }
+                onClick={() => props.onPresetSelect(preset)}
+                type="button"
+              >
+                {preset.label}
+              </button>
+            )}
+          </For>
+        </div>
+      </Show>
 
       <div class="grid grid-cols-1 gap-3 xl:grid-cols-3">
         <label class="flex min-w-0 flex-col gap-2">

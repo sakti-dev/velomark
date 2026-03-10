@@ -3,23 +3,18 @@ import { describe, expect, it } from "vitest";
 import App from "../dev/App";
 
 describe("playground preset controls", () => {
-  it("switches presets and updates the renderer content", () => {
+  it("loads the single incremark example preset into the renderer", () => {
     const container = document.createElement("div");
     document.body.append(container);
 
     const dispose = render(() => <App />, container);
 
-    expect(container.textContent).toContain("Agent Replay Stress Sample");
-
-    const codeHeavyButton = Array.from(container.querySelectorAll("button")).find(
-      (button) => button.textContent?.includes("Code Heavy")
-    );
-    expect(codeHeavyButton).toBeTruthy();
-
-    (codeHeavyButton as HTMLButtonElement).click();
-
-    expect(container.textContent).toContain("Streamed Patch Example");
-    expect(container.textContent).not.toContain("Agent Replay Stress Sample");
+    expect(container.textContent).toContain("🚀 Incremark SolidJS Example");
+    expect(
+      Array.from(container.querySelectorAll("button")).some((button) =>
+        button.textContent?.includes("Incremark Example")
+      )
+    ).toBe(false);
 
     dispose();
     container.remove();
