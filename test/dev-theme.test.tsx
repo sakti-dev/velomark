@@ -2,6 +2,7 @@ import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { render } from "solid-js/web";
 import { afterEach, describe, expect, it } from "vitest";
+import { darkTheme, defaultTheme } from "../src";
 import App from "../dev/App";
 import { PLAYGROUND_THEME_STORAGE_KEY } from "../dev/hooks/use-playground-theme";
 
@@ -50,6 +51,11 @@ describe("playground theme contract", () => {
 
     expect(document.documentElement.classList.contains("dark")).toBe(true);
     expect(localStorage.getItem(PLAYGROUND_THEME_STORAGE_KEY)).toBe("dark");
+    expect(
+      (container
+        .querySelector("[data-velomark-root]") as HTMLDivElement | null)
+        ?.style.getPropertyValue("--velomark-color-surface-code")
+    ).toBe(darkTheme.color.surface.code);
 
     dispose();
     container.remove();
@@ -74,10 +80,20 @@ describe("playground theme contract", () => {
     lightButton?.click();
     expect(document.documentElement.classList.contains("dark")).toBe(false);
     expect(localStorage.getItem(PLAYGROUND_THEME_STORAGE_KEY)).toBe("light");
+    expect(
+      (container
+        .querySelector("[data-velomark-root]") as HTMLDivElement | null)
+        ?.style.getPropertyValue("--velomark-color-surface-code")
+    ).toBe(defaultTheme.color.surface.code);
 
     darkButton?.click();
     expect(document.documentElement.classList.contains("dark")).toBe(true);
     expect(localStorage.getItem(PLAYGROUND_THEME_STORAGE_KEY)).toBe("dark");
+    expect(
+      (container
+        .querySelector("[data-velomark-root]") as HTMLDivElement | null)
+        ?.style.getPropertyValue("--velomark-color-surface-code")
+    ).toBe(darkTheme.color.surface.code);
 
     dispose();
     container.remove();
