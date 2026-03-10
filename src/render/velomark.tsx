@@ -1,6 +1,10 @@
 import { For, createEffect, createMemo, createSignal, type Component } from "solid-js";
 import { buildRenderDocument, collectRenderMetrics } from "../model/render-document";
 import type { ParsedBlockData } from "../parser/block-boundaries";
+import { generateCssVars } from "../theme/generate-css-vars";
+import type { PartialVelomarkTheme } from "../theme/merge-theme";
+import { resolveTheme } from "../theme/apply-theme";
+import type { VelomarkThemeName } from "../theme/types";
 import type {
   VelomarkCodeBlockOptions,
   RenderDocument,
@@ -22,6 +26,7 @@ export interface VelomarkProps {
   debug?: boolean;
   markdown: string;
   onDebugMetrics?: (metrics: VelomarkDebugMetrics) => void;
+  theme?: VelomarkThemeName | PartialVelomarkTheme;
 }
 
 const BlockSlot: Component<{
@@ -63,6 +68,9 @@ export function Velomark(props: VelomarkProps) {
   const [document, setDocument] = createSignal<RenderDocument<ParsedBlockData>>(
     buildRenderDocument(undefined, props.markdown)
   );
+  const themeStyle = createMemo<Record<string, string>>(() =>
+    generateCssVars(resolveTheme(props.theme))
+  );
   const blockIds = createMemo(() => document().blocks.map((block) => block.id));
   const blockLookup = createMemo(
     () => new Map(document().blocks.map((block) => [block.id, block] as const))
@@ -82,6 +90,7 @@ export function Velomark(props: VelomarkProps) {
     <div
       class={props.class ? `velomark ${props.class}` : "velomark"}
       data-velomark-root=""
+      style={themeStyle()}
     >
       <For each={blockIds()}>
         {(blockId, index) => (

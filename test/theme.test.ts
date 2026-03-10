@@ -1,5 +1,6 @@
 import { existsSync, readFileSync } from "node:fs";
 import path from "node:path";
+import { render } from "solid-js/web";
 import { describe, expect, it } from "vitest";
 import {
   applyTheme,
@@ -11,6 +12,7 @@ import {
   velomarkTokens,
   type VelomarkTheme,
 } from "../src";
+import { Velomark } from "../src";
 
 describe("velomark theme surface", () => {
   it("exports default and dark theme presets", () => {
@@ -165,6 +167,58 @@ describe("velomark theme surface", () => {
     expect(element.style.getPropertyValue("--velomark-radius-md")).toBe(
       darkTheme.radius.md
     );
+  });
+
+  it('applies the dark preset when rendered with theme="dark"', () => {
+    const host = document.createElement("div");
+    document.body.append(host);
+
+    const dispose = render(
+      () => Velomark({ markdown: "Hello", theme: "dark" }),
+      host
+    );
+    const root = host.querySelector("[data-velomark-root]") as HTMLDivElement | null;
+
+    expect(
+      root?.style.getPropertyValue("--velomark-color-text-primary")
+    ).toBe(darkTheme.color.text.primary);
+    expect(root?.style.getPropertyValue("--velomark-color-surface-base")).toBe(
+      darkTheme.color.surface.base
+    );
+
+    dispose();
+    host.remove();
+  });
+
+  it("merges partial theme overrides at the renderer root", () => {
+    const host = document.createElement("div");
+    document.body.append(host);
+
+    const dispose = render(
+      () =>
+        Velomark({
+          markdown: "Hello",
+          theme: {
+            color: {
+              text: {
+                primary: "#123456",
+              },
+            },
+          },
+        }),
+      host
+    );
+    const root = host.querySelector("[data-velomark-root]") as HTMLDivElement | null;
+
+    expect(root?.style.getPropertyValue("--velomark-color-text-primary")).toBe(
+      "#123456"
+    );
+    expect(root?.style.getPropertyValue("--velomark-color-surface-base")).toBe(
+      defaultTheme.color.surface.base
+    );
+
+    dispose();
+    host.remove();
   });
 
   it("maintains baseline compatibility exports for colors and tokens", () => {
