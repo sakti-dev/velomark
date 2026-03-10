@@ -162,7 +162,7 @@ describe("RenderInline", () => {
     expect(inlineMath?.querySelector("code")?.textContent).toBe("E = mc^2");
   });
 
-  it("renders raw inline html as a source shell by default", () => {
+  it("renders raw inline html directly", () => {
     const host = document.createElement("div");
     document.body.append(host);
 
@@ -174,7 +174,7 @@ describe("RenderInline", () => {
 
     const inlineHtml = host.querySelector('[data-velomark-inline-html]');
     expect(inlineHtml).not.toBeNull();
-    expect(inlineHtml?.textContent).toBe("<span>");
+    expect(inlineHtml?.innerHTML).toBe("<span></span>");
   });
 
   it("renders structured inline html elements semantically", () => {

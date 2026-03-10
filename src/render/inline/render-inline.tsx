@@ -32,7 +32,7 @@ function renderToken(
         </span>
       );
     case "html":
-      return <span data-velomark-inline-html="">{token.value}</span>;
+      return <span data-velomark-inline-html="" innerHTML={token.value} />;
     case "html-element":
       return (
         <HtmlElementView
