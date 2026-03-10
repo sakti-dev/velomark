@@ -214,4 +214,12 @@ describe("parseInline", () => {
       { type: "text", text: "Beta" },
     ]);
   });
+
+  it("parses footnote references inline", () => {
+    expect(parseInline("Alpha[^1] Beta")).toEqual([
+      { type: "text", text: "Alpha" },
+      { type: "footnote-reference", identifier: "1" },
+      { type: "text", text: " Beta" },
+    ]);
+  });
 });

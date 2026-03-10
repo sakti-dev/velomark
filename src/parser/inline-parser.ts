@@ -129,6 +129,20 @@ function parseShortcutReferenceImage(source: string, start: number) {
   };
 }
 
+function parseFootnoteReference(source: string, start: number) {
+  if (source[start] !== "[" || source[start + 1] !== "^") {
+    return null;
+  }
+  const referenceEnd = source.indexOf("]", start + 2);
+  if (referenceEnd === -1) {
+    return null;
+  }
+  return {
+    identifier: source.slice(start + 2, referenceEnd),
+    end: referenceEnd + 1,
+  };
+}
+
 export function parseInline(
   source: string,
   definitions: ReferenceDefinitionMap = {}
@@ -235,6 +249,16 @@ export function parseInline(
     }
 
     if (current === "[") {
+      const footnoteParsed = parseFootnoteReference(source, index);
+      if (footnoteParsed) {
+        tokens.push({
+          type: "footnote-reference",
+          identifier: footnoteParsed.identifier,
+        });
+        index = footnoteParsed.end;
+        continue;
+      }
+
       const referenceParsed = parseReferenceLink(source, index);
       if (referenceParsed) {
         const referenceId = normalizeReferenceId(

@@ -8,6 +8,14 @@ function renderToken(token: InlineToken): JSX.Element {
       return <br />;
     case "text":
       return token.text;
+    case "footnote-reference":
+      return (
+        <sup>
+          <a href={`#fn-${token.identifier}`} id={`fnref-${token.identifier}`}>
+            [{token.identifier}]
+          </a>
+        </sup>
+      );
     case "code":
       return <code>{token.text}</code>;
     case "delete":

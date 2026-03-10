@@ -3,6 +3,7 @@ import { buildRenderDocument, collectRenderMetrics } from "../model/render-docum
 import type { ParsedBlockData } from "../parser/block-boundaries";
 import type { RenderDocument, VelomarkDebugMetrics } from "../types";
 import { RenderBlockView } from "./render-block";
+import { FootnotesSection } from "./footnotes/footnotes-section";
 
 export interface VelomarkProps {
   class?: string;
@@ -41,6 +42,11 @@ export function Velomark(props: VelomarkProps) {
           />
         )}
       </For>
+      <FootnotesSection
+        definitions={document().definitions}
+        footnoteDefinitions={document().footnoteDefinitions}
+        order={document().footnoteReferenceOrder}
+      />
     </div>
   );
 }

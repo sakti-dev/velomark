@@ -263,4 +263,68 @@ describe("Velomark block rendering", () => {
     expect(image?.getAttribute("title")).toBe("Brand logo");
     expect(image?.getAttribute("alt")).toBe("logo");
   });
+
+  it("renders footnotes in first-reference order with backlinks", () => {
+    const host = document.createElement("div");
+    document.body.append(host);
+
+    const dispose = render(
+      () =>
+        <Velomark
+          markdown={[
+            "Alpha[^b] and beta[^a].",
+            "",
+            "[^a]: First footnote body.",
+            "[^b]: Second footnote body.",
+          ].join("\n")}
+        />,
+      host
+    );
+    mountedRoots.push(dispose);
+
+    const footnotes = host.querySelector('[data-velomark-footnotes]');
+    expect(footnotes).not.toBeNull();
+
+    const items = Array.from(
+      host.querySelectorAll('[data-velomark-footnotes] ol > li')
+    );
+    expect(items).toHaveLength(2);
+    expect(items[0]?.getAttribute("id")).toBe("fn-b");
+    expect(items[0]?.textContent).toContain("Second footnote body.");
+    expect(items[1]?.getAttribute("id")).toBe("fn-a");
+    expect(items[1]?.textContent).toContain("First footnote body.");
+
+    const backref = items[0]?.querySelector('a[href="#fnref-b"]');
+    expect(backref?.textContent).toBe("↩");
+  });
+
+  it("renders multiline footnote bodies with nested lists", () => {
+    const host = document.createElement("div");
+    document.body.append(host);
+
+    const dispose = render(
+      () =>
+        <Velomark
+          markdown={[
+            "Alpha[^list].",
+            "",
+            "[^list]: Intro paragraph.",
+            "",
+            "    - Item one",
+            "    - Item two",
+            "",
+            "    Closing paragraph.",
+          ].join("\n")}
+        />,
+      host
+    );
+    mountedRoots.push(dispose);
+
+    const footnoteItem = host.querySelector('#fn-list');
+    expect(footnoteItem).not.toBeNull();
+    expect(footnoteItem?.querySelectorAll("p")).toHaveLength(2);
+    expect(footnoteItem?.querySelectorAll("ul > li")).toHaveLength(2);
+    expect(footnoteItem?.textContent).toContain("Intro paragraph.");
+    expect(footnoteItem?.textContent).toContain("Closing paragraph.");
+  });
 });

@@ -29,6 +29,11 @@ export interface InlineBreakToken {
   type: "break";
 }
 
+export interface InlineFootnoteReferenceToken {
+  identifier: string;
+  type: "footnote-reference";
+}
+
 export interface InlineImageToken {
   alt: string;
   src: string;
@@ -65,6 +70,7 @@ export type InlineToken =
   | InlineCodeToken
   | InlineDeleteToken
   | InlineEmphasisToken
+  | InlineFootnoteReferenceToken
   | InlineImageToken
   | InlineLinkToken
   | InlineStrongToken
@@ -83,6 +89,8 @@ export interface RenderBlock<TData = unknown> {
 export interface RenderDocument<TData = unknown> {
   blocks: RenderBlock<TData>[];
   definitions: ReferenceDefinitionMap;
+  footnoteDefinitions: Record<string, RenderBlock<TData>[]>;
+  footnoteReferenceOrder: string[];
   version: number;
 }
 

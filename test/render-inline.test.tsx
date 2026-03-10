@@ -133,6 +133,19 @@ describe("RenderInline", () => {
     expect(host.textContent).toBe("Open [docs]");
   });
 
+  it("renders footnote references as superscript backlinks", () => {
+    const host = document.createElement("div");
+    document.body.append(host);
+
+    const dispose = render(() => <RenderInline text="Alpha[^1]" />, host);
+    mountedRoots.push(dispose);
+
+    const footnoteRef = host.querySelector("sup a");
+    expect(footnoteRef?.getAttribute("href")).toBe("#fn-1");
+    expect(footnoteRef?.getAttribute("id")).toBe("fnref-1");
+    expect(footnoteRef?.textContent).toBe("[1]");
+  });
+
   it("renders hard line break tokens as br elements", () => {
     const host = document.createElement("div");
     document.body.append(host);
