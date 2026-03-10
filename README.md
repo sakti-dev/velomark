@@ -19,7 +19,8 @@ This package is in active development, but the core renderer surface is real and
 - footnotes
 - KaTeX-backed math rendering with safe fallback for invalid or incomplete formulas
 - directives and HTML handling
-- Mermaid rendering with preview/source defaults
+- Mermaid rendering with built-in diagram preview and source fallback
+- syntax-highlighted fenced code blocks
 - streaming edge-case corpus for incomplete intermediate snapshots
 - parity corpus for render-surface regression coverage
 
@@ -73,8 +74,14 @@ By default, `velomark` enables generic code block UX:
 
 - language labels when a language exists
 - copy button on code blocks
-- preview/source toggle for built-in preview-capable blocks like Mermaid
-- preview as the default Mermaid view
+- syntax highlighting for supported fenced languages
+- built-in diagram preview for Mermaid fences
+
+Mermaid blocks intentionally simplify the shared shell:
+
+- no copy button
+- no source/preview toggle
+- automatic source fallback when diagram rendering fails
 
 ### Extension seams
 
@@ -100,7 +107,9 @@ remaining Incremark-aligned render surface. These fixtures are used to lock:
 - streamed code-growth fixtures
 
 The parity harness is intentionally semantic. It asserts rendered structure and
-streaming resilience rather than library-internal CSS details.
+streaming resilience rather than library-internal CSS details. It also covers
+streamed code growth so highlight-enabled code blocks keep a stable outer shell
+while the code body updates.
 
 ## Development
 

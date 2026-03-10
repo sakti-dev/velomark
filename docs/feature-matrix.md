@@ -17,8 +17,8 @@ This matrix describes the current tested renderer surface.
 | Blockquotes | Supported | Preserves paragraph structure |
 | Ordered / unordered lists | Supported | Includes nested child lists |
 | Task lists | Supported | Disabled checkbox output |
-| Fenced code blocks | Supported | Generic shell with built-in defaults |
-| Mermaid fences | Supported | Built-in preview/source path with fallback |
+| Fenced code blocks | Supported | Generic shell with built-in defaults and syntax highlighting |
+| Mermaid fences | Supported | Built-in diagram preview with automatic source fallback |
 | Tables | Supported | Includes column alignment support |
 | Thematic breaks | Supported | Semantic `<hr>` |
 | Footnote definitions | Supported | Document footnote section rendered |
@@ -52,6 +52,7 @@ This matrix describes the current tested renderer surface.
 | Append-heavy streaming | Supported | Primary optimization target |
 | Stable prefix DOM identity | Supported | Core renderer behavior |
 | Rewrite-tail streaming | Supported | Used in the playground and regression coverage |
+| Stable streamed code-block shell | Supported | Highlighted code blocks preserve outer shell identity on growth |
 | Incomplete streamed fences | Supported | Covered by streaming corpus |
 | Late-arriving reference definitions | Supported | Covered by streaming corpus |
 | Incomplete directives | Supported | Covered by streaming corpus |
@@ -77,7 +78,7 @@ This matrix describes the current tested renderer surface.
 | --- | --- | --- |
 | Full CommonMark / GFM parity | Partial | Focus is streamed AI-response subset correctness |
 | HTML element parsing depth | Partial | Simple supported element structures only |
-| Mermaid UX richness | Partial | Preview/source path exists; not a full diagram IDE |
+| Mermaid UX richness | Partial | Diagram rendering exists; not a full diagram IDE |
 | General-purpose markdown library ergonomics | Partial | Public API remains intentionally small |
 
 ## Parity harness coverage
@@ -88,6 +89,10 @@ The parity corpus currently tracks:
 - nested inline and block HTML fixtures
 - inline and block directive fixtures
 - streamed code-growth fixture coverage
+
+The streamed code-growth coverage specifically locks the append-heavy path used
+for AI responses so code fences can grow without replacing the entire block
+shell on each update.
 
 These fixtures exist to keep Incremark-aligned rendered-surface work anchored to
 stable inputs instead of ad hoc string literals.
