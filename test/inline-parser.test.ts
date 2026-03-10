@@ -236,4 +236,12 @@ describe("parseInline", () => {
       { type: "text", text: "Price is $100" },
     ]);
   });
+
+  it("parses raw inline html as a dedicated token", () => {
+    expect(parseInline("Text with <span>hi</span> here")).toEqual([
+      { type: "text", text: "Text with " },
+      { type: "html", value: "<span>hi</span>" },
+      { type: "text", text: " here" },
+    ]);
+  });
 });

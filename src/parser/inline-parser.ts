@@ -157,6 +157,29 @@ function parseInlineMath(source: string, start: number) {
   };
 }
 
+function parseInlineHtml(source: string, start: number) {
+  const remainder = source.slice(start);
+  const pairedMatch = remainder.match(
+    /^<([A-Za-z][A-Za-z0-9-]*)(\s[^>]*)?>.*?<\/\1>/
+  );
+  if (pairedMatch?.[0]) {
+    return {
+      value: pairedMatch[0],
+      end: start + pairedMatch[0].length,
+    };
+  }
+
+  const voidMatch = remainder.match(/^<([A-Za-z][A-Za-z0-9-]*)(\s[^>]*)?\/?>/);
+  if (voidMatch?.[0]) {
+    return {
+      value: voidMatch[0],
+      end: start + voidMatch[0].length,
+    };
+  }
+
+  return null;
+}
+
 export function parseInline(
   source: string,
   definitions: ReferenceDefinitionMap = {}
@@ -206,6 +229,15 @@ export function parseInline(
       const parsed = parseInlineMath(source, index);
       if (parsed) {
         tokens.push({ type: "inline-math", value: parsed.value });
+        index = parsed.end;
+        continue;
+      }
+    }
+
+    if (current === "<") {
+      const parsed = parseInlineHtml(source, index);
+      if (parsed) {
+        tokens.push({ type: "html", value: parsed.value });
         index = parsed.end;
         continue;
       }

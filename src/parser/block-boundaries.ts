@@ -54,6 +54,10 @@ export interface MathBlockData {
   value: string;
 }
 
+export interface HtmlBlockData {
+  value: string;
+}
+
 export interface ThematicBreakBlockData {}
 
 export type TableColumnAlign = "center" | "left" | "right";
@@ -69,6 +73,7 @@ export type ParsedBlockData =
   | BlockquoteBlockData
   | ListBlockData
   | CodeBlockData
+  | HtmlBlockData
   | MathBlockData
   | ThematicBreakBlockData
   | TableBlockData;
@@ -296,6 +301,26 @@ export function parseBlockBoundaries(
         lineIndex = scanIndex;
         continue;
       }
+    }
+
+    const trimmedLine = line.text.trim();
+    if (
+      trimmedLine.startsWith("<") &&
+      trimmedLine.endsWith(">") &&
+      !trimmedLine.startsWith("<!--")
+    ) {
+      blocks.push(
+        buildBlock(
+          "html",
+          line.start,
+          line.end,
+          lineIndex === lines.length - 1,
+          `html:${trimmedLine}`,
+          { value: trimmedLine }
+        )
+      );
+      lineIndex += 1;
+      continue;
     }
 
     const blockquoteMatch = matchBlockquote(line.text);

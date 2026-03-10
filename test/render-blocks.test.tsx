@@ -400,4 +400,16 @@ describe("Velomark block rendering", () => {
     expect(custom?.textContent).toContain("graph TD");
     expect(host.querySelector('[data-velomark-mermaid]')).toBeNull();
   });
+
+  it("renders raw html blocks as explicit source shells", () => {
+    const host = document.createElement("div");
+    document.body.append(host);
+
+    const dispose = render(() => <Velomark markdown={"<div>Alpha</div>"} />, host);
+    mountedRoots.push(dispose);
+
+    const htmlBlock = host.querySelector('[data-velomark-block-kind="html"]');
+    expect(htmlBlock).not.toBeNull();
+    expect(htmlBlock?.querySelector("pre > code")?.textContent).toBe("<div>Alpha</div>");
+  });
 });

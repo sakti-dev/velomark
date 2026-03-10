@@ -161,6 +161,22 @@ describe("RenderInline", () => {
     expect(inlineMath?.querySelector("code")?.textContent).toBe("E = mc^2");
   });
 
+  it("renders raw inline html as a source shell by default", () => {
+    const host = document.createElement("div");
+    document.body.append(host);
+
+    const dispose = render(
+      () => <RenderInline text="Text with <span>hi</span> here" />,
+      host
+    );
+    mountedRoots.push(dispose);
+
+    const inlineHtml = host.querySelector('[data-velomark-inline-html]');
+    expect(inlineHtml).not.toBeNull();
+    expect(inlineHtml?.textContent).toBe("<span>hi</span>");
+    expect(host.querySelector("span > span")).toBeNull();
+  });
+
   it("renders hard line break tokens as br elements", () => {
     const host = document.createElement("div");
     document.body.append(host);
