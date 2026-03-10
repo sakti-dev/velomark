@@ -84,6 +84,18 @@ function parseReferenceLink(source: string, start: number) {
   };
 }
 
+function parseShortcutReferenceLink(source: string, start: number) {
+  const labelEnd = source.indexOf("]", start + 1);
+  if (labelEnd === -1) {
+    return null;
+  }
+
+  return {
+    label: source.slice(start + 1, labelEnd),
+    end: labelEnd + 1,
+  };
+}
+
 function parseReferenceImage(source: string, start: number) {
   if (source[start] !== "!" || source[start + 1] !== "[") {
     return null;
@@ -100,6 +112,20 @@ function parseReferenceImage(source: string, start: number) {
     alt: source.slice(start + 2, altEnd),
     reference: source.slice(altEnd + 2, referenceEnd),
     end: referenceEnd + 1,
+  };
+}
+
+function parseShortcutReferenceImage(source: string, start: number) {
+  if (source[start] !== "!" || source[start + 1] !== "[") {
+    return null;
+  }
+  const altEnd = source.indexOf("]", start + 2);
+  if (altEnd === -1) {
+    return null;
+  }
+  return {
+    alt: source.slice(start + 2, altEnd),
+    end: altEnd + 1,
   };
 }
 
@@ -211,15 +237,34 @@ export function parseInline(
     if (current === "[") {
       const referenceParsed = parseReferenceLink(source, index);
       if (referenceParsed) {
-        const definition =
-          definitions[normalizeReferenceId(referenceParsed.reference)];
+        const referenceId = normalizeReferenceId(
+          referenceParsed.reference || referenceParsed.label
+        );
+        const definition = definitions[referenceId];
         if (definition) {
           tokens.push({
             type: "link",
             href: definition.href,
+            title: definition.title,
             children: parseInline(referenceParsed.label, definitions),
           });
           index = referenceParsed.end;
+          continue;
+        }
+      }
+
+      const shortcutParsed = parseShortcutReferenceLink(source, index);
+      if (shortcutParsed && source[shortcutParsed.end] !== "(") {
+        const definition =
+          definitions[normalizeReferenceId(shortcutParsed.label)];
+        if (definition) {
+          tokens.push({
+            type: "link",
+            href: definition.href,
+            title: definition.title,
+            children: parseInline(shortcutParsed.label, definitions),
+          });
+          index = shortcutParsed.end;
           continue;
         }
       }
@@ -239,15 +284,33 @@ export function parseInline(
     if (current === "!") {
       const referenceParsed = parseReferenceImage(source, index);
       if (referenceParsed) {
-        const definition =
-          definitions[normalizeReferenceId(referenceParsed.reference)];
+        const referenceId = normalizeReferenceId(
+          referenceParsed.reference || referenceParsed.alt
+        );
+        const definition = definitions[referenceId];
         if (definition) {
           tokens.push({
             type: "image",
             alt: referenceParsed.alt,
             src: definition.href,
+            title: definition.title,
           });
           index = referenceParsed.end;
+          continue;
+        }
+      }
+
+      const shortcutParsed = parseShortcutReferenceImage(source, index);
+      if (shortcutParsed && source[shortcutParsed.end] !== "(") {
+        const definition = definitions[normalizeReferenceId(shortcutParsed.alt)];
+        if (definition) {
+          tokens.push({
+            type: "image",
+            alt: shortcutParsed.alt,
+            src: definition.href,
+            title: definition.title,
+          });
+          index = shortcutParsed.end;
           continue;
         }
       }

@@ -88,6 +88,86 @@ describe("parseInline", () => {
     ]);
   });
 
+  it("resolves collapsed reference-style links with provided definitions", () => {
+    expect(
+      parseInline("Open [docs][]", {
+        docs: { href: "https://example.com/guide" },
+      })
+    ).toEqual([
+      { type: "text", text: "Open " },
+      {
+        type: "link",
+        href: "https://example.com/guide",
+        children: [{ type: "text", text: "docs" }],
+      },
+    ]);
+  });
+
+  it("resolves collapsed reference-style images with provided definitions", () => {
+    expect(
+      parseInline("Logo ![alt text][]", {
+        "alt text": {
+          href: "https://example.com/logo.png",
+          title: "Brand logo",
+        },
+      })
+    ).toEqual([
+      { type: "text", text: "Logo " },
+      {
+        type: "image",
+        alt: "alt text",
+        src: "https://example.com/logo.png",
+        title: "Brand logo",
+      },
+    ]);
+  });
+
+  it("resolves shortcut reference-style links only when a matching definition exists", () => {
+    expect(
+      parseInline("Open [docs]", {
+        docs: {
+          href: "https://example.com/guide",
+          title: "Guide",
+        },
+      })
+    ).toEqual([
+      { type: "text", text: "Open " },
+      {
+        type: "link",
+        href: "https://example.com/guide",
+        title: "Guide",
+        children: [{ type: "text", text: "docs" }],
+      },
+    ]);
+  });
+
+  it("resolves shortcut reference-style images only when a matching definition exists", () => {
+    expect(
+      parseInline("Logo ![logo]", {
+        logo: { href: "https://example.com/logo.png" },
+      })
+    ).toEqual([
+      { type: "text", text: "Logo " },
+      {
+        type: "image",
+        alt: "logo",
+        src: "https://example.com/logo.png",
+      },
+    ]);
+  });
+
+  it("falls back to plain text for unresolved collapsed references", () => {
+    expect(parseInline("Open [docs][]")).toEqual([
+      { type: "text", text: "Open [docs][]" },
+    ]);
+  });
+
+  it("falls back to plain text for unresolved shortcut references", () => {
+    expect(parseInline("Open [docs]")).toEqual([
+      { type: "text", text: "Open [docs]" },
+    ]);
+  });
+
   it("preserves escaped punctuation as literal text", () => {
     expect(parseInline(String.raw`\*literal\* \[link\]`)).toEqual([
       { type: "text", text: "*literal* [link]" },

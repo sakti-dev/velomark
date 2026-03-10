@@ -75,6 +75,64 @@ describe("RenderInline", () => {
     expect(link?.textContent).toBe("docs");
   });
 
+  it("renders collapsed reference-style links with titles", () => {
+    const host = document.createElement("div");
+    document.body.append(host);
+
+    const dispose = render(
+      () =>
+        <RenderInline
+          definitions={{
+            docs: { href: "https://example.com/guide", title: "Guide" },
+          }}
+          text="Open [docs][]"
+        />,
+      host
+    );
+    mountedRoots.push(dispose);
+
+    const link = host.querySelector("a");
+    expect(link?.getAttribute("href")).toBe("https://example.com/guide");
+    expect(link?.getAttribute("title")).toBe("Guide");
+    expect(link?.textContent).toBe("docs");
+  });
+
+  it("renders shortcut reference-style images with titles", () => {
+    const host = document.createElement("div");
+    document.body.append(host);
+
+    const dispose = render(
+      () =>
+        <RenderInline
+          definitions={{
+            logo: {
+              href: "https://example.com/logo.png",
+              title: "Brand logo",
+            },
+          }}
+          text="Logo ![logo]"
+        />,
+      host
+    );
+    mountedRoots.push(dispose);
+
+    const image = host.querySelector("img");
+    expect(image?.getAttribute("src")).toBe("https://example.com/logo.png");
+    expect(image?.getAttribute("alt")).toBe("logo");
+    expect(image?.getAttribute("title")).toBe("Brand logo");
+  });
+
+  it("renders unresolved shortcut references as plain text", () => {
+    const host = document.createElement("div");
+    document.body.append(host);
+
+    const dispose = render(() => <RenderInline text="Open [docs]" />, host);
+    mountedRoots.push(dispose);
+
+    expect(host.querySelector("a")).toBeNull();
+    expect(host.textContent).toBe("Open [docs]");
+  });
+
   it("renders hard line break tokens as br elements", () => {
     const host = document.createElement("div");
     document.body.append(host);

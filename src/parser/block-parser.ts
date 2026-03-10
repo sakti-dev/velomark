@@ -2,7 +2,8 @@ import { parseBlockBoundaries, type ParsedBlockData } from "./block-boundaries";
 import type { DraftRenderBlock } from "../model/stable-id";
 import type { ReferenceDefinitionMap } from "../types";
 
-const REFERENCE_DEFINITION_RE = /^\[([^\]]+)\]:\s+(\S+)(?:\s+.+)?$/;
+const REFERENCE_DEFINITION_RE =
+  /^\[([^\]]+)\]:\s+(\S+?)(?:\s+(?:"([^"]*)"|'([^']*)'|\(([^)]*)\)))?\s*$/;
 
 function normalizeReferenceId(identifier: string): string {
   return identifier.trim().toLowerCase();
@@ -29,7 +30,8 @@ export function extractReferenceDefinitions(markdown: string): {
       continue;
     }
 
-    definitions[normalizeReferenceId(identifier)] = { href };
+    const title = match[3] ?? match[4] ?? match[5];
+    definitions[normalizeReferenceId(identifier)] = title ? { href, title } : { href };
   }
 
   return {

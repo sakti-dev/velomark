@@ -23,7 +23,9 @@ function renderToken(token: InlineToken): JSX.Element {
         </em>
       );
     case "image":
-      return <img alt={token.alt} loading="lazy" src={token.src} />;
+      return (
+        <img alt={token.alt} loading="lazy" src={token.src} title={token.title} />
+      );
     case "strong":
       return (
         <strong>
@@ -32,7 +34,12 @@ function renderToken(token: InlineToken): JSX.Element {
       );
     case "link":
       return (
-        <a href={token.href} rel="noopener noreferrer" target="_blank">
+        <a
+          href={token.href}
+          rel="noopener noreferrer"
+          target="_blank"
+          title={token.title}
+        >
           <For each={token.children}>{(child) => renderToken(child)}</For>
         </a>
       );

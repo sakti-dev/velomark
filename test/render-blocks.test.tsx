@@ -234,4 +234,33 @@ describe("Velomark block rendering", () => {
     expect(host.textContent).not.toContain("[guide]:");
     expect(host.textContent).not.toContain("[brand]:");
   });
+
+  it("resolves collapsed and shortcut references at the document level with titles", () => {
+    const host = document.createElement("div");
+    document.body.append(host);
+
+    const dispose = render(
+      () =>
+        <Velomark
+          markdown={[
+            "Open [docs][] and ![logo].",
+            "",
+            '[docs]: https://example.com/guide "Guide"',
+            '[logo]: https://example.com/logo.png "Brand logo"',
+          ].join("\n")}
+        />,
+      host
+    );
+    mountedRoots.push(dispose);
+
+    const link = host.querySelector("p a");
+    expect(link?.getAttribute("href")).toBe("https://example.com/guide");
+    expect(link?.getAttribute("title")).toBe("Guide");
+    expect(link?.textContent).toBe("docs");
+
+    const image = host.querySelector("p img");
+    expect(image?.getAttribute("src")).toBe("https://example.com/logo.png");
+    expect(image?.getAttribute("title")).toBe("Brand logo");
+    expect(image?.getAttribute("alt")).toBe("logo");
+  });
 });

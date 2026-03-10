@@ -32,11 +32,13 @@ export interface InlineBreakToken {
 export interface InlineImageToken {
   alt: string;
   src: string;
+  title?: string;
   type: "image";
 }
 
 export interface ReferenceDefinition {
   href: string;
+  title?: string;
 }
 
 export type ReferenceDefinitionMap = Record<string, ReferenceDefinition>;
@@ -44,6 +46,7 @@ export type ReferenceDefinitionMap = Record<string, ReferenceDefinition>;
 export interface InlineLinkToken {
   children: InlineToken[];
   href: string;
+  title?: string;
   type: "link";
 }
 
