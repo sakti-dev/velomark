@@ -359,4 +359,45 @@ describe("Velomark block rendering", () => {
     const mathBlock = host.querySelector('[data-velomark-block-kind="math"]');
     expect(mathBlock?.querySelector("pre > code")?.textContent).toBe("E = mc^2");
   });
+
+  it("renders mermaid code blocks with a dedicated fallback shell", () => {
+    const host = document.createElement("div");
+    document.body.append(host);
+
+    const dispose = render(
+      () =>
+        <Velomark markdown={"```mermaid\ngraph TD\nA-->B\n```"} />,
+      host
+    );
+    mountedRoots.push(dispose);
+
+    const mermaidBlock = host.querySelector('[data-velomark-mermaid]');
+    expect(mermaidBlock).not.toBeNull();
+    expect(mermaidBlock?.getAttribute("data-velomark-language")).toBe("mermaid");
+    expect(mermaidBlock?.querySelector("pre > code")?.textContent).toContain("graph TD");
+  });
+
+  it("allows language-specific custom code block renderers", () => {
+    const host = document.createElement("div");
+    document.body.append(host);
+
+    const MermaidOverride = (props: { code: string; language?: string }) => (
+      <div data-custom-mermaid={props.language ?? ""}>{props.code}</div>
+    );
+
+    const dispose = render(
+      () =>
+        <Velomark
+          codeBlockRenderers={{ mermaid: MermaidOverride }}
+          markdown={"```mermaid\ngraph TD\nA-->B\n```"}
+        />,
+      host
+    );
+    mountedRoots.push(dispose);
+
+    const custom = host.querySelector("[data-custom-mermaid]");
+    expect(custom?.getAttribute("data-custom-mermaid")).toBe("mermaid");
+    expect(custom?.textContent).toContain("graph TD");
+    expect(host.querySelector('[data-velomark-mermaid]')).toBeNull();
+  });
 });

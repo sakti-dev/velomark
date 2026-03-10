@@ -1,9 +1,17 @@
 import { For, Show, type Component } from "solid-js";
 import type { ParsedBlockData } from "../../parser/block-boundaries";
-import type { ReferenceDefinitionMap, RenderBlock } from "../../types";
+import type {
+  ReferenceDefinitionMap,
+  RenderBlock,
+  VelomarkCodeBlockRendererProps,
+} from "../../types";
 import { RenderBlockView } from "../render-block";
 
 export const FootnotesSection: Component<{
+  codeBlockRenderers?: Record<
+    string,
+    Component<VelomarkCodeBlockRendererProps>
+  >;
   definitions: ReferenceDefinitionMap;
   footnoteDefinitions: Record<string, RenderBlock<ParsedBlockData>[]>;
   order: string[];
@@ -29,6 +37,7 @@ export const FootnotesSection: Component<{
                     {(block, index) => (
                       <RenderBlockView
                         block={block}
+                        codeBlockRenderers={props.codeBlockRenderers}
                         definitions={props.definitions}
                         index={index()}
                       />

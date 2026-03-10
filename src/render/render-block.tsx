@@ -9,7 +9,11 @@ import type {
   ParsedBlockData,
   TableBlockData,
 } from "../parser/block-boundaries";
-import type { ReferenceDefinitionMap, RenderBlock } from "../types";
+import type {
+  ReferenceDefinitionMap,
+  RenderBlock,
+  VelomarkCodeBlockRendererProps,
+} from "../types";
 import { BlockquoteBlock } from "./blocks/blockquote-block";
 import { CodeBlock } from "./blocks/code-block";
 import { HeadingBlock } from "./blocks/heading-block";
@@ -21,6 +25,10 @@ import { ThematicBreakBlock } from "./blocks/thematic-break-block";
 
 export const RenderBlockView: Component<{
   block: RenderBlock<ParsedBlockData>;
+  codeBlockRenderers?: Record<
+    string,
+    Component<VelomarkCodeBlockRendererProps>
+  >;
   debug?: boolean;
   definitions?: ReferenceDefinitionMap;
   index: number;
@@ -66,6 +74,7 @@ export const RenderBlockView: Component<{
       return (
         <CodeBlock
           block={props.block as RenderBlock<CodeBlockData>}
+          codeBlockRenderers={props.codeBlockRenderers}
           debug={props.debug}
           index={props.index}
         />

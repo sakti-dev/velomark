@@ -1,13 +1,45 @@
+import { Dynamic } from "solid-js/web";
 import type { Component } from "solid-js";
 import type { CodeBlockData } from "../../parser/block-boundaries";
-import type { RenderBlock } from "../../types";
+import type {
+  RenderBlock,
+  VelomarkCodeBlockRendererProps,
+} from "../../types";
+import { MermaidBlock } from "./mermaid-block";
 
 export const CodeBlock: Component<{
   block: RenderBlock<CodeBlockData>;
+  codeBlockRenderers?: Record<
+    string,
+    Component<VelomarkCodeBlockRendererProps>
+  >;
   debug?: boolean;
   index: number;
 }> = (props) => {
   const language = () => props.block.data.language?.trim() || undefined;
+  const customRenderer = () =>
+    language() ? props.codeBlockRenderers?.[language() ?? ""] : undefined;
+  const resolvedCustomRenderer = customRenderer();
+
+  if (resolvedCustomRenderer) {
+    return (
+      <Dynamic
+        component={resolvedCustomRenderer}
+        code={props.block.data.code}
+        language={language()}
+      />
+    );
+  }
+
+  if (language() === "mermaid") {
+    return (
+      <MermaidBlock
+        block={props.block}
+        debug={props.debug}
+        index={props.index}
+      />
+    );
+  }
 
   return (
     <div

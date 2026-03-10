@@ -107,3 +107,8 @@ export interface VelomarkDebugMetrics {
   replacedBlockCount: number;
   reusedBlockCount: number;
 }
+
+export interface VelomarkCodeBlockRendererProps {
+  code: string;
+  language?: string;
+}

@@ -1,12 +1,20 @@
-import { For, createEffect, createSignal } from "solid-js";
+import { For, createEffect, createSignal, type Component } from "solid-js";
 import { buildRenderDocument, collectRenderMetrics } from "../model/render-document";
 import type { ParsedBlockData } from "../parser/block-boundaries";
-import type { RenderDocument, VelomarkDebugMetrics } from "../types";
+import type {
+  RenderDocument,
+  VelomarkCodeBlockRendererProps,
+  VelomarkDebugMetrics,
+} from "../types";
 import { RenderBlockView } from "./render-block";
 import { FootnotesSection } from "./footnotes/footnotes-section";
 
 export interface VelomarkProps {
   class?: string;
+  codeBlockRenderers?: Record<
+    string,
+    Component<VelomarkCodeBlockRendererProps>
+  >;
   debug?: boolean;
   markdown: string;
   onDebugMetrics?: (metrics: VelomarkDebugMetrics) => void;
@@ -36,6 +44,7 @@ export function Velomark(props: VelomarkProps) {
         {(block, index) => (
           <RenderBlockView
             block={block}
+            codeBlockRenderers={props.codeBlockRenderers}
             debug={props.debug}
             definitions={document().definitions}
             index={index()}
@@ -43,6 +52,7 @@ export function Velomark(props: VelomarkProps) {
         )}
       </For>
       <FootnotesSection
+        codeBlockRenderers={props.codeBlockRenderers}
         definitions={document().definitions}
         footnoteDefinitions={document().footnoteDefinitions}
         order={document().footnoteReferenceOrder}
