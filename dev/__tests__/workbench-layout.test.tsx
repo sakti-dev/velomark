@@ -1,6 +1,6 @@
 import { render } from "solid-js/web";
 import { describe, expect, it } from "vitest";
-import App from "../dev/app";
+import App from "../app";
 
 describe("playground workbench layout", () => {
   it("renders a compact diagnostics strip instead of separate diagnostic panels", () => {

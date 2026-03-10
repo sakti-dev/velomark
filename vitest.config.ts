@@ -2,6 +2,12 @@ import solidPlugin from "vite-plugin-solid";
 import { defineConfig } from "vitest/config";
 
 const WEB_TRANSFORM_RE = /\.[jt]sx$/;
+const CLIENT_TEST_GLOBS = [
+  "src/**/__tests__/**/*.test.{ts,tsx}",
+  "dev/**/__tests__/**/*.test.{ts,tsx}",
+  "test/*.test.{ts,tsx}",
+];
+const SSR_TEST_GLOBS = ["test/server.test.{ts,tsx}"];
 
 export default defineConfig(({ mode }) => {
   // to test in server environment, run with "--mode ssr" or "--mode test:ssr" flag
@@ -30,11 +36,11 @@ export default defineConfig(({ mode }) => {
       transformMode: { web: [WEB_TRANSFORM_RE] },
       ...(testSSR
         ? {
-            include: ["test/server.test.{ts,tsx}"],
+            include: SSR_TEST_GLOBS,
           }
         : {
-            include: ["test/*.test.{ts,tsx}"],
-            exclude: ["test/server.test.{ts,tsx}"],
+            include: CLIENT_TEST_GLOBS,
+            exclude: SSR_TEST_GLOBS,
           }),
     },
     resolve: {

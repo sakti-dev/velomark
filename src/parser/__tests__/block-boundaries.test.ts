@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { parseBlockBoundaries } from "../src/parser/block-boundaries";
+import { parseBlockBoundaries } from "../block-boundaries";
 
 describe("parseBlockBoundaries", () => {
   it("parses headings, paragraphs, blockquotes, lists, code fences, thematic breaks, and tables", () => {

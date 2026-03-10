@@ -2,18 +2,18 @@ import { existsSync, readFileSync } from "node:fs";
 import path from "node:path";
 import { render } from "solid-js/web";
 import { describe, expect, it } from "vitest";
+import { Velomark } from "../../render/velomark";
+import { applyTheme } from "../apply-theme";
+import { generateCssVars } from "../generate-css-vars";
+import { mergeTheme } from "../merge-theme";
+import { toMermaidThemeVariables } from "../to-mermaid-theme";
 import {
-  applyTheme,
   darkTheme,
   defaultTheme,
-  generateCssVars,
-  mergeTheme,
-  Velomark,
-  type VelomarkTheme,
   velomarkColors,
   velomarkTokens,
-} from "../src";
-import { toMermaidThemeVariables } from "../src/theme/to-mermaid-theme";
+} from "../tokens";
+import type { VelomarkTheme } from "../types";
 
 describe("velomark theme surface", () => {
   it("exports default and dark theme presets", () => {

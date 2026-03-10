@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { collectRenderMetrics } from "../src/model/render-document";
-import { parseMarkdownToBlocks } from "../src/parser/block-parser";
+import { parseMarkdownToBlocks } from "../../parser/block-parser";
+import { collectRenderMetrics } from "../render-document";
 
 describe("render metrics", () => {
   it("reports reused and appended blocks for append-only updates", () => {

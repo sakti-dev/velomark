@@ -1,8 +1,8 @@
 import { createSignal } from "solid-js";
 import { render } from "solid-js/web";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import type { VelomarkContainerRendererProps } from "../src";
-import { Velomark } from "../src";
+import type { VelomarkContainerRendererProps } from "../../types";
+import { Velomark } from "../velomark";
 
 const mountedRoots: Array<() => void> = [];
 

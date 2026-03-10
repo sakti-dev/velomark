@@ -1,7 +1,7 @@
 import { render } from "solid-js/web";
 import { afterEach, describe, expect, it } from "vitest";
-import type { VelomarkContainerRendererProps } from "../src";
-import { RenderInline } from "../src/render/inline/render-inline";
+import type { VelomarkContainerRendererProps } from "../../../types";
+import { RenderInline } from "../render-inline";
 
 const mountedRoots: Array<() => void> = [];
 

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { parseInline } from "../src/parser/inline-parser";
+import { parseInline } from "../inline-parser";
 
 describe("parseInline", () => {
   it("parses plain text as a single text token", () => {

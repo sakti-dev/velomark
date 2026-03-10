@@ -1,6 +1,6 @@
 import { render } from "solid-js/web";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import App from "../dev/app";
+import App from "../app";
 
 describe("playground benchmark panel", () => {
   afterEach(() => {

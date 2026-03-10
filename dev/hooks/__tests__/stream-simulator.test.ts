@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { createStreamSimulator } from "../dev/hooks/use-stream-simulator";
+import { createStreamSimulator } from "../use-stream-simulator";
 
 describe("stream simulator", () => {
   it("emits append snapshots in order", async () => {

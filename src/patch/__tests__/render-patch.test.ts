@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { buildRenderDocument } from "../src/model/render-document";
-import { planRenderPatch } from "../src/patch/render-patch";
+import { buildRenderDocument } from "../../model/render-document";
+import { planRenderPatch } from "../render-patch";
 
 describe("planRenderPatch", () => {
   it("reuses the unchanged prefix for append-only growth", () => {

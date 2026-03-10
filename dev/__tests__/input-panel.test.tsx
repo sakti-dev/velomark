@@ -1,6 +1,6 @@
 import { render } from "solid-js/web";
 import { describe, expect, it } from "vitest";
-import App from "../dev/app";
+import App from "../app";
 
 describe("playground preset controls", () => {
   it("loads the single incremark example preset into the renderer", () => {
