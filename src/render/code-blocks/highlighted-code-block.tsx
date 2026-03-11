@@ -2,7 +2,9 @@ import type {
   BundledLanguage,
   BundledTheme,
   HighlighterGeneric,
+  SpecialLanguage,
   ThemedToken,
+  ThemeRegistrationAny,
 } from "shiki";
 import {
   type Component,
@@ -30,13 +32,17 @@ export const HighlightedCodeBlock: Component<{
   language?: string;
   theme?: string;
 }> = (props) => {
+  type ResolvedTheme = BundledTheme | ThemeRegistrationAny | "none";
+
   const [highlightedTokens, setHighlightedTokens] = createSignal<
     ThemedToken[][]
   >([]);
   const [streamError, setStreamError] = createSignal(false);
-  const [resolvedLanguage, setResolvedLanguage] = createSignal("text");
-  const [resolvedTheme, setResolvedTheme] = createSignal(
-    DEFAULT_HIGHLIGHT_THEME
+  const [resolvedLanguage, setResolvedLanguage] = createSignal<
+    BundledLanguage | SpecialLanguage
+  >("text");
+  const [resolvedTheme, setResolvedTheme] = createSignal<ResolvedTheme>(
+    DEFAULT_HIGHLIGHT_THEME as BundledTheme
   );
   const [highlighter, setHighlighter] = createSignal<HighlighterGeneric<
     BundledLanguage,
@@ -91,7 +97,7 @@ export const HighlightedCodeBlock: Component<{
             nextLanguage
           );
           setResolvedLanguage(resolved.language);
-          setResolvedTheme(nextTheme);
+          setResolvedTheme(nextTheme as BundledTheme);
           setHighlighter(resolved.highlighter);
           setStreamError(false);
           highlightCode();

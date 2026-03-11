@@ -1,4 +1,9 @@
-import type { BundledLanguage, BundledTheme, HighlighterGeneric } from "shiki";
+import type {
+  BundledLanguage,
+  BundledTheme,
+  HighlighterGeneric,
+  SpecialLanguage,
+} from "shiki";
 
 interface ShikiHighlighterInfo {
   highlighter: HighlighterGeneric<BundledLanguage, BundledTheme>;
@@ -7,7 +12,7 @@ interface ShikiHighlighterInfo {
 
 interface ResolvedShikiHighlighter {
   highlighter: ShikiHighlighterInfo["highlighter"];
-  language: string;
+  language: BundledLanguage | SpecialLanguage;
 }
 
 class ShikiManager {

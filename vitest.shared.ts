@@ -1,7 +1,7 @@
 import solidPlugin from "vite-plugin-solid";
 import type { UserConfig } from "vitest/config";
 
-const WEB_TRANSFORM_RE = /\.[jt]sx$/;
+const WEB_TRANSFORM_GLOBS = ["**/*.{js,jsx,ts,tsx}"];
 const CLIENT_TEST_GLOBS = [
   "src/**/__tests__/**/*.test.{ts,tsx}",
   "dev/**/__tests__/**/*.test.{ts,tsx}",
@@ -41,7 +41,7 @@ export function createVitestConfig(testSSR: boolean): UserConfig {
         PROD: testSSR ? "1" : "",
       },
       environment: testSSR ? "node" : "jsdom",
-      transformMode: { web: [WEB_TRANSFORM_RE] },
+      testTransformMode: { web: WEB_TRANSFORM_GLOBS },
       coverage: COVERAGE_CONFIG,
       ...(testSSR
         ? {
