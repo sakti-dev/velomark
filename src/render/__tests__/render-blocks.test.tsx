@@ -559,12 +559,12 @@ describe("Velomark block rendering", () => {
     expect(mermaidBlock?.getAttribute("data-velomark-language")).toBe(
       "mermaid"
     );
-    for (let attempt = 0; attempt < 20; attempt += 1) {
-      if (mermaidBlock?.querySelector("[data-velomark-mermaid-diagram]")) {
-        break;
-      }
-      await new Promise((resolve) => window.setTimeout(resolve, 10));
-    }
+    await waitFor(() => {
+      const diagram = mermaidBlock?.querySelector(
+        "[data-velomark-mermaid-diagram]"
+      );
+      return Boolean(diagram?.querySelector("svg"));
+    }, 200);
 
     expect(
       mermaidBlock?.querySelector("[data-velomark-mermaid-diagram]")
@@ -619,12 +619,12 @@ describe("Velomark block rendering", () => {
 
     setMarkdown("```mermaid\ngraph TD\nA-->B\n```");
 
-    for (let attempt = 0; attempt < 20; attempt += 1) {
-      if (mermaidBlock?.querySelector("[data-velomark-mermaid-diagram]")) {
-        break;
-      }
-      await new Promise((resolve) => window.setTimeout(resolve, 10));
-    }
+    await waitFor(() => {
+      const diagram = mermaidBlock?.querySelector(
+        "[data-velomark-mermaid-diagram]"
+      );
+      return Boolean(diagram?.querySelector("svg"));
+    }, 200);
 
     expect(
       mermaidBlock?.querySelector("[data-velomark-mermaid-diagram]")
