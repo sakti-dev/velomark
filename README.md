@@ -1,4 +1,10 @@
+<p>
+  <img width="100%" src="https://assets.solidjs.com/banner?type=velomark&background=tiles&project=%20" alt="velomark">
+</p>
+
 # velomark
+
+[![pnpm](https://img.shields.io/badge/maintained%20with-pnpm-cc00ff.svg?style=for-the-badge&logo=pnpm)](https://pnpm.io/)
 
 Solid-only Markdown rendering built for streamed AI responses.[^incremark]
 
@@ -60,7 +66,7 @@ export function StreamingExample() {
   const [markdown, setMarkdown] = createSignal("# Thinking");
 
   const append = (chunk: string) => {
-    setMarkdown((current) => current + chunk);
+    setMarkdown(current => current + chunk);
   };
 
   return (
@@ -296,12 +302,12 @@ interface VelomarkProps {
     languageLabel?: boolean;
     previewToggle?: boolean;
   };
-  codeBlockRenderers?: Record<string, Component<VelomarkCodeBlockRendererProps>>;
-  containers?: Record<string, Component<VelomarkContainerRendererProps>>;
+  codeBlockRenderers?: Record;
+  containers?: Record;
   debug?: boolean;
   markdown: string;
   onDebugMetrics?: (metrics: VelomarkDebugMetrics) => void;
-  theme?: "default" | "dark" | Partial<VelomarkTheme>;
+  theme?: "default" | "dark" | Partial;
 }
 ```
 
@@ -346,7 +352,7 @@ import "velomark/styles.css";
 
 Check these first:
 
-- the fence has a language, for example ```` ```ts ````
+- the fence has a language, for example ` ```ts `
 - `codeBlockOptions.highlight` is not disabled
 - the requested language is supported by the active highlighter setup
 
