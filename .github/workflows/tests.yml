@@ -30,8 +30,11 @@ jobs:
       - name: Build
         run: pnpm run build
 
-      - name: Test
-        run: pnpm run test
+      - name: Test packed consumer
+        run: pnpm run test:packed-consumer
+
+      - name: Test coverage
+        run: pnpm run test:coverage
         env:
           CI: true
 
