@@ -13,38 +13,18 @@
   "bugs": {
     "url": "https://github.com/sakti-dev/velomark/issues"
   },
-  "files": [
-    "dist"
-  ],
   "private": false,
   "sideEffects": [
     "*.css"
   ],
   "type": "module",
-  "main": "./dist/index.js",
-  "module": "./dist/index.js",
-  "types": "./dist/index.d.ts",
-  "browser": {},
   "exports": {
     ".": {
-      "solid": {
-        "development": "./dist/dev.js",
-        "import": "./dist/index.js"
-      },
-      "development": {
-        "import": {
-          "types": "./dist/index.d.ts",
-          "default": "./dist/dev.js"
-        }
-      },
-      "import": {
-        "types": "./dist/index.d.ts",
-        "default": "./dist/index.js"
-      }
+      "solid": "./src/index.tsx",
+      "default": "./src/index.tsx"
     },
-    "./styles.css": "./dist/styles.css"
+    "./styles.css": "./src/theme/styles.css"
   },
-  "typesVersions": {},
   "scripts": {
     "dev": "vite serve dev",
     "build": "tsup && cp src/theme/styles.css dist/styles.css",
