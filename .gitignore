@@ -8,3 +8,4 @@ logs/security/.security-key
 
 # tsup
 tsup.config.bundled_*.{m,c,}s
+.turbo/
