@@ -20,10 +20,22 @@
   "type": "module",
   "exports": {
     ".": {
-      "solid": "./src/index.tsx",
-      "default": "./src/index.tsx"
+      "solid": {
+        "development": "./dist/dev.js",
+        "import": "./dist/index.js"
+      },
+      "development": {
+        "import": {
+          "types": "./dist/index.d.ts",
+          "default": "./dist/dev.js"
+        }
+      },
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      }
     },
-    "./styles.css": "./src/theme/styles.css"
+    "./styles.css": "./dist/styles.css"
   },
   "scripts": {
     "dev": "vite serve dev",
@@ -97,5 +109,10 @@
     "*.{js,jsx,ts,tsx,json,jsonc,css,scss,md,mdx}": [
       "pnpm exec ultracite fix"
     ]
-  }
+  },
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "browser": {},
+  "typesVersions": {}
 }
