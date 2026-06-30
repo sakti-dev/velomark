@@ -35,7 +35,7 @@ export const HeadingBlock: Component<{
       data-velomark-block-id={props.debug ? props.block.id : undefined}
       data-velomark-block-index={props.index}
       data-velomark-block-kind={props.block.kind}
-      data-velomark-heading-depth={depth()}
+      data-velomark-incomplete={props.block.status === "streaming" ? "" : undefined}
     >
       <RenderInline
         containers={props.containers}

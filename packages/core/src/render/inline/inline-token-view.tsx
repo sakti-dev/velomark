@@ -48,12 +48,12 @@ export const renderInlineToken = (
       );
     case "inline-math":
       return (
-        <span class={cn("vm-math inline-flex align-middle")} data-velomark-inline-math="">
+        <span class={cn("vm-math inline-flex align-middle")}>
           <MathView displayMode={false} formula={token.value} />
         </span>
       );
     case "html":
-      return <span data-velomark-inline-html="" innerHTML={token.value} />;
+      return <span class={cn("vm-html")} innerHTML={token.value} />;
     case "html-element":
       return (
         <HtmlElementView

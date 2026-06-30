@@ -162,7 +162,7 @@ describe("RenderInline", () => {
     );
     mountedRoots.push(dispose);
 
-    const inlineMath = host.querySelector("[data-velomark-inline-math]");
+    const inlineMath = host.querySelector(".vm-math");
     expect(inlineMath).not.toBeNull();
 
     for (let attempt = 0; attempt < 20; attempt += 1) {
@@ -183,7 +183,7 @@ describe("RenderInline", () => {
     const dispose = render(() => <RenderInline text={"Broken math $\\frac{1$"} />, host);
     mountedRoots.push(dispose);
 
-    const inlineMath = host.querySelector("[data-velomark-inline-math]");
+    const inlineMath = host.querySelector(".vm-math");
     expect(inlineMath).not.toBeNull();
 
     await new Promise((resolve) => window.setTimeout(resolve, 0));
@@ -199,7 +199,7 @@ describe("RenderInline", () => {
     const dispose = render(() => <RenderInline text="Text with <span>hi here" />, host);
     mountedRoots.push(dispose);
 
-    const inlineHtml = host.querySelector("[data-velomark-inline-html]");
+    const inlineHtml = host.querySelector(".vm-html");
     expect(inlineHtml).not.toBeNull();
     expect(inlineHtml?.innerHTML).toBe("<span></span>");
   });
@@ -217,7 +217,7 @@ describe("RenderInline", () => {
     const span = host.querySelector("span.chip");
     expect(span).not.toBeNull();
     expect(span?.textContent).toBe("hi");
-    expect(host.querySelector("[data-velomark-inline-html]")).toBeNull();
+    expect(host.querySelector(".vm-html")).toBeNull();
   });
 
   it("renders markdown-like text inside structured inline html elements", async () => {

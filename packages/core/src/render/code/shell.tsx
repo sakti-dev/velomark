@@ -24,7 +24,6 @@ export const resolveCodeBlockOptions = (
 const CopyIcon: Component = () => (
   <svg
     aria-hidden="true"
-    data-velomark-code-copy-icon="copy"
     fill="none"
     height="16"
     stroke="currentColor"
@@ -40,14 +39,7 @@ const CopyIcon: Component = () => (
 );
 
 const CheckIcon: Component = () => (
-  <svg
-    aria-hidden="true"
-    data-velomark-code-copy-icon="check"
-    fill="none"
-    height="14"
-    viewBox="0 0 16 16"
-    width="14"
-  >
+  <svg aria-hidden="true" fill="none" height="14" viewBox="0 0 16 16" width="14">
     <path
       d="m3.5 8.25 2.5 2.5 6-6"
       stroke="currentColor"
@@ -80,8 +72,6 @@ export const CopyCodeButton: Component<{ code: string }> = (props) => {
         "vm-code-copy absolute right-2 top-2 flex h-8 w-8 cursor-pointer items-center justify-center rounded-full border border-border bg-background text-muted-foreground shadow-xs transition-all hover:bg-muted hover:text-foreground active:translate-y-px",
         copied() && "text-primary",
       )}
-      data-velomark-code-copy=""
-      data-velomark-code-copy-state={copied() ? "copied" : "idle"}
       onClick={() => copyCode()}
       type="button"
     >
@@ -96,7 +86,6 @@ export const CodeBlockLanguageBadge: Component<{ language?: string }> = (props) 
       class={cn(
         "vm-code-language absolute bottom-2 right-2 rounded-md border border-border bg-background px-2 py-0.5 font-mono text-xs lowercase text-muted-foreground",
       )}
-      data-velomark-code-language=""
     >
       {props.language}
     </div>

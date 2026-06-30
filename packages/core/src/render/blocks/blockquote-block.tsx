@@ -21,6 +21,7 @@ export const BlockquoteBlock: Component<{
       data-velomark-block-id={props.debug ? props.block.id : undefined}
       data-velomark-block-index={props.index}
       data-velomark-block-kind={props.block.kind}
+      data-velomark-incomplete={props.block.status === "streaming" ? "" : undefined}
     >
       <For each={props.block.data.paragraphs}>
         {(paragraph) => (

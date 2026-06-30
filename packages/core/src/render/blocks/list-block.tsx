@@ -19,7 +19,7 @@ export const ListBlock: Component<{
     "data-velomark-block-id": props.debug ? props.block.id : undefined,
     "data-velomark-block-index": props.index,
     "data-velomark-block-kind": props.block.kind,
-    "data-velomark-list-ordered": String(props.block.data.ordered),
+    "data-velomark-incomplete": props.block.status === "streaming" ? "" : undefined,
   } as const;
 
   const items = () => props.block.data.items;

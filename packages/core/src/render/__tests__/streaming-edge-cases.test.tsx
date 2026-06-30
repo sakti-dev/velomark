@@ -59,14 +59,11 @@ describe("Velomark streaming edge cases", () => {
     );
     mountedRoots.push(dispose);
 
-    await waitFor(
-      () => (host.querySelectorAll("[data-velomark-code-highlighted] span").length ?? 0) > 0,
-      120,
-    );
+    await waitFor(() => (host.querySelectorAll(".vm-code-highlighted span").length ?? 0) > 0, 120);
 
     const blockBefore = host.querySelector('[data-velomark-block-kind="code"]');
     const codeBefore = host.querySelector('[data-velomark-block-kind="code"] pre > code');
-    const highlightedBefore = host.querySelector("[data-velomark-code-highlighted]");
+    const highlightedBefore = host.querySelector(".vm-code-highlighted");
     expect(blockBefore).not.toBeNull();
     expect(codeBefore).not.toBeNull();
     expect(highlightedBefore).not.toBeNull();
@@ -74,7 +71,7 @@ describe("Velomark streaming edge cases", () => {
     setMarkdown("```ts\nconst answer = 42;\n```");
     await waitFor(
       () =>
-        (host.querySelectorAll("[data-velomark-code-highlighted] span").length ?? 0) > 0 &&
+        (host.querySelectorAll(".vm-code-highlighted span").length ?? 0) > 0 &&
         (
           host.querySelector('[data-velomark-block-kind="code"] pre > code')?.textContent ?? ""
         ).includes("const answer = 42;"),
@@ -83,16 +80,14 @@ describe("Velomark streaming edge cases", () => {
 
     const blockAfter = host.querySelector('[data-velomark-block-kind="code"]');
     const codeAfter = host.querySelector('[data-velomark-block-kind="code"] pre > code');
-    const highlightedAfter = host.querySelector("[data-velomark-code-highlighted]");
+    const highlightedAfter = host.querySelector(".vm-code-highlighted");
     expect(blockAfter).toBe(blockBefore);
     expect(codeBefore).not.toBeNull();
     expect(codeAfter).not.toBeNull();
     expect(codeAfter).toBe(codeBefore);
     expect(highlightedAfter).toBe(highlightedBefore);
     expect(codeAfter?.textContent).toContain("const answer = 42;");
-    expect(host.querySelectorAll("[data-velomark-code-highlighted] span").length).toBeGreaterThan(
-      0,
-    );
+    expect(host.querySelectorAll(".vm-code-highlighted span").length).toBeGreaterThan(0);
   });
 
   it("upgrades unresolved references when the definition arrives later", async () => {

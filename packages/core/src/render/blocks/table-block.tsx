@@ -33,6 +33,7 @@ export const TableBlock: Component<{
         data-velomark-block-id={props.debug ? props.block.id : undefined}
         data-velomark-block-index={props.index}
         data-velomark-block-kind={props.block.kind}
+        data-velomark-incomplete={props.block.status === "streaming" ? "" : undefined}
       >
         <thead class={cn("bg-muted/80")}>
           <tr class={cn("border-border")}>
@@ -43,7 +44,6 @@ export const TableBlock: Component<{
                     "whitespace-nowrap px-4 py-2 font-semibold text-sm",
                     alignClass(index()),
                   )}
-                  data-velomark-align={align(index())}
                 >
                   <RenderInline
                     containers={props.containers}
@@ -61,10 +61,7 @@ export const TableBlock: Component<{
               <tr class={cn("border-border")}>
                 <For each={row}>
                   {(cell, index) => (
-                    <td
-                      class={cn("px-4 py-2 text-sm", alignClass(index()))}
-                      data-velomark-align={align(index())}
-                    >
+                    <td class={cn("px-4 py-2 text-sm", alignClass(index()))}>
                       <RenderInline
                         containers={props.containers}
                         definitions={props.definitions}

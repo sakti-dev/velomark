@@ -28,10 +28,7 @@ export const FootnotesSection: Component<{
 
   return (
     <Show when={orderedFootnotes().length > 0}>
-      <section
-        class={cn("vm-footnotes mt-6 border-t border-border pt-4 text-sm")}
-        data-velomark-footnotes=""
-      >
+      <section class={cn("vm-footnotes mt-6 border-t border-border pt-4 text-sm")}>
         <hr class={cn("sr-only")} />
         <ol>
           <For each={orderedFootnotes()}>

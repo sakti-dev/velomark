@@ -52,7 +52,7 @@ export const HighlightedCodeBlock: Component<{
 
   return (
     <pre class={cn("overflow-x-auto rounded-md border border-border bg-background p-4 text-sm")}>
-      <code data-velomark-code-highlighted={result() ? "" : undefined}>
+      <code class={cn(result() && "vm-code-highlighted")}>
         <Show fallback={props.code} when={result()}>
           <For each={lines()}>
             {(line, lineIndex) => (

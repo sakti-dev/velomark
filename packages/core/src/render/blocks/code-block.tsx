@@ -60,7 +60,7 @@ export const CodeBlock: Component<{
       data-velomark-block-id={props.debug ? props.block.id : undefined}
       data-velomark-block-index={props.index}
       data-velomark-block-kind={props.block.kind}
-      data-velomark-language={language() ?? ""}
+      data-velomark-incomplete={props.block.status === "streaming" ? "" : undefined}
     >
       <CodeBlockOverlayControls
         code={props.block.data.code}

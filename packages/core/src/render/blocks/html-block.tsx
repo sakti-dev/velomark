@@ -13,6 +13,7 @@ export const HtmlBlock: Component<{
       data-velomark-block-id={props.debug ? props.block.id : undefined}
       data-velomark-block-index={props.index}
       data-velomark-block-kind={props.block.kind}
+      data-velomark-incomplete={props.block.status === "streaming" ? "" : undefined}
     >
       <pre class={cn("overflow-x-auto rounded-md border border-border bg-background p-4 text-sm")}>
         <code>{props.block.data.value}</code>
