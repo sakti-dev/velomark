@@ -6,7 +6,7 @@ import { Velomark } from "../../render/velomark";
 import { applyTheme } from "../apply-theme";
 import { generateCssVars } from "../generate-css-vars";
 import { mergeTheme } from "../merge-theme";
-import { toMermaidThemeVariables } from "../to-mermaid-theme";
+import { toMermaidThemeVariables } from "../../../mermaid";
 import { darkTheme, defaultTheme, velomarkColors, velomarkTokens } from "../tokens";
 import type { VelomarkTheme } from "../types";
 
@@ -234,7 +234,7 @@ describe("velomark theme surface", () => {
   });
 
   it("ships a consumable styles.css file", () => {
-    const stylesPath = path.resolve(process.cwd(), "src/theme/styles.css");
+    const stylesPath = path.resolve(process.cwd(), "src/core/theme/styles.css");
     expect(existsSync(stylesPath)).toBe(true);
     const css = readFileSync(stylesPath, "utf8");
 

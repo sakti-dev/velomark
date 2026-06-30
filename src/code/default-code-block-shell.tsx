@@ -1,5 +1,5 @@
 import { type Component, createSignal, type JSX } from "solid-js";
-import type { VelomarkCodeBlockOptions } from "../../types";
+import type { VelomarkCodeBlockOptions } from "../core/types";
 
 const COPY_RESET_DELAY_MS = 2000;
 

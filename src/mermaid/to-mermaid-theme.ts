@@ -1,4 +1,4 @@
-import type { VelomarkTheme } from "./types";
+import type { VelomarkTheme } from "../core/theme/types";
 
 const parseHexChannel = (value: string): number => Number.parseInt(value, 16);
 const HEX_PREFIX_RE = /^#/;

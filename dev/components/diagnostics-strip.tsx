@@ -1,5 +1,5 @@
 import { type Component, For } from "solid-js";
-import type { VelomarkDebugMetrics } from "../../src/types";
+import type { VelomarkDebugMetrics } from "../../src/core/types";
 import type { SelectionProbeState } from "../hooks/use-selection-probe";
 import type { PlaygroundBenchmarkState } from "../types/playground";
 

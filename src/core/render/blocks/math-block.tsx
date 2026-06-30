@@ -1,7 +1,7 @@
 import type { Component } from "solid-js";
 import type { MathBlockData } from "../../parser/block-boundaries";
 import type { RenderBlock } from "../../types";
-import { MathView } from "../math/math-view";
+import { MathView } from "../../../math";
 
 export const MathBlock: Component<{
   block: RenderBlock<MathBlockData>;

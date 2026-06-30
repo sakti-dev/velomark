@@ -2,7 +2,7 @@ import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { render } from "solid-js/web";
 import { afterEach, describe, expect, it } from "vite-plus/test";
-import { darkTheme, defaultTheme } from "../../src/theme/tokens";
+import { darkTheme, defaultTheme } from "../../src/core/theme/tokens";
 import App from "../app";
 import { PLAYGROUND_THEME_STORAGE_KEY } from "../hooks/use-playground-theme";
 
@@ -24,7 +24,7 @@ describe("playground theme contract", () => {
     expect(mainCssSource).toContain('@import "tailwindcss";');
     expect(mainCssSource).toContain("../../../apps/desktop/src/assets/styles/tokens.css");
     expect(mainCssSource).toContain("../../../apps/desktop/src/assets/styles/markdown.css");
-    expect(mainCssSource).toContain("../src/theme/styles.css");
+    expect(mainCssSource).toContain("../src/core/theme/styles.css");
   });
 
   it("keeps the desktop markdown scope around the rendered preview", () => {

@@ -8,7 +8,7 @@ import type {
 } from "../../types";
 import { directiveAttributeProps } from "../directives/directive-attribute-props";
 import { HtmlElementView } from "../html-element-view";
-import { MathView } from "../math/math-view";
+import { MathView } from "../../../math";
 
 function renderImageToken(token: Extract<InlineToken, { type: "image" }>): JSX.Element {
   return <img alt={token.alt} loading="lazy" src={token.src} title={token.title} />;

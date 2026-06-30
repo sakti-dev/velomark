@@ -1,10 +1,10 @@
 import type { Mermaid } from "mermaid";
 import { type Component, createEffect, createSignal, onCleanup, onMount } from "solid-js";
 import { isServer } from "solid-js/web";
-import type { CodeBlockData } from "../../parser/block-boundaries";
-import { toMermaidThemeVariables } from "../../theme/to-mermaid-theme";
-import type { VelomarkTheme } from "../../theme/types";
-import type { RenderBlock } from "../../types";
+import type { CodeBlockData } from "../core/parser/block-boundaries";
+import { toMermaidThemeVariables } from "./to-mermaid-theme";
+import type { VelomarkTheme } from "../core/theme/types";
+import type { RenderBlock } from "../core/types";
 
 let mermaidChartSequence = 0;
 

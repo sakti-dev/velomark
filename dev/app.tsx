@@ -1,5 +1,5 @@
 import { type Component, createSignal, onCleanup } from "solid-js";
-import type { VelomarkDebugMetrics } from "../src/types";
+import type { VelomarkDebugMetrics } from "../src/core/types";
 import { DiagnosticsStrip } from "./components/diagnostics-strip";
 import { PlaygroundShell } from "./components/playground-shell";
 import { RendererPanel } from "./components/renderer-panel";

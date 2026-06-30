@@ -1,7 +1,7 @@
 import type { Component } from "solid-js";
 import { Velomark } from "../../src";
-import type { VelomarkThemeName } from "../../src/theme/types";
-import type { VelomarkDebugMetrics } from "../../src/types";
+import type { VelomarkThemeName } from "../../src/core/theme/types";
+import type { VelomarkDebugMetrics } from "../../src/core/types";
 
 export interface RendererPanelProps {
   markdown: string;

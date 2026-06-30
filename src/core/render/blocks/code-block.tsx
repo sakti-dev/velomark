@@ -9,10 +9,10 @@ import type {
 } from "../../types";
 import {
   CodeBlockOverlayControls,
+  HighlightedCodeBlock,
   resolveCodeBlockOptions,
-} from "../code-blocks/default-code-block-shell";
-import { HighlightedCodeBlock } from "../code-blocks/highlighted-code-block";
-import { MermaidBlock } from "./mermaid-block";
+} from "../../../code";
+import { MermaidBlock } from "../../../mermaid";
 
 export const CodeBlock: Component<{
   block: RenderBlock<CodeBlockData>;
