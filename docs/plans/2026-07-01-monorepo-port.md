@@ -57,11 +57,12 @@ While both exist: **`src/` is the published `velomark`** (root `pack` → `src/i
 
 ### Phase 1 — `packages/core` (engine + contract)
 
-- [ ] Port velomark engine into `packages/core` (parser, IR, Solid render, patcher, theme, GFM)
-- [ ] Expose `PluginConfig` loader + contexts (`cn`, prefix, icon, translations)
-- [ ] Keep directives + footnotes + `onDebugMetrics` always-on
+- [x] Port velomark engine into `packages/core` (parser, IR, Solid render, patcher, theme, GFM)
+- [x] Expose `PluginConfig` contract + `PluginProvider`/`usePlugins` (engine decoupled from features)
+- [x] Keep directives + footnotes + `onDebugMetrics` always-on
+- [x] Core parity vs `src/` on the existing test suite (106 pass + 1 pre-existing failure; src/ untouched)
 - [ ] **Fold in the styling port:** components adopt streamdown's exact Tailwind classes + `@theme` bridge
-- [ ] Core parity vs `src/` on the existing test suite
+- [ ] `cn`/prefix/icon/translations contexts (streamdown-parity UX layer)
 
 ### Phase 2 — `packages/remend` (self-heal)
 
