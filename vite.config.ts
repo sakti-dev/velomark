@@ -15,7 +15,7 @@ export default defineConfig({
     entry: ["src/index.tsx"],
     plugins: [solid()],
     dts: { tsgo: true },
-    exports: true,
+    exports: false,
     clean: true,
     copy: [{ from: "src/theme/styles.css", to: "dist", flatten: true }],
   },
@@ -23,11 +23,7 @@ export default defineConfig({
     coverage: {
       provider: "v8",
       include: ["src/**/*.{ts,tsx}"],
-      exclude: [
-        "src/**/__tests__/**",
-        "src/**/*.test.{ts,tsx}",
-        "src/**/*.d.ts",
-      ],
+      exclude: ["src/**/__tests__/**", "src/**/*.test.{ts,tsx}", "src/**/*.d.ts"],
       thresholds: {
         branches: 75,
         functions: 80,

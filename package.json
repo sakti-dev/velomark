@@ -27,29 +27,22 @@
   "sideEffects": [
     "*.css"
   ],
-  "browser": {},
-  "types": "./dist/index.d.ts",
-  "typesVersions": {},
   "exports": {
-    ".": "./dist/index.mjs",
+    ".": {
+      "types": "./dist/index.d.mts",
+      "import": "./dist/index.mjs"
+    },
+    "./styles.css": "./dist/styles.css",
     "./package.json": "./package.json"
   },
   "scripts": {
+    "build": "vp pack",
     "dev": "vp dev dev",
-    "build": "tsup && cp src/theme/styles.css dist/styles.css",
-    "test": "concurrently pnpm:test:client pnpm:test:ssr pnpm:test:packed-consumer",
-    "test:client": "vp test run --config vitest.config.ts",
-    "test:coverage": "vp test run --workspace vitest.coverage.workspace.ts --coverage",
-    "test:ssr": "vp test run --config vitest.ssr.config.ts --mode ssr",
+    "test": "vp test",
     "test:packed-consumer": "node ./scripts/pack-and-test-consumer.mjs",
-    "prepublishOnly": "pnpm build",
-    "format": "ultracite fix",
-    "lint": "concurrently pnpm:lint:*",
-    "lint:code": "ultracite check",
-    "lint:types": "tsc --noEmit",
-    "update-deps": "pnpm up -Li",
-    "check": "ultracite check",
-    "fix": "ultracite fix"
+    "check": "vp check",
+    "prepublishOnly": "vp run build",
+    "prepare": "vp config"
   },
   "dependencies": {
     "@shikijs/core": "^3.22.0",
@@ -63,9 +56,9 @@
     "@tailwindcss/vite": "^4.1.18",
     "@testing-library/jest-dom": "^6.9.1",
     "@types/node": "^20.12.12",
-    "@typescript/native-preview": "7.0.0-dev.20260509.2",
     "@typescript-eslint/eslint-plugin": "^7.9.0",
     "@typescript-eslint/parser": "^7.9.0",
+    "@typescript/native-preview": "7.0.0-dev.20260509.2",
     "@vitest/coverage-v8": "^4.1.9",
     "concurrently": "^8.2.2",
     "esbuild": "^0.21.3",
@@ -92,9 +85,11 @@
   "peerDependencies": {
     "solid-js": "^1.9.10"
   },
-  "engines": {
-    "node": ">=18",
-    "pnpm": ">=9.0.0"
-  },
-  "packageManager": "pnpm@11.5.3"
+  "devEngines": {
+    "packageManager": {
+      "name": "pnpm",
+      "version": "11.5.3",
+      "onFail": "download"
+    }
+  }
 }
