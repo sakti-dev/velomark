@@ -61,8 +61,8 @@ While both exist: **`src/` is the published `velomark`** (root `pack` → `src/i
 - [x] Expose `PluginConfig` contract + `PluginProvider`/`usePlugins` (engine decoupled from features)
 - [x] Keep directives + footnotes + `onDebugMetrics` always-on
 - [x] Core parity vs `src/` on the existing test suite (106 pass + 1 pre-existing failure; src/ untouched)
-- [ ] **Fold in the styling port:** components adopt streamdown's exact Tailwind classes + `@theme` bridge
-- [ ] `cn`/prefix/icon/translations contexts (streamdown-parity UX layer)
+- [x] **Fold in the styling port:** streamdown Tailwind classes via `cnfast` + `@theme` bridge; `data-velomark-*` slimmed to `root`/`block-kind`/`incomplete` + `vm-*` class hooks
+- [ ] Visual verification via dev playground wired to `packages/core`
 
 ### Phase 2 — `packages/remend` (self-heal)
 
