@@ -21,6 +21,49 @@
 
 ---
 
+> **Path convention (post-restructure):** core logic lives under `src/core/` (`parser/`, `model/`, `patch/`, `render/`, `theme/`, `types.ts`); feature integrations under `src/{remend,code,math,mermaid,cjk}/`. Task bodies below were written pre-restructure — apply these prefixes to any `src/<parser|model|patch|render|theme|types>...` path. The one non-obvious remap: self-heal lives in `src/remend/` (NOT `src/parser/self-heal/`).
+
+## Foundation (do these first)
+
+### Task F1: Restructure `src/` to mirror streamdown packages — DONE
+
+Hybrid reorg into `src/core/`, `src/code/`, `src/math/`, `src/mermaid/`, `src/remend/` (stub), `src/cjk/` (stub). Each feature folder has a barrel `index.ts`; core dispatch imports route through them. Committed on `feat/streamdown-parity`.
+
+### Task F2: Tailwind design-system foundation (do before any UI task)
+
+**Goal:** Replace plain-CSS component styling with Tailwind utility classes inline in components + shadcn design tokens, fully matching streamdown's distribution model. Every later UI task (animations, line numbers, mermaid controls, `components` override) then writes Tailwind utilities — so this MUST land before any of them to avoid double-work.
+
+**Consumer-facing impact (deliberate):** consumers must use Tailwind v4 and add `@source "../node_modules/velomark/dist/*.js";` to their `globals.css`. Velomark stops shipping self-contained component CSS — only keyframes + the KaTeX `@import` remain in `styles.css`.
+
+**Read (streamdown):**
+
+- `packages/streamdown/README.md:31-66` — `@source` directive + monorepo path adjustment.
+- `packages/streamdown/README.md:68-104` — shadcn CSS custom properties (`:root` + `.dark`: `--background`, `--foreground`, `--card`, `--card-foreground`, `--muted`, `--muted-foreground`, `--border`, `--input`, `--primary`, `--primary-foreground`, `--radius`).
+- `packages/streamdown/lib/utils.ts` — `cn` helper (clsx + tailwind-merge).
+- `packages/streamdown/index.tsx:229,466` — `prefix` prop → prefixed `cn`.
+- `packages/streamdown/lib/components.tsx` — canonical reference for how every element is styled with utilities (code, table, blockquote, h1-h6, links, lists, paragraphs, images).
+- `packages/streamdown/lib/code-block/*` — code-block utilities (header, copy button, line-number gutter, body).
+- `packages/streamdown/styles.css` — minimal: only `@keyframes sd-*` + `[data-sd-animate]` (everything else is utilities).
+- `packages/streamdown/package.json:63-80` — `clsx` + `tailwind-merge` as runtime deps.
+
+**Implement in velomark:**
+
+- **Deps:** add `clsx` + `tailwind-merge` to `dependencies`; move `tailwindcss` to `peerDependencies` (v4), keep in `devDependencies`.
+- **`cn` helper:** create `src/core/theme/cn.ts` — clsx + tailwind-merge, prefix-aware (namespaces classes via a `prefix`, mirroring streamdown's prop).
+- **Tokens:** extend `src/core/theme/generate-css-vars.ts` to ALSO emit shadcn-compatible names mapped from `VelomarkTheme` (`--background`←surface.base, `--foreground`←color.text.primary, `--card`, `--card-foreground`, `--muted`, `--muted-foreground`, `--border`, `--input`, `--primary`, `--primary-foreground`, `--radius`). Velomark tokens stay the source of truth; shadcn names are the surface the utilities resolve against (`bg-background`, `text-foreground`, `border-border`, `rounded-radius`).
+- **Tailwind v4 `@theme`:** provide a velomark `@theme` block (documented snippet) so utilities like `bg-card` resolve to `--card`.
+- **Convert every component** in `src/core/render/{blocks,inline,footnotes,directives}/*`, `src/core/render/{render-block,html-element-view,velomark}.tsx`, `src/code/*`, `src/math/*`, `src/mermaid/*` from CSS classes → inline Tailwind utilities via `cn()`.
+- **Shrink `src/core/theme/styles.css`** to `@import "katex/..."` + the keyframes/animate rules (animate rules land with Task 2). Remove all `.velomark ...` component rules.
+- **`prefix` prop:** add to `VelomarkProps`, thread through `cn`.
+- **Docs:** README — required `@source` directive, `@theme` snippet, Tailwind v4 peer-dep note.
+- **Playground:** `dev/` already uses Tailwind — keep working.
+
+**Tests:** `src/core/theme/__tests__/cn.test.ts` (merge + prefix); update `theme.test.ts` ("ships consumable styles.css" + CSS-var-content assertions change); `data-velomark-*` attribute tests remain valid. Keep `vite.config.ts` `pack.copy` for `styles.css` (keyframes + KaTeX).
+
+**Risk:** large mechanical touch across every component. Mitigate: convert file-by-file, `vp check && vp test` after each batch. KaTeX `@import` MUST stay in shipped CSS.
+
+---
+
 ## P0 — Major, user-visible gaps
 
 ### Task 1: Streaming self-healing (inline auto-close) — `remend` equivalent
