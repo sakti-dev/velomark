@@ -1,17 +1,17 @@
-import { defineProject, defineWorkspace } from "vitest/config";
+import { defineProject } from "vitest/config";
 
-export default defineWorkspace([
-	defineProject({
-		extends: "./vitest.config.ts",
-		test: {
-			name: "client",
-		},
-	}),
-	defineProject({
-		extends: "./vitest.ssr.config.ts",
-		mode: "ssr",
-		test: {
-			name: "ssr",
-		},
-	}),
-]);
+export default [
+  defineProject({
+    extends: "./vitest.config.ts",
+    test: {
+      name: "client",
+    },
+  }),
+  defineProject({
+    extends: "./vitest.ssr.config.ts",
+    mode: "ssr",
+    test: {
+      name: "ssr",
+    },
+  }),
+];
