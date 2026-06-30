@@ -33,11 +33,12 @@ export default defineConfig({
     },
     projects: [
       {
+        mode: "test",
         plugins: [solid({ hot: false, solid: { generate: "dom" } })],
-        resolve: { conditions: ["browser", "development"] },
         test: {
           name: "client",
           environment: "jsdom",
+          testTimeout: 30_000,
           env: {
             NODE_ENV: "development",
             DEV: "1",

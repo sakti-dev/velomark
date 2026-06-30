@@ -13,3 +13,5 @@ tsup.config.bundled_*.{m,c}js
 
 # vite-plus generated git hooks
 .vite-hooks/
+
+references/

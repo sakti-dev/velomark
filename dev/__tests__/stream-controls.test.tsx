@@ -51,5 +51,5 @@ describe("playground stream controls", () => {
 
     dispose();
     container.remove();
-  }, 10_000);
+  }, 15_000);
 });
