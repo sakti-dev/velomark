@@ -210,7 +210,6 @@ function buildBlock<TData extends ParsedBlockData>(
   };
 }
 
-// biome-ignore lint/complexity/noExcessiveCognitiveComplexity: Block parsing is intentionally implemented as a single streaming-oriented state machine.
 export function parseBlockBoundaries(markdown: string): DraftRenderBlock<ParsedBlockData>[] {
   const blocks: ParsedDraftBlock[] = [];
   const lines = buildLineInfos(markdown);

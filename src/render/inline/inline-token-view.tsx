@@ -11,10 +11,7 @@ import { HtmlElementView } from "../html-element-view";
 import { MathView } from "../math/math-view";
 
 function renderImageToken(token: Extract<InlineToken, { type: "image" }>): JSX.Element {
-  return (
-    // biome-ignore lint/correctness/useImageSize: Markdown images do not provide intrinsic dimensions ahead of render.
-    <img alt={token.alt} loading="lazy" src={token.src} title={token.title} />
-  );
+  return <img alt={token.alt} loading="lazy" src={token.src} title={token.title} />;
 }
 
 function assertNever(value: never): never {

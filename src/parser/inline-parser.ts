@@ -220,7 +220,6 @@ function parseTextDirective(source: string, start: number) {
   };
 }
 
-// biome-ignore lint/complexity/noExcessiveCognitiveComplexity: Inline markdown parsing is implemented as a single-pass tokenizer for streaming updates.
 export function parseInline(
   source: string,
   definitions: ReferenceDefinitionMap = {},

@@ -7,12 +7,10 @@ function hashString(input: string): string {
   let hash = 2_166_136_261;
 
   for (let index = 0; index < input.length; index += 1) {
-    // biome-ignore lint/suspicious/noBitwiseOperators: FNV-1a hashing intentionally uses bitwise XOR.
     hash ^= input.charCodeAt(index);
     hash = Math.imul(hash, 16_777_619);
   }
 
-  // biome-ignore lint/suspicious/noBitwiseOperators: Converting to an unsigned 32-bit value is part of the hash algorithm.
   return (hash >>> 0).toString(36).padStart(8, "0").slice(0, 8);
 }
 

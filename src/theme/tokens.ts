@@ -1,7 +1,6 @@
 import { darkTheme as darkThemePreset } from "./dark-theme";
 import { defaultTheme as defaultThemePreset } from "./default-theme";
 
-// biome-ignore lint/performance/noBarrelFile: This module intentionally groups theme presets and tokens for the public API.
 export { velomarkColors } from "./colors";
 export { darkTheme } from "./dark-theme";
 export { defaultTheme } from "./default-theme";

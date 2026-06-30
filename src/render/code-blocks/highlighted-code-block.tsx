@@ -16,7 +16,6 @@ const FONT_STYLE_BOLD_FLAG = 2;
 const FONT_STYLE_UNDERLINE_FLAG = 4;
 
 function hasFontStyleFlag(fontStyle: number, flag: number): boolean {
-  // biome-ignore lint/suspicious/noBitwiseOperators: Shiki exposes fontStyle as a bit flag mask.
   return (fontStyle & flag) !== 0;
 }
 
