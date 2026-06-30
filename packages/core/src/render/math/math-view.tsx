@@ -1,4 +1,5 @@
 import { type Component, createMemo, Show } from "solid-js";
+import { cn } from "cnfast";
 
 import { usePlugins } from "../../plugins/plugin-context";
 
@@ -13,16 +14,28 @@ export const MathView: Component<{ displayMode: boolean; formula: string }> = (p
 
   const fallback = () =>
     props.displayMode ? (
-      <pre data-velomark-math-fallback="">
+      <pre
+        class={cn("vm-math mt-2 overflow-x-auto rounded-md bg-muted p-2 font-mono text-xs")}
+        data-velomark-math-fallback=""
+      >
         <code>{props.formula}</code>
       </pre>
     ) : (
-      <code data-velomark-math-fallback="">{props.formula}</code>
+      <code
+        class={cn("vm-math rounded bg-muted px-1.5 py-0.5 font-mono text-sm")}
+        data-velomark-math-fallback=""
+      >
+        {props.formula}
+      </code>
     );
 
   return (
     <Show when={result()?.html} fallback={fallback()}>
-      <span data-velomark-math-rendered="" innerHTML={result()?.html} />
+      <span
+        class={cn("vm-math", props.displayMode ? "block overflow-x-auto" : "inline-flex")}
+        data-velomark-math-rendered=""
+        innerHTML={result()?.html}
+      />
     </Show>
   );
 };

@@ -1,5 +1,7 @@
 import { type Component, For, type JSX } from "solid-js";
 import { Dynamic } from "solid-js/web";
+import { cn } from "cnfast";
+
 import type { HtmlElementChild } from "../../parser/html-element";
 import type {
   InlineToken,
@@ -11,7 +13,15 @@ import { HtmlElementView } from "../html-element-view";
 import { MathView } from "../math/math-view";
 
 function renderImageToken(token: Extract<InlineToken, { type: "image" }>): JSX.Element {
-  return <img alt={token.alt} loading="lazy" src={token.src} title={token.title} />;
+  return (
+    <img
+      alt={token.alt}
+      class={cn("max-w-full rounded-lg")}
+      loading="lazy"
+      src={token.src}
+      title={token.title}
+    />
+  );
 }
 
 function assertNever(value: never): never {
@@ -38,7 +48,7 @@ export const renderInlineToken = (
       );
     case "inline-math":
       return (
-        <span data-velomark-inline-math="">
+        <span class={cn("vm-math inline-flex align-middle")} data-velomark-inline-math="">
           <MathView displayMode={false} formula={token.value} />
         </span>
       );
@@ -75,6 +85,7 @@ export const renderInlineToken = (
 
       return (
         <span
+          class={cn("rounded bg-muted px-1 py-0.5 text-sm")}
           data-velomark-text-directive={token.name}
           {...directiveAttributeProps(token.attributes)}
         >
@@ -83,7 +94,9 @@ export const renderInlineToken = (
       );
     }
     case "code":
-      return <code>{token.text}</code>;
+      return (
+        <code class={cn("rounded bg-muted px-1.5 py-0.5 font-mono text-sm")}>{token.text}</code>
+      );
     case "delete":
       return (
         <del>
@@ -104,7 +117,7 @@ export const renderInlineToken = (
       return renderImageToken(token);
     case "strong":
       return (
-        <strong>
+        <strong class={cn("font-semibold")}>
           <For each={token.children}>
             {(child) => renderInlineToken(child, containers, definitions)}
           </For>
@@ -112,7 +125,13 @@ export const renderInlineToken = (
       );
     case "link":
       return (
-        <a href={token.href} rel="noopener noreferrer" target="_blank" title={token.title}>
+        <a
+          class={cn("font-medium text-primary underline wrap-anywhere")}
+          href={token.href}
+          rel="noopener noreferrer"
+          target="_blank"
+          title={token.title}
+        >
           <For each={token.children}>
             {(child) => renderInlineToken(child, containers, definitions)}
           </For>

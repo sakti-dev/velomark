@@ -1,4 +1,5 @@
 import { type Component, For } from "solid-js";
+import { cn } from "cnfast";
 import type { ListBlockData } from "../../parser/block-boundaries";
 import type {
   ReferenceDefinitionMap,
@@ -66,15 +67,19 @@ export const ListBlock: Component<{
 
   if (props.block.data.ordered) {
     return (
-      <ol {...commonProps}>
-        <For each={items()}>{(item) => <li>{renderItemContent(item)}</li>}</For>
+      <ol {...commonProps} class={cn("list-inside list-decimal whitespace-normal [li_&]:pl-6")}>
+        <For each={items()}>
+          {(item) => <li class={cn("py-1 [&>p]:inline")}>{renderItemContent(item)}</li>}
+        </For>
       </ol>
     );
   }
 
   return (
-    <ul {...commonProps}>
-      <For each={items()}>{(item) => <li>{renderItemContent(item)}</li>}</For>
+    <ul {...commonProps} class={cn("list-inside list-disc whitespace-normal [li_&]:pl-6")}>
+      <For each={items()}>
+        {(item) => <li class={cn("py-1 [&>p]:inline")}>{renderItemContent(item)}</li>}
+      </For>
     </ul>
   );
 };

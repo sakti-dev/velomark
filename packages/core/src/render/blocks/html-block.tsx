@@ -1,4 +1,5 @@
 import type { Component } from "solid-js";
+import { cn } from "cnfast";
 import type { HtmlBlockData } from "../../parser/block-boundaries";
 import type { RenderBlock } from "../../types";
 
@@ -13,7 +14,7 @@ export const HtmlBlock: Component<{
       data-velomark-block-index={props.index}
       data-velomark-block-kind={props.block.kind}
     >
-      <pre>
+      <pre class={cn("overflow-x-auto rounded-md border border-border bg-background p-4 text-sm")}>
         <code>{props.block.data.value}</code>
       </pre>
     </div>

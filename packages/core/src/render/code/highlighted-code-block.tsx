@@ -1,4 +1,5 @@
 import { type Component, createEffect, createSignal, For, Show } from "solid-js";
+import { cn } from "cnfast";
 
 import type { CodeHighlighterPlugin, HighlightResult, HighlightToken } from "../../plugins/types";
 
@@ -50,7 +51,7 @@ export const HighlightedCodeBlock: Component<{
   const lines = () => result()?.tokens ?? [];
 
   return (
-    <pre>
+    <pre class={cn("overflow-x-auto rounded-md border border-border bg-background p-4 text-sm")}>
       <code data-velomark-code-highlighted={result() ? "" : undefined}>
         <Show fallback={props.code} when={result()}>
           <For each={lines()}>

@@ -266,7 +266,7 @@ describe("Velomark block rendering", () => {
     );
     mountedRoots.push(dispose);
 
-    const wrapper = host.querySelector("[data-velomark-table-wrapper]");
+    const wrapper = host.querySelector(".vm-table");
     expect(wrapper).not.toBeNull();
 
     const headers = Array.from(host.querySelectorAll("thead th"));

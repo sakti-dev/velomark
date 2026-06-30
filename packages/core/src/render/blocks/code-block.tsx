@@ -1,5 +1,6 @@
 import type { Component } from "solid-js";
 import { Dynamic } from "solid-js/web";
+import { cn } from "cnfast";
 
 import { usePlugins } from "../../plugins/plugin-context";
 import type { CodeBlockData } from "../../parser/block-boundaries";
@@ -55,6 +56,7 @@ export const CodeBlock: Component<{
 
   return (
     <div
+      class={cn("relative my-4 w-full rounded-xl border border-border bg-sidebar p-2 text-sm")}
       data-velomark-block-id={props.debug ? props.block.id : undefined}
       data-velomark-block-index={props.index}
       data-velomark-block-kind={props.block.kind}

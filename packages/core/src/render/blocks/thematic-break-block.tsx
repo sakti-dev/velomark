@@ -1,4 +1,5 @@
 import type { Component } from "solid-js";
+import { cn } from "cnfast";
 
 export const ThematicBreakBlock: Component<{
   blockId: string;
@@ -7,6 +8,7 @@ export const ThematicBreakBlock: Component<{
 }> = (props) => {
   return (
     <hr
+      class={cn("my-6 border-t border-border")}
       data-velomark-block-id={props.debug ? props.blockId : undefined}
       data-velomark-block-index={props.index}
       data-velomark-block-kind="thematic-break"

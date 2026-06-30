@@ -1,4 +1,5 @@
 import { type Component, For } from "solid-js";
+import { cn } from "cnfast";
 import type { BlockquoteBlockData } from "../../parser/block-boundaries";
 import type {
   ReferenceDefinitionMap,
@@ -16,6 +17,7 @@ export const BlockquoteBlock: Component<{
 }> = (props) => {
   return (
     <blockquote
+      class={cn("my-4 border-l-4 border-muted-foreground/30 pl-4 text-muted-foreground italic")}
       data-velomark-block-id={props.debug ? props.block.id : undefined}
       data-velomark-block-index={props.index}
       data-velomark-block-kind={props.block.kind}

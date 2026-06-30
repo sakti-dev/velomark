@@ -1,4 +1,5 @@
 import { type Component, createSignal, type JSX } from "solid-js";
+import { cn } from "cnfast";
 
 import type { VelomarkCodeBlockOptions } from "../../types";
 
@@ -75,6 +76,10 @@ export const CopyCodeButton: Component<{ code: string }> = (props) => {
   return (
     <button
       aria-label={copied() ? "Copied code" : "Copy code"}
+      class={cn(
+        "vm-code-copy absolute right-2 top-2 flex h-8 w-8 cursor-pointer items-center justify-center rounded-full border border-border bg-background text-muted-foreground shadow-xs transition-all hover:bg-muted hover:text-foreground active:translate-y-px",
+        copied() && "text-primary",
+      )}
       data-velomark-code-copy=""
       data-velomark-code-copy-state={copied() ? "copied" : "idle"}
       onClick={() => copyCode()}
@@ -86,7 +91,16 @@ export const CopyCodeButton: Component<{ code: string }> = (props) => {
 };
 
 export const CodeBlockLanguageBadge: Component<{ language?: string }> = (props) =>
-  props.language ? <div data-velomark-code-language="">{props.language}</div> : null;
+  props.language ? (
+    <div
+      class={cn(
+        "vm-code-language absolute bottom-2 right-2 rounded-md border border-border bg-background px-2 py-0.5 font-mono text-xs lowercase text-muted-foreground",
+      )}
+      data-velomark-code-language=""
+    >
+      {props.language}
+    </div>
+  ) : null;
 
 export const CodeBlockOverlayControls: Component<{
   code: string;

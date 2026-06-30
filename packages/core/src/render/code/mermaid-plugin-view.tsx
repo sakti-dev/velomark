@@ -1,4 +1,5 @@
 import { type Component, createEffect, createSignal, onCleanup, Show } from "solid-js";
+import { cn } from "cnfast";
 import { isServer } from "solid-js/web";
 
 import type { CodeBlockData } from "../../parser/block-boundaries";
@@ -63,6 +64,9 @@ export const MermaidPluginView: Component<{
 
   return (
     <div
+      class={cn(
+        "group relative my-4 flex w-full flex-col gap-2 rounded-xl border border-border bg-sidebar p-2",
+      )}
       data-velomark-block-id={props.debug ? props.block.id : undefined}
       data-velomark-block-index={props.index}
       data-velomark-block-kind={props.block.kind}
@@ -71,13 +75,17 @@ export const MermaidPluginView: Component<{
     >
       <Show
         fallback={
-          <pre>
+          <pre class={cn("mt-2 overflow-x-auto rounded-md bg-muted p-2 font-mono text-xs")}>
             <code>{props.block.data.code}</code>
           </pre>
         }
         when={diagramSvg().length > 0}
       >
-        <div data-velomark-mermaid-diagram="" innerHTML={diagramSvg()} />
+        <div
+          class={cn("vm-mermaid-diagram rounded-md border border-border bg-background")}
+          data-velomark-mermaid-diagram=""
+          innerHTML={diagramSvg()}
+        />
       </Show>
     </div>
   );

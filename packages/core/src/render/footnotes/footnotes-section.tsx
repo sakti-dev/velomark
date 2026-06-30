@@ -1,4 +1,5 @@
 import { type Component, For, Show } from "solid-js";
+import { cn } from "cnfast";
 import type { ParsedBlockData } from "../../parser/block-boundaries";
 import type { VelomarkTheme } from "../../theme/types";
 import type {
@@ -27,8 +28,11 @@ export const FootnotesSection: Component<{
 
   return (
     <Show when={orderedFootnotes().length > 0}>
-      <section data-velomark-footnotes="">
-        <hr />
+      <section
+        class={cn("vm-footnotes mt-6 border-t border-border pt-4 text-sm")}
+        data-velomark-footnotes=""
+      >
+        <hr class={cn("sr-only")} />
         <ol>
           <For each={orderedFootnotes()}>
             {(entry) => (

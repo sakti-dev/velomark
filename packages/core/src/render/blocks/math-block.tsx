@@ -1,4 +1,5 @@
 import type { Component } from "solid-js";
+import { cn } from "cnfast";
 
 import type { MathBlockData } from "../../parser/block-boundaries";
 import type { RenderBlock } from "../../types";
@@ -11,6 +12,7 @@ export const MathBlock: Component<{
 }> = (props) => {
   return (
     <div
+      class={cn("my-4 rounded-md border border-border bg-background p-4")}
       data-velomark-block-id={props.debug ? props.block.id : undefined}
       data-velomark-block-index={props.index}
       data-velomark-block-kind={props.block.kind}
