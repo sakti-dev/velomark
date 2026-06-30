@@ -284,9 +284,15 @@ importers:
 
   packages/core:
     dependencies:
+      cnfast:
+        specifier: ^0.0.8
+        version: 0.0.8
       solid-js:
         specifier: ^1.9.10
         version: 1.9.11
+      tailwindcss:
+        specifier: ^4.1.18
+        version: 4.2.1
 
 packages:
 
@@ -1334,6 +1340,10 @@ packages:
 
   chevrotain@11.1.2:
     resolution: {integrity: sha512-opLQzEVriiH1uUQ4Kctsd49bRoFDXGGSC4GUqj7pGyxM3RehRhvTlZJc1FL/Flew2p5uwxa1tUDWKzI4wNM8pg==}
+
+  cnfast@0.0.8:
+    resolution: {integrity: sha512-EjXKMfGfdwtV4AcNSQ6AwQaVzpC1B7IxeiwA3FlhTXz+YFlMKVi4c1JX9tgD2QOlahQXjB8KUXrBaYG+3v871Q==}
+    hasBin: true
 
   color-convert@1.9.3:
     resolution: {integrity: sha512-QfAUtd+vFdAtFQcC8CCyYt1fYWxSqAiK2cSD6zDB8N3cpsEBAvRxp9zOGg6G/SHHJYAT88/az/IuDGALsNVbGg==}
@@ -3296,6 +3306,8 @@ snapshots:
       '@chevrotain/types': 11.1.2
       '@chevrotain/utils': 11.1.2
       lodash-es: 4.17.23
+
+  cnfast@0.0.8: {}
 
   color-convert@1.9.3:
     dependencies:
