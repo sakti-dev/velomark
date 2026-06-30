@@ -1,6 +1,6 @@
 {
   "name": "velomark",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "private": false,
   "description": "Solid-only markdown rendering tuned for streamed AI responses.",
   "keywords": [
