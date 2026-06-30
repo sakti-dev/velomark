@@ -3,9 +3,13 @@ dist
 coverage
 .pnpm-store
 test-consumer/vendor
+test-consumer/pnpm-workspace.yaml
 gitignore
 logs/security/.security-key
 
 # tsup
-tsup.config.bundled_*.{m,c,}s
+tsup.config.bundled_*.{m,c}js
 .turbo/
+
+# vite-plus generated git hooks
+.vite-hooks/

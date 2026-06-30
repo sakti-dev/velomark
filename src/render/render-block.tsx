@@ -156,7 +156,7 @@ export const RenderBlockView: Component<{
               data: {
                 text:
                   "text" in (props.block.data as Record<string, unknown>)
-                    ? String((props.block.data as { text?: unknown }).text ?? "")
+                    ? ((props.block.data as { text?: string }).text ?? "")
                     : "",
               },
             } as RenderBlock<ParagraphBlockData>

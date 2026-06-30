@@ -213,8 +213,8 @@ Template base plus Solid JSX:
     "verbatimModuleSyntax": true,
     "skipLibCheck": true,
     "jsx": "preserve",
-    "jsxImportSource": "solid-js"
-  }
+    "jsxImportSource": "solid-js",
+  },
 }
 ```
 

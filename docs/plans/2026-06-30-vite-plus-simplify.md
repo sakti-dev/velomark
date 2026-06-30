@@ -11,6 +11,7 @@
 **Reference:** design at `docs/plans/2026-06-30-vite-plus-simplify-design.md`; template at `/home/eekrain/CODE/classic-come`.
 
 **Verified config facts** (from `@voidzero-dev/vite-plus-core/dist/tsdown/index-types.d.ts`):
+
 - `pack` block IS the tsdown `UserConfig` (`PackUserConfig extends UserConfig`).
 - Valid fields: `entry`, `plugins` (`TsdownPluginOption`), `dts` (`WithEnabled<DtsOptions>`, supports `tsgo`), `exports` (`WithEnabled<ExportsOptions>`), `clean`, `copy` (`CopyOptions | CopyOptionsFn`).
 - `lint?: OxlintConfig`, `fmt?: OxfmtConfig`, `test?: InlineConfig` (vitest), `staged?` are vite-plus top-level blocks.
@@ -20,6 +21,7 @@
 ### Task 1: Rewrite `tsconfig.json` to template base + Solid JSX
 
 **Files:**
+
 - Modify: `tsconfig.json`
 
 **Step 1: Replace the file contents**
@@ -44,8 +46,8 @@
     "verbatimModuleSyntax": true,
     "skipLibCheck": true,
     "jsx": "preserve",
-    "jsxImportSource": "solid-js"
-  }
+    "jsxImportSource": "solid-js",
+  },
 }
 ```
 
@@ -73,6 +75,7 @@ git commit -m "build: align tsconfig to vite-plus template (nodenext, verbatimMo
 ### Task 2: Write the new root `vite.config.ts`
 
 **Files:**
+
 - Create: `vite.config.ts`
 
 **Step 1: Write the config**
@@ -122,11 +125,7 @@ export default defineConfig({
     coverage: {
       provider: "v8",
       include: ["src/**/*.{ts,tsx}"],
-      exclude: [
-        "src/**/__tests__/**",
-        "src/**/*.test.{ts,tsx}",
-        "src/**/*.d.ts",
-      ],
+      exclude: ["src/**/__tests__/**", "src/**/*.test.{ts,tsx}", "src/**/*.d.ts"],
       thresholds: { branches: 75, functions: 80, lines: 80, statements: 80 },
     },
   },
@@ -154,6 +153,7 @@ git commit -m "build: add root vite.config.ts (pack + test projects + lint/fmt)"
 ### Task 3: Delete the old vitest config files
 
 **Files:**
+
 - Delete: `vitest.config.ts`, `vitest.ssr.config.ts`, `vitest.shared.ts`, `vitest.coverage.workspace.ts`
 
 **Step 1: Delete the four files**
@@ -183,6 +183,7 @@ git commit -m "build: remove split vitest configs (folded into root vite.config.
 ### Task 4: Verify `vp pack` builds with the Solid plugin
 
 **Files:**
+
 - None (verification + fix task). May touch `vite.config.ts` if the Solid plugin integration needs adjustment.
 
 **Step 1: Run the pack build**
@@ -193,6 +194,7 @@ Expected: `dist/` is produced with `index.<ext>` and a `.d.ts`.
 **Step 2: If it fails, diagnose and fix**
 
 Likely failure modes and fixes:
+
 - **`vite-plugin-solid` not accepted by `TsdownPluginOption`**: pass it via `pack.inputOptions` as a function returning `{ plugins: [solid()] }`, or cast. Solid #2618 confirms the plugin is Vite 8 compatible, so the transform itself works.
 - **JSX not transformed**: confirm `solid()` is receiving the `.tsx` entry; tsdown passes `.tsx` through loaders by default.
 - **dts (tsgo) errors on Solid JSX**: tsgo emits types, not runtime, so `jsx: preserve` should be fine; if tsgo complains, ensure `tsconfig.json` `jsx`/`jsxImportSource` are set (done in Task 1).
@@ -216,6 +218,7 @@ git commit -m "fix(pack): make vite-plugin-solid work under vp pack"
 ### Task 5: Rewrite `package.json` (scripts, exports, devEngines)
 
 **Files:**
+
 - Modify: `package.json`
 
 **Step 1: Replace the `scripts` block**
@@ -276,6 +279,7 @@ git commit -m "build: template-align package.json (scripts, exports, devEngines)
 ### Task 6: Run the packed-consumer smoke test
 
 **Files:**
+
 - None (verification). May touch `package.json` exports if the consumer can't resolve.
 
 **Step 1: Run the consumer smoke test**
@@ -301,6 +305,7 @@ git commit -m "fix(exports): resolve packed-consumer import path"
 ### Task 7: Remove legacy devDependencies
 
 **Files:**
+
 - Modify: `package.json`
 
 **Step 1: Remove these from `devDependencies`**
@@ -342,6 +347,7 @@ git commit -m "deps: remove biome/ultracite/eslint/prettier/tsup; add tsgo"
 ### Task 8: Delete `tsup.config.ts`, `env.d.ts`, and `.agents/`; move `AGENTS.md` to root
 
 **Files:**
+
 - Delete: `tsup.config.ts`, `env.d.ts`, `.agents/` (entire directory — includes the ultracite skill)
 - Create: `AGENTS.md` (root)
 
@@ -390,6 +396,7 @@ git commit -m "chore: remove tsup.config/env.d.ts/.agents; add root AGENTS.md"
 ### Task 9: Simplify `pnpm-workspace.yaml`
 
 **Files:**
+
 - Modify: `pnpm-workspace.yaml`
 
 **Step 1: Drop `allowBuilds`** (esbuild is gone)
@@ -441,6 +448,7 @@ vp install
 ```bash
 vp check && vp test run --coverage && vp pack && pnpm exec tsc --noEmit && pnpm run test:packed-consumer
 ```
+
 Expected: every command green; coverage thresholds met.
 
 **Step 3: Confirm no legacy references remain**

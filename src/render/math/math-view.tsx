@@ -71,7 +71,7 @@ export const MathView: Component<{
 
     setIsRendering(true);
     renderTimer = setTimeout(() => {
-      renderFormula(formula, currentRequestId);
+      void renderFormula(formula, currentRequestId);
     }, props.renderDelayMs ?? DEFAULT_RENDER_DELAY_MS);
   });
 
