@@ -27,29 +27,12 @@
   "sideEffects": [
     "*.css"
   ],
-  "main": "./dist/index.js",
-  "module": "./dist/index.js",
   "browser": {},
   "types": "./dist/index.d.ts",
   "typesVersions": {},
   "exports": {
-    ".": {
-      "solid": {
-        "development": "./dist/dev.js",
-        "import": "./dist/index.js"
-      },
-      "development": {
-        "import": {
-          "types": "./dist/index.d.ts",
-          "default": "./dist/dev.js"
-        }
-      },
-      "import": {
-        "types": "./dist/index.d.ts",
-        "default": "./dist/index.js"
-      }
-    },
-    "./styles.css": "./dist/styles.css"
+    ".": "./dist/index.mjs",
+    "./package.json": "./package.json"
   },
   "scripts": {
     "dev": "vp dev dev",
@@ -80,6 +63,7 @@
     "@tailwindcss/vite": "^4.1.18",
     "@testing-library/jest-dom": "^6.9.1",
     "@types/node": "^20.12.12",
+    "@typescript/native-preview": "7.0.0-dev.20260509.2",
     "@typescript-eslint/eslint-plugin": "^7.9.0",
     "@typescript-eslint/parser": "^7.9.0",
     "@vitest/coverage-v8": "^4.1.9",

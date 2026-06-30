@@ -17,7 +17,7 @@ export default defineConfig({
     dts: { tsgo: true },
     exports: true,
     clean: true,
-    copy: [{ from: "src/theme/styles.css", to: "styles.css" }],
+    copy: [{ from: "src/theme/styles.css", to: "dist", flatten: true }],
   },
   test: {
     coverage: {
