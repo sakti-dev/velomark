@@ -20,6 +20,7 @@ export type {
   VelomarkCodeBlockOptions,
   VelomarkCodeBlockRendererProps,
   VelomarkContainerRendererProps,
+  VelomarkDebugMetrics,
 } from "./types";
 
 // Plugin contract (feature packages register via <Velomark plugins={...}>)
