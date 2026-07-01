@@ -132,7 +132,7 @@ describe("Velomark block rendering", () => {
     expect(host.textContent).toContain("Done");
   });
 
-  it("renders code blocks with overlay controls and a floating language badge", () => {
+  it("renders code blocks with a header, language label, and copy control", () => {
     const host = document.createElement("div");
     document.body.append(host);
 
@@ -141,7 +141,7 @@ describe("Velomark block rendering", () => {
 
     const shell = host.querySelector('[data-velomark-block-kind="code"]');
     expect(shell?.tagName).toBe("DIV");
-    expect(shell?.querySelector(".vm-code-header")).toBeNull();
+    expect(shell?.querySelector(".vm-code-header")).not.toBeNull();
     expect(shell?.querySelector(".vm-code-language")?.textContent).toBe("ts");
     expect(shell?.querySelector("pre > code")?.textContent).toBe("const answer = 42;");
     const copyButton = shell?.querySelector("button.vm-code-copy") as HTMLButtonElement | null;
@@ -171,7 +171,7 @@ describe("Velomark block rendering", () => {
     expect(highlighted?.querySelectorAll(":scope > span").length).toBeGreaterThan(1);
   });
 
-  it("omits the language badge and header for unlabeled code fences", () => {
+  it("omits the language label for unlabeled code fences but keeps the header", () => {
     const host = document.createElement("div");
     document.body.append(host);
 
@@ -179,7 +179,7 @@ describe("Velomark block rendering", () => {
     mountedRoots.push(dispose);
 
     const shell = host.querySelector('[data-velomark-block-kind="code"]');
-    expect(shell?.querySelector(".vm-code-header")).toBeNull();
+    expect(shell?.querySelector(".vm-code-header")).not.toBeNull();
     expect(shell?.querySelector(".vm-code-language")).toBeNull();
     expect(shell?.querySelector("pre > code")?.textContent).toBe("plain text");
     expect(shell?.querySelector("button.vm-code-copy")).not.toBeNull();
@@ -525,7 +525,7 @@ describe("Velomark block rendering", () => {
     expect(mermaidBlock?.querySelector("code")).toBeNull();
     expect(mermaidBlock?.querySelector(".vm-code-header")).toBeNull();
     expect(mermaidBlock?.querySelector(".vm-code-view-toggle")).toBeNull();
-    expect(mermaidBlock?.querySelector("button.vm-code-copy")).toBeNull();
+    expect(mermaidBlock?.querySelector("button.vm-code-copy")).not.toBeNull();
   });
 
   it("keeps mermaid fences as source blocks until the stream closes the fence", async () => {
@@ -595,7 +595,7 @@ describe("Velomark block rendering", () => {
     expect(mermaidBlock).not.toBeNull();
     expect(mermaidBlock?.querySelector(".vm-mermaid-diagram")).toBeNull();
     expect(mermaidBlock?.querySelector(".vm-code-header")).toBeNull();
-    expect(mermaidBlock?.querySelector("button.vm-code-copy")).toBeNull();
+    expect(mermaidBlock?.querySelector("button.vm-code-copy")).not.toBeNull();
     expect(mermaidBlock?.querySelector("pre > code")?.textContent).toContain("not a valid diagram");
   });
 

@@ -1,4 +1,5 @@
 import { type Component, createEffect, createMemo, createSignal, For } from "solid-js";
+import { cn } from "cnfast";
 import { buildRenderDocument, collectRenderMetrics } from "../model/render-document";
 import { PluginProvider } from "../plugins/plugin-context";
 import type { PluginConfig } from "../plugins/types";
@@ -87,7 +88,10 @@ export function Velomark(props: VelomarkProps) {
   return (
     <PluginProvider config={props.plugins ?? {}}>
       <div
-        class={props.class ? `velomark ${props.class}` : "velomark"}
+        class={cn(
+          "velomark space-y-4 whitespace-normal [&>*:first-child]:mt-0 [&>*:last-child]:mb-0",
+          props.class,
+        )}
         data-velomark-root=""
         style={themeStyle()}
       >

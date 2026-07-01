@@ -8,7 +8,7 @@ export const ThematicBreakBlock: Component<{
 }> = (props) => {
   return (
     <hr
-      class={cn("my-6 border-t border-border")}
+      class={cn("my-6 border-border")}
       data-velomark-block-id={props.debug ? props.blockId : undefined}
       data-velomark-block-index={props.index}
       data-velomark-block-kind="thematic-break"

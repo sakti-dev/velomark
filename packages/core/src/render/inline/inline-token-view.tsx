@@ -10,19 +10,8 @@ import type {
 } from "../../types";
 import { directiveAttributeProps } from "../directives/directive-attribute-props";
 import { HtmlElementView } from "../html-element-view";
+import { ImageComponent } from "../image";
 import { MathView } from "../math/math-view";
-
-function renderImageToken(token: Extract<InlineToken, { type: "image" }>): JSX.Element {
-  return (
-    <img
-      alt={token.alt}
-      class={cn("max-w-full rounded-lg")}
-      loading="lazy"
-      src={token.src}
-      title={token.title}
-    />
-  );
-}
 
 function assertNever(value: never): never {
   throw new Error(`Unsupported inline token: ${JSON.stringify(value)}`);
@@ -114,7 +103,7 @@ export const renderInlineToken = (
         </em>
       );
     case "image":
-      return renderImageToken(token);
+      return <ImageComponent alt={token.alt} src={token.src} title={token.title} />;
     case "strong":
       return (
         <strong class={cn("font-semibold")}>

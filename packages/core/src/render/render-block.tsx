@@ -21,7 +21,7 @@ import type {
   VelomarkContainerRendererProps,
 } from "../types";
 import { BlockquoteBlock } from "./blocks/blockquote-block";
-import { CodeBlock } from "./blocks/code-block";
+import { CodeBlockView } from "./blocks/code-block";
 import { ContainerBlock } from "./blocks/container-block";
 import { HeadingBlock } from "./blocks/heading-block";
 import { HtmlBlock } from "./blocks/html-block";
@@ -29,8 +29,8 @@ import { HtmlElementBlock } from "./blocks/html-element-block";
 import { ListBlock } from "./blocks/list-block";
 import { MathBlock } from "./blocks/math-block";
 import { ParagraphBlock } from "./blocks/paragraph-block";
-import { TableBlock } from "./blocks/table-block";
 import { ThematicBreakBlock } from "./blocks/thematic-break-block";
+import { Table } from "./table";
 
 export const RenderBlockView: Component<{
   block: RenderBlock<ParsedBlockData>;
@@ -85,7 +85,7 @@ export const RenderBlockView: Component<{
       );
     case "code":
       return (
-        <CodeBlock
+        <CodeBlockView
           block={props.block as RenderBlock<CodeBlockData>}
           codeBlockOptions={props.codeBlockOptions}
           codeBlockRenderers={props.codeBlockRenderers}
@@ -138,7 +138,7 @@ export const RenderBlockView: Component<{
       );
     case "table":
       return (
-        <TableBlock
+        <Table
           block={props.block as RenderBlock<TableBlockData>}
           containers={props.containers}
           debug={props.debug}

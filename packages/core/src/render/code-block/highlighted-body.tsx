@@ -21,15 +21,18 @@ function buildTokenStyle(token: HighlightToken): Record<string, string> {
   return style;
 }
 
-/**
- * Renders highlighted code tokens produced by a `CodeHighlighterPlugin`.
- * Core owns the token → DOM rendering; the plugin only supplies tokens.
- */
-export const HighlightedCodeBlock: Component<{
+export interface HighlightedCodeBlockBodyProps {
   code: string;
   language?: string;
   plugin: CodeHighlighterPlugin;
-}> = (props) => {
+}
+
+/**
+ * Renders highlighted code tokens (produced by a `CodeHighlighterPlugin`)
+ * inside the streamdown-aligned body shell. Core owns the token -> DOM
+ * rendering; the plugin only supplies tokens.
+ */
+export const HighlightedCodeBlockBody: Component<HighlightedCodeBlockBodyProps> = (props) => {
   const [result, setResult] = createSignal<HighlightResult | null>(null);
 
   createEffect(() => {
@@ -51,21 +54,28 @@ export const HighlightedCodeBlock: Component<{
   const lines = () => result()?.tokens ?? [];
 
   return (
-    <pre class={cn("overflow-x-auto rounded-md border border-border bg-background p-4 text-sm")}>
-      <code class={cn(result() && "vm-code-highlighted")}>
-        <Show fallback={props.code} when={result()}>
-          <For each={lines()}>
-            {(line, lineIndex) => (
-              <>
-                <For each={line}>
-                  {(token) => <span style={buildTokenStyle(token)}>{token.content}</span>}
-                </For>
-                <Show when={lineIndex() < lines().length - 1}>{"\n"}</Show>
-              </>
-            )}
-          </For>
-        </Show>
-      </code>
-    </pre>
+    <div
+      class={cn(
+        "vm-code-body overflow-x-auto rounded-md border border-border bg-background p-4 text-sm",
+      )}
+      data-language={props.language}
+    >
+      <pre>
+        <code class={cn(result() && "vm-code-highlighted")}>
+          <Show fallback={props.code} when={result()}>
+            <For each={lines()}>
+              {(line, lineIndex) => (
+                <>
+                  <For each={line}>
+                    {(token) => <span style={buildTokenStyle(token)}>{token.content}</span>}
+                  </For>
+                  <Show when={lineIndex() < lines().length - 1}>{"\n"}</Show>
+                </>
+              )}
+            </For>
+          </Show>
+        </code>
+      </pre>
+    </div>
   );
 };

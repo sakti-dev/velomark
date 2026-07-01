@@ -1,6 +1,5 @@
 import type { Component } from "solid-js";
 import { Dynamic } from "solid-js/web";
-import { cn } from "cnfast";
 
 import { usePlugins } from "../../plugins/plugin-context";
 import type { CodeBlockData } from "../../parser/block-boundaries";
@@ -10,11 +9,10 @@ import type {
   VelomarkCodeBlockOptions,
   VelomarkCodeBlockRendererProps,
 } from "../../types";
-import { HighlightedCodeBlock } from "../code/highlighted-code-block";
-import { MermaidPluginView } from "../code/mermaid-plugin-view";
-import { CodeBlockOverlayControls, resolveCodeBlockOptions } from "../code/shell";
+import { CodeBlock, resolveCodeBlockOptions } from "../code-block";
+import { MermaidPluginView } from "../mermaid";
 
-export const CodeBlock: Component<{
+export const CodeBlockView: Component<{
   block: RenderBlock<CodeBlockData>;
   codeBlockRenderers?: Record<string, Component<VelomarkCodeBlockRendererProps>>;
   codeBlockOptions?: VelomarkCodeBlockOptions;
@@ -55,29 +53,18 @@ export const CodeBlock: Component<{
   const codePlugin = () => plugins.code;
 
   return (
-    <div
-      class={cn("relative my-4 w-full rounded-xl border border-border bg-sidebar p-2 text-sm")}
+    <CodeBlock
+      code={props.block.data.code}
+      copyButton={options().copyButton}
       data-velomark-block-id={props.debug ? props.block.id : undefined}
       data-velomark-block-index={props.index}
       data-velomark-block-kind={props.block.kind}
       data-velomark-incomplete={props.block.status === "streaming" ? "" : undefined}
-    >
-      <CodeBlockOverlayControls
-        code={props.block.data.code}
-        language={language()}
-        options={props.codeBlockOptions}
-      />
-      {options().highlight && codePlugin() ? (
-        <HighlightedCodeBlock
-          code={props.block.data.code}
-          language={language()}
-          plugin={codePlugin() as NonNullable<ReturnType<typeof codePlugin>>}
-        />
-      ) : (
-        <pre>
-          <code>{props.block.data.code}</code>
-        </pre>
-      )}
-    </div>
+      highlight={options().highlight}
+      language={language()}
+      languageLabel={options().languageLabel}
+      codePlugin={codePlugin() ?? undefined}
+      isIncomplete={props.block.status === "streaming"}
+    />
   );
 };
