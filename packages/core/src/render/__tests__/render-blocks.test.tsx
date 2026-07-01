@@ -630,7 +630,7 @@ describe("Velomark block rendering", () => {
     expect(mermaidBlock?.querySelector("button.vm-code-copy")).not.toBeNull();
   });
 
-  it("keeps mermaid fences as source blocks until the stream closes the fence", async () => {
+  it("renders mermaid diagram as soon as chart content is available", async () => {
     const host = document.createElement("div");
     document.body.append(host);
     const svgPrototype = window.SVGElement.prototype as SVGElement & {
@@ -659,20 +659,21 @@ describe("Velomark block rendering", () => {
     );
     mountedRoots.push(dispose);
 
-    const mermaidBlock = host.querySelector(".vm-mermaid");
-    expect(mermaidBlock).not.toBeNull();
-    expect(mermaidBlock?.querySelector(".vm-mermaid-diagram")).toBeNull();
-    expect(mermaidBlock?.querySelector("pre > code")?.textContent).toContain("graph TD");
+    await waitFor(() => {
+      const diagram = host.querySelector(".vm-mermaid-diagram");
+      return Boolean(diagram?.querySelector("svg"));
+    }, 200);
 
     setMarkdown("```mermaid\ngraph TD\nA-->B\n```");
 
     await waitFor(() => {
-      const diagram = mermaidBlock?.querySelector(".vm-mermaid-diagram");
+      const diagram = host.querySelector(".vm-mermaid-diagram");
       return Boolean(diagram?.querySelector("svg"));
     }, 200);
 
+    const mermaidBlock = host.querySelector(".vm-mermaid");
     expect(mermaidBlock?.querySelector(".vm-mermaid-diagram")).not.toBeNull();
-    expect(mermaidBlock?.querySelector("pre")).toBeNull();
+    expect(mermaidBlock?.querySelector("svg")).not.toBeNull();
   });
 
   it("shows error message when mermaid rendering fails", async () => {

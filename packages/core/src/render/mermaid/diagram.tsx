@@ -41,11 +41,6 @@ export const MermaidDiagram: Component<MermaidDiagramProps> = (props) => {
       return;
     }
 
-    if (props.isIncomplete && lastValidSvg().length === 0) {
-      setIsLoading(false);
-      return;
-    }
-
     const renderToken = (activeRenderToken += 1);
     setIsLoading(true);
 
