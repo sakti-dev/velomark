@@ -1,7 +1,6 @@
 import { type Component, For } from "solid-js";
 import { Dynamic } from "solid-js/web";
 import type { ContainerBlockData } from "../../parser/block-boundaries";
-import type { VelomarkTheme } from "../../theme/types";
 import type {
   ReferenceDefinitionMap,
   RenderBlock,
@@ -33,7 +32,6 @@ export const ContainerBlock: Component<{
   debug?: boolean;
   definitions?: ReferenceDefinitionMap;
   index: number;
-  theme: VelomarkTheme;
 }> = (props) => {
   const customContainer = () => props.containers?.[props.block.data.name];
   const resolvedCustomContainer = customContainer();
@@ -48,7 +46,6 @@ export const ContainerBlock: Component<{
           debug={props.debug}
           definitions={props.definitions}
           index={index()}
-          theme={props.theme}
         />
       )}
     </For>

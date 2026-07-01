@@ -1,0 +1,14 @@
+/*
+ * Velomark ships no color tokens. Component styling uses shadcn utility
+ * classes (bg-background, bg-sidebar, …) that resolve against the CONSUMER'S
+ * own :root / .dark shadcn theme. Dark mode is class-based (.dark on a parent).
+ * This mirrors the streamdown model.
+ */
+
+/* KaTeX styles for math rendering (move to @velomark/math when it lands). */
+@import "katex/dist/katex.min.css";
+
+/*
+ * Tell the consumer's Tailwind v4 build to scan the compiled library classes.
+ */
+@source "./src/render";

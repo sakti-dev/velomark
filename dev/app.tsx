@@ -159,7 +159,6 @@ const App: Component = () => {
             onSurfaceReady={(element) => {
               rendererSurface = element;
             }}
-            theme={theme() === "dark" ? "dark" : "default"}
           />
         </div>
       }

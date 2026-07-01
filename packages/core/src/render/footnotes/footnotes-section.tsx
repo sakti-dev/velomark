@@ -1,7 +1,6 @@
 import { type Component, For, Show } from "solid-js";
 import { cn } from "cnfast";
 import type { ParsedBlockData } from "../../parser/block-boundaries";
-import type { VelomarkTheme } from "../../theme/types";
 import type {
   ReferenceDefinitionMap,
   RenderBlock,
@@ -16,7 +15,6 @@ export const FootnotesSection: Component<{
   definitions: ReferenceDefinitionMap;
   footnoteDefinitions: Record<string, RenderBlock<ParsedBlockData>[]>;
   order: string[];
-  theme: VelomarkTheme;
 }> = (props) => {
   const orderedFootnotes = () =>
     props.order
@@ -43,7 +41,6 @@ export const FootnotesSection: Component<{
                         containers={props.containers}
                         definitions={props.definitions}
                         index={index()}
-                        theme={props.theme}
                       />
                     )}
                   </For>

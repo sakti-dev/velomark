@@ -12,7 +12,6 @@ import type {
   ParsedBlockData,
   TableBlockData,
 } from "../parser/block-boundaries";
-import type { VelomarkTheme } from "../theme/types";
 import type {
   ReferenceDefinitionMap,
   RenderBlock,
@@ -40,7 +39,6 @@ export const RenderBlockView: Component<{
   debug?: boolean;
   definitions?: ReferenceDefinitionMap;
   index: number;
-  theme: VelomarkTheme;
 }> = (props) => {
   switch (props.block.kind) {
     case "paragraph":
@@ -91,7 +89,6 @@ export const RenderBlockView: Component<{
           codeBlockRenderers={props.codeBlockRenderers}
           debug={props.debug}
           index={props.index}
-          theme={props.theme}
         />
       );
     case "container":
@@ -103,7 +100,6 @@ export const RenderBlockView: Component<{
           debug={props.debug}
           definitions={props.definitions}
           index={props.index}
-          theme={props.theme}
         />
       );
     case "html":

@@ -1,12 +1,11 @@
 import type { Component } from "solid-js";
 import { Velomark } from "velomark";
-import type { VelomarkDebugMetrics, VelomarkThemeName } from "velomark";
+import type { VelomarkDebugMetrics } from "velomark";
 
 export interface RendererPanelProps {
   markdown: string;
   onDebugMetrics?: (metrics: VelomarkDebugMetrics) => void;
   onSurfaceReady?: (element: HTMLDivElement) => void;
-  theme: VelomarkThemeName;
 }
 
 export const RendererPanel: Component<RendererPanelProps> = (props) => {
@@ -25,12 +24,7 @@ export const RendererPanel: Component<RendererPanelProps> = (props) => {
         }}
       >
         <div class="markdown-content" data-component="markdown">
-          <Velomark
-            debug={false}
-            markdown={props.markdown}
-            onDebugMetrics={props.onDebugMetrics}
-            theme={props.theme}
-          />
+          <Velomark debug={false} markdown={props.markdown} onDebugMetrics={props.onDebugMetrics} />
         </div>
       </div>
     </section>

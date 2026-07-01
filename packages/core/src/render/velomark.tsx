@@ -4,10 +4,6 @@ import { buildRenderDocument, collectRenderMetrics } from "../model/render-docum
 import { PluginProvider } from "../plugins/plugin-context";
 import type { PluginConfig } from "../plugins/types";
 import type { ParsedBlockData } from "../parser/block-boundaries";
-import { resolveTheme } from "../theme/apply-theme";
-import { generateCssVars } from "../theme/generate-css-vars";
-import type { PartialVelomarkTheme } from "../theme/merge-theme";
-import type { VelomarkTheme, VelomarkThemeName } from "../theme/types";
 import type {
   RenderDocument,
   VelomarkCodeBlockOptions,
@@ -27,7 +23,6 @@ export interface VelomarkProps {
   markdown: string;
   onDebugMetrics?: (metrics: VelomarkDebugMetrics) => void;
   plugins?: PluginConfig;
-  theme?: VelomarkThemeName | PartialVelomarkTheme;
 }
 
 const BlockSlot: Component<{
@@ -39,7 +34,6 @@ const BlockSlot: Component<{
   debug?: boolean;
   definitions: () => RenderDocument<ParsedBlockData>["definitions"];
   index: () => number;
-  theme: () => VelomarkTheme;
 }> = (props) => {
   const block = createMemo(() => {
     const resolvedBlock = props.blockLookup().get(props.blockId);
@@ -59,7 +53,6 @@ const BlockSlot: Component<{
       debug={props.debug}
       definitions={props.definitions()}
       index={props.index()}
-      theme={props.theme()}
     />
   );
 };
@@ -68,8 +61,6 @@ export function Velomark(props: VelomarkProps) {
   const [document, setDocument] = createSignal<RenderDocument<ParsedBlockData>>(
     buildRenderDocument(undefined, props.markdown),
   );
-  const resolvedTheme = createMemo(() => resolveTheme(props.theme));
-  const themeStyle = createMemo<Record<string, string>>(() => generateCssVars(resolvedTheme()));
   const blockIds = createMemo(() => document().blocks.map((block) => block.id));
   const blockLookup = createMemo(
     () => new Map(document().blocks.map((block) => [block.id, block] as const)),
@@ -93,7 +84,6 @@ export function Velomark(props: VelomarkProps) {
           props.class,
         )}
         data-velomark-root=""
-        style={themeStyle()}
       >
         <For each={blockIds()}>
           {(blockId, index) => (
@@ -106,7 +96,6 @@ export function Velomark(props: VelomarkProps) {
               debug={props.debug}
               definitions={() => document().definitions}
               index={index}
-              theme={resolvedTheme}
             />
           )}
         </For>
@@ -116,7 +105,6 @@ export function Velomark(props: VelomarkProps) {
           definitions={document().definitions}
           footnoteDefinitions={document().footnoteDefinitions}
           order={document().footnoteReferenceOrder}
-          theme={resolvedTheme()}
         />
       </div>
     </PluginProvider>
