@@ -81,3 +81,21 @@
     visibility: hidden;
   }
 }
+
+.vm-code-pre {
+  background-color: var(--vm-bg, inherit);
+  color: var(--vm-fg, inherit);
+}
+.vm-token {
+  color: var(--vm-c, inherit);
+  background-color: var(--vm-tbg, transparent);
+}
+
+.dark .vm-code-pre {
+  background-color: var(--shiki-dark-bg, var(--vm-bg, inherit));
+  color: var(--shiki-dark, var(--vm-fg, inherit));
+}
+.dark .vm-token {
+  color: var(--shiki-dark, var(--vm-c, inherit));
+  background-color: var(--shiki-dark-bg, var(--vm-tbg, transparent));
+}
