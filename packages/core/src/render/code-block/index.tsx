@@ -10,7 +10,6 @@ import { CodeBlockCopyButton } from "./copy-button";
 import { CodeBlockContext } from "./context";
 import { CodeBlockDownloadButton } from "./download-button";
 import { CodeBlockHeader } from "./header";
-import { CodeBlockSkeleton } from "./skeleton";
 import { HighlightedCodeBlockBody } from "./highlighted-body";
 
 export { CodeBlockBody } from "./body";
@@ -102,14 +101,7 @@ export const CodeBlock: Component<CodeBlockProps> = (props) => {
         </Show>
         <Show
           when={!isIncomplete() && showHighlighted()}
-          fallback={
-            <Show
-              when={isIncomplete()}
-              fallback={<CodeBlockBody code={local.code} language={local.language} />}
-            >
-              <CodeBlockSkeleton />
-            </Show>
-          }
+          fallback={<CodeBlockBody code={local.code} language={local.language} />}
         >
           <HighlightedCodeBlockBody
             code={local.code}
