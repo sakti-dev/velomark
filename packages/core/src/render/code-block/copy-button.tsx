@@ -1,16 +1,18 @@
 import { type Component, createSignal, onCleanup } from "solid-js";
 import { cn } from "cnfast";
 
+import { useCodeBlockContext } from "./context";
 import { CheckIcon, CopyIcon } from "../icons";
 
 const COPY_RESET_DELAY_MS = 2000;
 
 export interface CodeBlockCopyButtonProps {
-  code: string;
+  code?: string;
   class?: string;
 }
 
 export const CodeBlockCopyButton: Component<CodeBlockCopyButtonProps> = (props) => {
+  const context = useCodeBlockContext();
   const [copied, setCopied] = createSignal<boolean>(false);
   let timeoutId: ReturnType<typeof setTimeout> | undefined;
 
@@ -21,7 +23,7 @@ export const CodeBlockCopyButton: Component<CodeBlockCopyButtonProps> = (props) 
 
     try {
       if (!copied()) {
-        await navigator.clipboard.writeText(props.code);
+        await navigator.clipboard.writeText(props.code ?? context.code);
         setCopied(true);
         timeoutId = setTimeout(() => {
           setCopied(false);
