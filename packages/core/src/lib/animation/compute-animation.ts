@@ -123,5 +123,19 @@ function processText(
     };
   });
 
+  console.log("[computeAnimation.processText]", {
+    path,
+    text: text.slice(0, 40),
+    partCount: parts.length,
+    prevLen,
+    words: meta.map((m) => ({
+      text: m.text.slice(0, 15),
+      skip: m.duration === 0 && !m.isWhitespace,
+      ws: m.isWhitespace,
+      delay: m.delay,
+      dur: m.duration,
+    })),
+  });
+
   entries.set(path, meta);
 }

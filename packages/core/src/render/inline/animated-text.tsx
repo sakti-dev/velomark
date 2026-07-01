@@ -20,6 +20,14 @@ export const AnimatedText: Component<{
 
   const keys = createMemo(() => words().map((_, i) => String(i)));
 
+  console.log("[AnimatedText] MOUNT", {
+    path: props.path,
+    text: props.text.slice(0, 50),
+    wordCount: words().length,
+    hasMeta: !!props.animMeta(),
+    metaForPath: props.animMeta()?.get(props.path)?.length,
+  });
+
   return (
     <For each={keys()}>
       {(_key, forIndex) => {

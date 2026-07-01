@@ -30,6 +30,12 @@ const AnimatedTextToken: Component<{
   animMeta: AnimMetaAccessor;
 }> = (props) => {
   const block = useBlock();
+  console.log("[AnimatedTextToken]", {
+    path: props.path,
+    text: (props.token as TokenOf<"text">).text.slice(0, 40),
+    isStreaming: block.isStreaming,
+    status: block.status,
+  });
   return (
     <Show when={block.isStreaming} fallback={(props.token as TokenOf<"text">).text}>
       <AnimatedText

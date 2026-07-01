@@ -57,8 +57,11 @@ function isCodeGrowthMatch<TData>(
  * change, but it's still the same logical block. Preserving the ID prevents
  * <For> from remounting the entire subtree on every token.
  *
- * Only applies when the previous block was still streaming. Once a block is
- * complete, any content divergence is treated as a genuinely different block.
+ * Applies when EITHER the previous or next block is streaming. During active
+ * streaming, the parser may flip a block's status between "streaming" and
+ * "complete" on consecutive chunks (e.g. trailing newline closes the block
+ * momentarily). Requiring both sides to be "streaming" would cause an ID
+ * change on the complete→streaming transition, remounting the whole subtree.
  */
 function isStreamGrowthMatch<TData>(
   previous: RenderBlock<TData> | undefined,
@@ -69,7 +72,7 @@ function isStreamGrowthMatch<TData>(
     previous.kind === next.kind &&
     previous.sourceStart === next.sourceStart &&
     next.sourceEnd >= previous.sourceEnd &&
-    previous.status === "streaming",
+    (previous.status === "streaming" || next.status === "streaming"),
   );
 }
 
