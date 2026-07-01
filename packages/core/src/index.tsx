@@ -1,6 +1,7 @@
 export { parseInline } from "./lib/parser/inline-parser";
 export type { VelomarkProps } from "./render/velomark";
 export { Velomark } from "./render/velomark";
+export { LinkSafetyModal } from "./render/compat/link-safety-modal";
 export type {
   InlineToken,
   RenderBlock,
