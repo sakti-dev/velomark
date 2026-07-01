@@ -169,6 +169,23 @@ describe("Velomark block rendering", () => {
     expect(host.querySelector("pre > code")?.classList.contains("vm-line-numbers")).toBe(false);
   });
 
+  it("renders line-number counter classes on plain (un-highlighted) code", () => {
+    const host = document.createElement("div");
+    document.body.append(host);
+
+    const dispose = render(
+      () => <Velomark markdown={["```", "line one", "line two", "```"].join("\n")} />,
+      host,
+    );
+    mountedRoots.push(dispose);
+
+    const code = host.querySelector("pre > code");
+    expect(code?.classList.contains("vm-line-numbers")).toBe(true);
+    const lineSpans = host.querySelectorAll("pre > code > span.vm-line");
+    expect(lineSpans).toHaveLength(2);
+    expect(lineSpans[0]?.textContent).toBe("line one");
+  });
+
   it("renders task list items with disabled checkboxes", () => {
     const host = document.createElement("div");
     document.body.append(host);
