@@ -17,18 +17,14 @@ export { CodeBlockContainer } from "./container";
 export { CodeBlockCopyButton } from "./copy-button";
 export { CodeBlockDownloadButton } from "./download-button";
 export { CodeBlockHeader } from "./header";
-export { CodeBlockSkeleton } from "./skeleton";
 export { HighlightedCodeBlockBody } from "./highlighted-body";
 
 export const DEFAULT_CODE_BLOCK_OPTIONS: Required<VelomarkCodeBlockOptions> = {
   copyButton: true,
-  defaultView: "preview",
   downloadButton: true,
   highlight: true,
-  highlightTheme: "github-dark",
   languageLabel: true,
   lineNumbers: true,
-  previewToggle: true,
 };
 
 export const resolveCodeBlockOptions = (
