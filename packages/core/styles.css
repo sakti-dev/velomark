@@ -70,3 +70,14 @@
   font-family: var(--vm-mono, ui-monospace, monospace);
   user-select: none;
 }
+
+.vm-caret-root > *:last-child::after {
+  content: var(--velomark-caret);
+  animation: vm-caret-blink 1s steps(2, start) infinite;
+}
+
+@keyframes vm-caret-blink {
+  to {
+    visibility: hidden;
+  }
+}
