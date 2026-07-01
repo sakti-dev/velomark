@@ -1,3 +1,4 @@
+import type { RemendOptions } from "remend";
 import type {
   BlockquoteBlockData,
   HeadingBlockData,
@@ -29,6 +30,7 @@ function canReuseBlock<TData>(
 export function buildRenderDocument(
   previousDocument: RenderDocument<ParsedBlockData> | undefined,
   markdown: string,
+  remendOptions?: RemendOptions,
 ): RenderDocument<ParsedBlockData> {
   const previousBlocks = previousDocument?.blocks ?? [];
   const previousFootnoteDefinitions = previousDocument?.footnoteDefinitions ?? {};
@@ -36,7 +38,7 @@ export function buildRenderDocument(
     blocks: draftBlocks,
     definitions,
     footnoteDefinitions: draftFootnoteDefinitions,
-  } = parseMarkdownToBlocks(markdown);
+  } = parseMarkdownToBlocks(markdown, remendOptions);
   const nextBlocksWithIds = assignStableBlockIds(previousBlocks, draftBlocks);
   const blocks = nextBlocksWithIds.map((block, index) => {
     const previousBlock = previousBlocks[index];

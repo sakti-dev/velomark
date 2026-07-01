@@ -1,3 +1,4 @@
+import remend, { type RemendOptions } from "remend";
 import type { DraftRenderBlock } from "../model/stable-id";
 import type { ReferenceDefinitionMap } from "../../types";
 import { type ParsedBlockData, parseBlockBoundaries } from "./block-boundaries";
@@ -105,12 +106,16 @@ function extractFootnoteDefinitions(markdown: string): {
   };
 }
 
-export function parseMarkdownToBlocks(markdown: string): {
+export function parseMarkdownToBlocks(
+  markdown: string,
+  remendOptions?: RemendOptions,
+): {
   blocks: DraftRenderBlock<ParsedBlockData>[];
   definitions: ReferenceDefinitionMap;
   footnoteDefinitions: Record<string, DraftRenderBlock<ParsedBlockData>[]>;
 } {
-  const extractedReferences = extractReferenceDefinitions(markdown);
+  const healed = remendOptions !== undefined ? remend(markdown, remendOptions) : markdown;
+  const extractedReferences = extractReferenceDefinitions(healed);
   const extractedFootnotes = extractFootnoteDefinitions(extractedReferences.content);
   return {
     blocks: parseBlockBoundaries(extractedFootnotes.content),

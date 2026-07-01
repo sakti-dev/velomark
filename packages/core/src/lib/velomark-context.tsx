@@ -1,3 +1,4 @@
+import type { RemendOptions } from "remend";
 import { type JSX, createContext, createEffect, useContext } from "solid-js";
 import { createStore, reconcile, unwrap } from "solid-js/store";
 import { buildRenderDocument, collectRenderMetrics } from "./model/render-document";
@@ -41,6 +42,7 @@ export interface VelomarkProviderProps {
   markdown: string;
   onDebugMetrics?: (metrics: VelomarkDebugMetrics) => void;
   plugins?: PluginConfig;
+  remend?: RemendOptions;
 }
 
 const VelomarkContext = createContext<VelomarkStore>();
@@ -59,12 +61,12 @@ function resolveAnimationConfig(animated?: boolean | AnimateOptions): AnimateOpt
 
 export function VelomarkProvider(props: VelomarkProviderProps) {
   const [document, setDocument] = createStore<RenderDocument<ParsedBlockData>>(
-    buildRenderDocument(undefined, props.markdown),
+    buildRenderDocument(undefined, props.markdown, props.remend),
   );
 
   createEffect(() => {
     const previous = unwrap(document);
-    const next = buildRenderDocument(previous, props.markdown);
+    const next = buildRenderDocument(previous, props.markdown, props.remend);
     props.onDebugMetrics?.(collectRenderMetrics(previous.blocks, next.blocks));
     setDocument(reconcile(next, { key: "id" }));
   });
