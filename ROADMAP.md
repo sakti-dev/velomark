@@ -8,26 +8,9 @@ Tracking the remaining feature gaps between velomark and streamdown, prioritized
 
 ## Tier 1 — High Impact, No Architecture Blocker
 
-### 0. [next] Self-healing markdown (remend)
+### 0. [done] Self-healing markdown (remend)
 
-Streamdown uses [remend](https://www.npmjs.com/package/remend) to auto-complete unclosed inline syntax during streaming. Velomark currently has nothing equivalent — only `hasIncompleteCodeFence()` which detects unclosed fences but doesn't fix anything. This means streaming `**bold` won't render bold until `**` arrives, `[link](htt` shows broken markup, `~~strike` won't render, `$$math` won't render, etc.
-
-**What remend does:**
-
-- Auto-closes: bold `**`, italic `*/_`, bold+italic `***`, inline code `` ` ``, strikethrough `~~`, block math `$$`, inline math `$` (opt-in)
-- Completes links: `[text](url` → `[text](streamdown:incomplete-link)`
-- Strips incomplete images: `![alt](url` → removed
-- Escapes single tilde between words: `20~25` → `20\~25`
-- Handles edge cases: comparison operators in lists, setext headings, incomplete HTML tags
-- Custom handler system for domain-specific markers
-- Respects context (skips code blocks, math blocks, link URLs)
-
-**Scope:**
-
-- Add remend as dependency (`npm i remend`) or vendor the source
-- Run remend as a string pre-pass before the block parser when block status is `streaming`
-- Thread `RemendOptions` through `VelomarkProps` (linkMode, katex, inlineKatex, custom handlers)
-- Wire `linkMode: "protocol"` to use `streamdown:incomplete-link` placeholder
+Integrated remend as a pre-pass inside `parseMarkdownToBlocks` — auto-completes unclosed bold, italic, inline code, strikethrough, links, and math before block parsing. Exposed via `VelomarkProps.remend?: RemendOptions` (`{}` = enabled with defaults, `undefined` = disabled). Zero-dep npm dependency.
 
 ### 1. [planned] Code-block line numbers + `startLine` meta
 
@@ -179,6 +162,7 @@ Streamdown hides the footnotes section while it's empty during streaming. Veloma
 - [done] Streaming remount stability — `isStreamGrowthMatch`, `areSameBlock`, string-key `<For>` (`3a0d2fa`)
 - [done] Table animation — `computeAnimationMulti` with table-level shared counter (`0a543dd`)
 - [done] Remove code-block skeleton loader — show streaming content instead (`8831ff6`)
+- [done] Self-healing markdown (remend) — auto-completes unclosed inline formatting during streaming (`0658e45`)
 
 ---
 
