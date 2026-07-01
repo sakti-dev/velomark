@@ -1,8 +1,6 @@
 import type { MermaidConfig } from "mermaid";
 import mermaidLib from "mermaid";
 
-export type { MermaidConfig } from "mermaid";
-
 export interface MermaidInstance {
   initialize: (config: MermaidConfig) => void;
   render: (id: string, source: string) => Promise<{ svg: string }>;
@@ -60,3 +58,5 @@ export function createMermaidPlugin(options: MermaidPluginOptions = {}): Diagram
 }
 
 export const mermaid = createMermaidPlugin();
+
+export type { MermaidConfig } from "mermaid";
