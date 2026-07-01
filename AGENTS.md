@@ -14,3 +14,12 @@ Docs are local at `node_modules/vite-plus/docs` or online at https://viteplus.de
 - [ ] If setup, runtime, or package-manager behavior looks wrong, run `vp env doctor` and include its output when asking for help.
 
 <!--VITE PLUS END-->
+
+# Commit Conventions
+
+These override the default "never commit unless asked" rule for this repo.
+
+- **Commit proactively** once work is verified (`vp check` + `vp test` green); don't wait to be asked.
+- **Include plan/docs with the change** they describe — always stage `docs/plans/*` and related docs in the same commit; never leave them dangling untracked.
+- **One commit per logical task.**
+- Do not push or open PRs unless asked.
