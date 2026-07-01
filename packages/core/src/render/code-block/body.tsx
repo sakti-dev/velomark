@@ -4,6 +4,8 @@ import { cn } from "cnfast";
 type CodeBlockBodyProps = ComponentProps<"div"> & {
   code: string;
   language?: string;
+  lineNumbers?: boolean;
+  startLine?: number;
 };
 
 /**
@@ -11,7 +13,14 @@ type CodeBlockBodyProps = ComponentProps<"div"> & {
  * Used as the fallback when no `CodeHighlighterPlugin` is registered.
  */
 export const CodeBlockBody: Component<CodeBlockBodyProps> = (props) => {
-  const [local, rest] = splitProps(props, ["code", "language", "class", "children"]);
+  const [local, rest] = splitProps(props, [
+    "code",
+    "language",
+    "lineNumbers",
+    "startLine",
+    "class",
+    "children",
+  ]);
 
   return (
     <div

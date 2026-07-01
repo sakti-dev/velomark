@@ -6,6 +6,7 @@ import type { RenderBlock } from "../../types";
 import { useVelomark } from "../../lib/velomark-context";
 import { useBlock } from "../../lib/block-context";
 import { CodeBlock, resolveCodeBlockOptions } from "../code-block";
+import { parseCodeFenceMeta } from "../code-block/fence-meta";
 import { MermaidPluginView } from "../mermaid";
 
 export const CodeBlockView: Component = () => {
@@ -33,8 +34,14 @@ export const CodeBlockView: Component = () => {
     );
   }
 
-  const options = () => resolveCodeBlockOptions(vm.codeBlockOptions);
+  const options = () =>
+    resolveCodeBlockOptions({
+      ...vm.codeBlockOptions,
+      lineNumbers: vm.codeBlockOptions?.lineNumbers ?? vm.lineNumbers,
+    });
   const codePlugin = () => vm.plugins.code;
+  const fenceMeta = () => parseCodeFenceMeta(data().meta);
+  const showLineNumbers = () => options().lineNumbers && fenceMeta().lineNumbers;
 
   return (
     <CodeBlock
@@ -49,6 +56,8 @@ export const CodeBlockView: Component = () => {
       languageLabel={options().languageLabel}
       codePlugin={codePlugin() ?? undefined}
       isIncomplete={block.status === "streaming"}
+      lineNumbers={showLineNumbers()}
+      startLine={fenceMeta().startLine}
     />
   );
 };

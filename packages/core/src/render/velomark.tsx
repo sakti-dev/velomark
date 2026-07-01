@@ -21,6 +21,7 @@ export interface VelomarkProps {
   codeBlockRenderers?: Record<string, Component<VelomarkCodeBlockRendererProps>>;
   containers?: Record<string, Component<VelomarkContainerRendererProps>>;
   debug?: boolean;
+  lineNumbers?: boolean;
   markdown: string;
   onDebugMetrics?: (metrics: VelomarkDebugMetrics) => void;
   plugins?: PluginConfig;

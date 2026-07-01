@@ -28,7 +28,9 @@ function buildTokenStyle(token: HighlightToken): Record<string, string> {
 export interface HighlightedCodeBlockBodyProps {
   code: string;
   language?: string;
+  lineNumbers?: boolean;
   plugin: CodeHighlighterPlugin;
+  startLine?: number;
 }
 
 /**

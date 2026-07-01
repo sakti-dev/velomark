@@ -27,6 +27,7 @@ export const DEFAULT_CODE_BLOCK_OPTIONS: Required<VelomarkCodeBlockOptions> = {
   highlight: true,
   highlightTheme: "github-dark",
   languageLabel: true,
+  lineNumbers: true,
   previewToggle: true,
 };
 
@@ -50,6 +51,10 @@ type CodeBlockProps = ComponentProps<"div"> & {
   languageLabel?: boolean;
   /** Highlight via the registered code plugin */
   highlight?: boolean;
+  /** Show line numbers via CSS counters */
+  lineNumbers?: boolean;
+  /** Starting line number (default 1) */
+  startLine?: number;
   /** The resolved code highlighter plugin (when highlight is enabled) */
   codePlugin?: CodeHighlighterPlugin;
 };
@@ -68,6 +73,8 @@ export const CodeBlock: Component<CodeBlockProps> = (props) => {
     "downloadButton",
     "languageLabel",
     "highlight",
+    "lineNumbers",
+    "startLine",
     "codePlugin",
     "class",
     "children",
@@ -101,12 +108,21 @@ export const CodeBlock: Component<CodeBlockProps> = (props) => {
         </Show>
         <Show
           when={!isIncomplete() && showHighlighted()}
-          fallback={<CodeBlockBody code={local.code} language={local.language} />}
+          fallback={
+            <CodeBlockBody
+              code={local.code}
+              language={local.language}
+              lineNumbers={local.lineNumbers}
+              startLine={local.startLine}
+            />
+          }
         >
           <HighlightedCodeBlockBody
             code={local.code}
             language={local.language}
+            lineNumbers={local.lineNumbers}
             plugin={local.codePlugin as CodeHighlighterPlugin}
+            startLine={local.startLine}
           />
         </Show>
       </CodeBlockContainer>

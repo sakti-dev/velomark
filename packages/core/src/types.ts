@@ -142,6 +142,7 @@ export interface VelomarkCodeBlockOptions {
   highlight?: boolean;
   highlightTheme?: string;
   languageLabel?: boolean;
+  lineNumbers?: boolean;
   previewToggle?: boolean;
 }
 

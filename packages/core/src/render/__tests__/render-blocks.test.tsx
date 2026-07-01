@@ -110,6 +110,28 @@ describe("Velomark block rendering", () => {
     expect(host.querySelector("blockquote br")).toBeNull();
   });
 
+  it("renders line-number counter classes on highlighted code by default", () => {
+    const host = document.createElement("div");
+    document.body.append(host);
+
+    const dispose = render(
+      () => (
+        <Velomark
+          markdown={["```ts", "const x = 1;", "const y = 2;", "```"].join("\n")}
+          plugins={{ code: mockCodePlugin }}
+        />
+      ),
+      host,
+    );
+    mountedRoots.push(dispose);
+
+    const code = host.querySelector("pre > code");
+    expect(code?.classList.contains("vm-line-numbers")).toBe(true);
+    const lineSpans = host.querySelectorAll("pre > code > span");
+    expect(lineSpans).toHaveLength(2);
+    expect(lineSpans[0]?.classList.contains("vm-line")).toBe(true);
+  });
+
   it("renders task list items with disabled checkboxes", () => {
     const host = document.createElement("div");
     document.body.append(host);

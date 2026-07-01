@@ -26,6 +26,7 @@ export interface VelomarkStore {
   debug: boolean;
   document: RenderDocument<ParsedBlockData>;
   blockIds: string[];
+  lineNumbers?: boolean;
   definitions: ReferenceDefinitionMap;
   footnoteDefinitions: Record<string, RenderBlock<ParsedBlockData>[]>;
   footnoteReferenceOrder: string[];
@@ -39,6 +40,7 @@ export interface VelomarkProviderProps {
   codeBlockRenderers?: Record<string, Component<VelomarkCodeBlockRendererProps>>;
   containers?: Record<string, Component<VelomarkContainerRendererProps>>;
   debug?: boolean;
+  lineNumbers?: boolean;
   markdown: string;
   onDebugMetrics?: (metrics: VelomarkDebugMetrics) => void;
   plugins?: PluginConfig;
@@ -78,6 +80,7 @@ export function VelomarkProvider(props: VelomarkProviderProps) {
     codeBlockRenderers: props.codeBlockRenderers,
     containers: props.containers,
     debug: props.debug ?? false,
+    lineNumbers: props.lineNumbers,
     get document() {
       return document;
     },
