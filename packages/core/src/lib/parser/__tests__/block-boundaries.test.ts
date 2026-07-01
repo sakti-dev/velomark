@@ -89,6 +89,14 @@ describe("parseBlockBoundaries", () => {
     });
   });
 
+  it("preserves special characters in fence language (c#, c++, .env)", () => {
+    const blocks = parseBlockBoundaries(["```c#", "Console.WriteLine();", "```"].join("\n"));
+    expect(blocks[0]?.data).toMatchObject({ language: "c#" });
+
+    const blocks2 = parseBlockBoundaries(["```c++", "std::cout << 1;", "```"].join("\n"));
+    expect(blocks2[0]?.data).toMatchObject({ language: "c++" });
+  });
+
   it("parses ordered lists separately from unordered lists", () => {
     const blocks = parseBlockBoundaries(["1. One", "2. Two"].join("\n"));
 
