@@ -11,7 +11,7 @@ import type {
   VelomarkContainerRendererProps,
   VelomarkDebugMetrics,
 } from "../types";
-import { FootnotesSection } from "./footnotes/footnotes-section";
+import { FootnotesSection } from "./compat/footnotes/footnotes-section";
 import { RenderBlockView } from "./render-block";
 
 export interface VelomarkProps {

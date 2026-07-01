@@ -1,9 +1,9 @@
 import type { Component } from "solid-js";
 import { cn } from "cnfast";
 
-import type { MathBlockData } from "../../lib/parser/block-boundaries";
-import type { RenderBlock } from "../../types";
-import { MathView } from "../math/math-view";
+import type { MathBlockData } from "../../../lib/parser/block-boundaries";
+import type { RenderBlock } from "../../../types";
+import { MathView } from "./math-view";
 
 export const MathBlock: Component<{
   block: RenderBlock<MathBlockData>;

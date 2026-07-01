@@ -1,7 +1,7 @@
 import type { Component } from "solid-js";
 import { cn } from "cnfast";
-import type { HtmlBlockData } from "../../lib/parser/block-boundaries";
-import type { RenderBlock } from "../../types";
+import type { HtmlBlockData } from "../../../lib/parser/block-boundaries";
+import type { RenderBlock } from "../../../types";
 
 export const HtmlBlock: Component<{
   block: RenderBlock<HtmlBlockData>;

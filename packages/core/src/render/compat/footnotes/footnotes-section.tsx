@@ -1,13 +1,13 @@
 import { type Component, For, Show } from "solid-js";
 import { cn } from "cnfast";
-import type { ParsedBlockData } from "../../lib/parser/block-boundaries";
+import type { ParsedBlockData } from "../../../lib/parser/block-boundaries";
 import type {
   ReferenceDefinitionMap,
   RenderBlock,
   VelomarkCodeBlockRendererProps,
   VelomarkContainerRendererProps,
-} from "../../types";
-import { RenderBlockView } from "../render-block";
+} from "../../../types";
+import { RenderBlockView } from "../../render-block";
 
 export const FootnotesSection: Component<{
   codeBlockRenderers?: Record<string, Component<VelomarkCodeBlockRendererProps>>;

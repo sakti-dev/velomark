@@ -7,7 +7,7 @@ import type {
   VelomarkCodeBlockRendererProps,
   VelomarkContainerRendererProps,
 } from "../../types";
-import { directiveAttributeProps } from "../directives/directive-attribute-props";
+import { directiveAttributeProps } from "../compat/directives/directive-attribute-props";
 import { RenderBlockView } from "../render-block";
 
 function withNestedId(

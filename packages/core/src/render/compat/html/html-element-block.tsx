@@ -1,11 +1,11 @@
 import type { Component } from "solid-js";
-import type { HtmlElementBlockData } from "../../lib/parser/block-boundaries";
+import type { HtmlElementBlockData } from "../../../lib/parser/block-boundaries";
 import type {
   ReferenceDefinitionMap,
   RenderBlock,
   VelomarkContainerRendererProps,
-} from "../../types";
-import { HtmlElementView } from "../html-element-view";
+} from "../../../types";
+import { HtmlElementView } from "./html-element-view";
 
 export const HtmlElementBlock: Component<{
   block: RenderBlock<HtmlElementBlockData>;

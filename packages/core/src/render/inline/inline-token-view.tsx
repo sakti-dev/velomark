@@ -8,10 +8,10 @@ import type {
   ReferenceDefinitionMap,
   VelomarkContainerRendererProps,
 } from "../../types";
-import { directiveAttributeProps } from "../directives/directive-attribute-props";
-import { HtmlElementView } from "../html-element-view";
+import { directiveAttributeProps } from "../compat/directives/directive-attribute-props";
+import { HtmlElementView } from "../compat/html/html-element-view";
 import { ImageComponent } from "../image";
-import { MathView } from "../math/math-view";
+import { MathView } from "../compat/math/math-view";
 
 function assertNever(value: never): never {
   throw new Error(`Unsupported inline token: ${JSON.stringify(value)}`);
