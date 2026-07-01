@@ -257,6 +257,12 @@ importers:
       '@velomark/code':
         specifier: workspace:*
         version: link:packages/code
+      '@velomark/math':
+        specifier: workspace:*
+        version: link:packages/math
+      '@velomark/mermaid':
+        specifier: workspace:*
+        version: link:packages/mermaid
       '@vitest/coverage-v8':
         specifier: ^4.1.9
         version: 4.1.9(@vitest/browser@4.1.9)(vitest@4.1.9)
@@ -308,6 +314,18 @@ importers:
       tailwindcss:
         specifier: ^4.1.18
         version: 4.2.1
+
+  packages/math:
+    dependencies:
+      katex:
+        specifier: ^0.16.27
+        version: 0.16.38
+
+  packages/mermaid:
+    dependencies:
+      mermaid:
+        specifier: ^11.12.2
+        version: 11.13.0
 
 packages:
 

@@ -47,6 +47,8 @@
     "@types/node": "^20.12.12",
     "@typescript/native-preview": "7.0.0-dev.20260509.2",
     "@velomark/code": "workspace:*",
+    "@velomark/math": "workspace:*",
+    "@velomark/mermaid": "workspace:*",
     "@vitest/coverage-v8": "^4.1.9",
     "jsdom": "^24.0.0",
     "solid-js": "^1.9.10",
