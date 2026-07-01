@@ -1,12 +1,14 @@
 import type { Component } from "solid-js";
 
 export interface IconProps {
+  class?: string;
   size?: number;
 }
 
 export const CheckIcon: Component<IconProps> = (props) => (
   <svg
     aria-hidden="true"
+    class={props.class}
     color="currentColor"
     height={props.size ?? 16}
     stroke-linejoin="round"
@@ -25,6 +27,7 @@ export const CheckIcon: Component<IconProps> = (props) => (
 export const CopyIcon: Component<IconProps> = (props) => (
   <svg
     aria-hidden="true"
+    class={props.class}
     color="currentColor"
     height={props.size ?? 16}
     stroke-linejoin="round"
@@ -43,6 +46,7 @@ export const CopyIcon: Component<IconProps> = (props) => (
 export const DownloadIcon: Component<IconProps> = (props) => (
   <svg
     aria-hidden="true"
+    class={props.class}
     color="currentColor"
     height={props.size ?? 16}
     stroke-linejoin="round"
@@ -61,6 +65,7 @@ export const DownloadIcon: Component<IconProps> = (props) => (
 export const Maximize2Icon: Component<IconProps> = (props) => (
   <svg
     aria-hidden="true"
+    class={props.class}
     color="currentColor"
     height={props.size ?? 16}
     stroke-linejoin="round"
@@ -79,6 +84,7 @@ export const Maximize2Icon: Component<IconProps> = (props) => (
 export const RotateCcwIcon: Component<IconProps> = (props) => (
   <svg
     aria-hidden="true"
+    class={props.class}
     color="currentColor"
     height={props.size ?? 16}
     stroke-linejoin="round"
@@ -97,6 +103,7 @@ export const RotateCcwIcon: Component<IconProps> = (props) => (
 export const XIcon: Component<IconProps> = (props) => (
   <svg
     aria-hidden="true"
+    class={props.class}
     color="currentColor"
     height={props.size ?? 16}
     stroke-linejoin="round"
@@ -115,6 +122,7 @@ export const XIcon: Component<IconProps> = (props) => (
 export const ZoomInIcon: Component<IconProps> = (props) => (
   <svg
     aria-hidden="true"
+    class={props.class}
     color="currentColor"
     height={props.size ?? 16}
     stroke-linejoin="round"
@@ -133,6 +141,7 @@ export const ZoomInIcon: Component<IconProps> = (props) => (
 export const ZoomOutIcon: Component<IconProps> = (props) => (
   <svg
     aria-hidden="true"
+    class={props.class}
     color="currentColor"
     height={props.size ?? 16}
     stroke-linejoin="round"
@@ -142,6 +151,50 @@ export const ZoomOutIcon: Component<IconProps> = (props) => (
     <path
       clip-rule="evenodd"
       d="M1.5 6.5C1.5 3.73858 3.73858 1.5 6.5 1.5C9.26142 1.5 11.5 3.73858 11.5 6.5C11.5 9.26142 9.26142 11.5 6.5 11.5C3.73858 11.5 1.5 9.26142 1.5 6.5ZM6.5 0C2.91015 0 0 2.91015 0 6.5C0 10.0899 2.91015 13 6.5 13C8.02469 13 9.42677 12.475 10.5353 11.596L13.9697 15.0303L14.5 15.5607L15.5607 14.5L15.0303 13.9697L11.596 10.5353C12.475 9.42677 13 8.02469 13 6.5C13 2.91015 10.0899 0 6.5 0ZM4.125 5.875H4.75H8.25H8.875V7.125H8.25H4.75H4.125V5.875Z"
+      fill="currentColor"
+      fill-rule="evenodd"
+    />
+  </svg>
+);
+
+export const Loader2Icon: Component<IconProps> = (props) => (
+  <svg
+    aria-hidden="true"
+    class={props.class}
+    color="currentColor"
+    height={props.size ?? 16}
+    stroke-linejoin="round"
+    viewBox="0 0 16 16"
+    width={props.size ?? 16}
+  >
+    <path
+      clip-rule="evenodd"
+      d="M8 1.5a6.5 6.5 0 1 1-6.5 6.5"
+      fill="currentColor"
+      fill-rule="evenodd"
+    />
+  </svg>
+);
+
+export const ExternalLinkIcon: Component<IconProps> = (props) => (
+  <svg
+    aria-hidden="true"
+    class={props.class}
+    color="currentColor"
+    height={props.size ?? 16}
+    stroke-linejoin="round"
+    viewBox="0 0 16 16"
+    width={props.size ?? 16}
+  >
+    <path
+      clip-rule="evenodd"
+      d="M3.5 3.5C3.5 3.22386 3.72386 3 4 3H7.25C7.66421 3 8 3.33579 8 3.75C8 4.16421 7.66421 4.5 7.25 4.5H4.5V11.5H11.5V8.75C11.5 8.33579 11.8358 8 12.25 8C12.6642 8 13 8.33579 13 8.75V12C13 12.5523 12.5523 13 12 13H4C3.44772 13 3 12.5523 3 12V3.5Z"
+      fill="currentColor"
+      fill-rule="evenodd"
+    />
+    <path
+      clip-rule="evenodd"
+      d="M10 3.75C10 3.33579 10.3358 3 10.75 3H12.25C12.6642 3 13 3.33579 13 3.75V5.25C13 5.66421 12.6642 6 12.25 6C11.8358 6 11.5 5.66421 11.5 5.25V4.56066L8.53033 7.53033C8.23744 7.82322 7.76256 7.82322 7.46967 7.53033C7.17678 7.23744 7.17678 6.76256 7.46967 6.46967L10.4393 3.5H10.75Z"
       fill="currentColor"
       fill-rule="evenodd"
     />
