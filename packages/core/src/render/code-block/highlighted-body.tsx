@@ -28,7 +28,11 @@ export const HighlightedCodeBlockBody: Component<HighlightedCodeBlockBodyProps> 
     if (immediate) setResult(immediate);
   });
 
-  const lines = () => result()?.tokens ?? [];
+  const lines = () => {
+    const r = result();
+    if (r) return r.tokens;
+    return props.code.split("\n").map((line) => [{ content: line }]);
+  };
 
   return (
     <div
@@ -46,24 +50,22 @@ export const HighlightedCodeBlockBody: Component<HighlightedCodeBlockBodyProps> 
               : undefined
           }
         >
-          <Show fallback={props.code} when={result()}>
-            <For each={lines()}>
-              {(line, lineIndex) => (
-                <>
-                  <span class={cn(props.lineNumbers && "vm-line")}>
-                    <For each={line}>
-                      {(token) => (
-                        <span class="vm-token" style={buildTokenStyle(token)}>
-                          {token.content}
-                        </span>
-                      )}
-                    </For>
-                  </span>
-                  <Show when={lineIndex() < lines().length - 1}>{"\n"}</Show>
-                </>
-              )}
-            </For>
-          </Show>
+          <For each={lines()}>
+            {(line, lineIndex) => (
+              <>
+                <span class={cn(props.lineNumbers && "vm-line")}>
+                  <For each={line}>
+                    {(token) => (
+                      <span class="vm-token" style={buildTokenStyle(token)}>
+                        {token.content}
+                      </span>
+                    )}
+                  </For>
+                </span>
+                <Show when={lineIndex() < lines().length - 1}>{"\n"}</Show>
+              </>
+            )}
+          </For>
         </code>
       </pre>
     </div>
