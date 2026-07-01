@@ -1,4 +1,4 @@
-import { type Component, createSignal, onCleanup, onMount, Show } from "solid-js";
+import { type Component, createEffect, createSignal, onCleanup, Show } from "solid-js";
 import { cn } from "cnfast";
 import { lockBodyScroll, unlockBodyScroll } from "../../lib/scroll-lock";
 import { CheckIcon, CopyIcon, ExternalLinkIcon, XIcon } from "../icons";
@@ -31,23 +31,30 @@ export const LinkSafetyModal: Component<LinkSafetyModalProps> = (props) => {
     props.onClose();
   };
 
-  onMount(() => {
-    const handleEsc = (e: KeyboardEvent): void => {
-      if (e.key === "Escape") props.onClose();
-    };
+  const handleEsc = (e: KeyboardEvent): void => {
+    if (e.key === "Escape") props.onClose();
+  };
 
-    if (props.isOpen) {
+  let prevOpen = false;
+  createEffect(() => {
+    const isOpen = props.isOpen;
+    if (isOpen && !prevOpen) {
       lockBodyScroll();
       document.addEventListener("keydown", handleEsc);
     }
+    if (!isOpen && prevOpen) {
+      document.removeEventListener("keydown", handleEsc);
+      unlockBodyScroll();
+    }
+    prevOpen = isOpen;
+  });
 
-    onCleanup(() => {
-      if (props.isOpen) {
-        document.removeEventListener("keydown", handleEsc);
-        unlockBodyScroll();
-      }
-      if (timeoutId !== undefined) clearTimeout(timeoutId);
-    });
+  onCleanup(() => {
+    if (prevOpen) {
+      document.removeEventListener("keydown", handleEsc);
+      unlockBodyScroll();
+    }
+    if (timeoutId !== undefined) clearTimeout(timeoutId);
   });
 
   return (

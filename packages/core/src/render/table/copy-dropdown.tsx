@@ -13,7 +13,7 @@ const COPY_RESET_DELAY_MS = 2000;
 export const TableCopyDropdown: Component<{ class?: string }> = (props) => {
   const [isOpen, setIsOpen] = createSignal(false);
   const [isCopied, setIsCopied] = createSignal(false);
-  let dropdownRef: HTMLDivElement | undefined; // eslint-disable-line no-unassigned-vars
+  let dropdownRef: HTMLDivElement | undefined; // eslint-disable-line no-unassigned-vars -- assigned by Solid ref
   let timeoutId: ReturnType<typeof setTimeout> | undefined;
 
   const copyTableData = async (format: "csv" | "tsv" | "md"): Promise<void> => {

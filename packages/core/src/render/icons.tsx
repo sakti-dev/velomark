@@ -167,11 +167,55 @@ export const Loader2Icon: Component<IconProps> = (props) => (
     viewBox="0 0 16 16"
     width={props.size ?? 16}
   >
+    <path d="M8 0V4" stroke="currentColor" stroke-width="1.5" />
+    <path d="M8 16V12" opacity="0.5" stroke="currentColor" stroke-width="1.5" />
     <path
-      clip-rule="evenodd"
-      d="M8 1.5a6.5 6.5 0 1 1-6.5 6.5"
-      fill="currentColor"
-      fill-rule="evenodd"
+      d="M3.29773 1.52783L5.64887 4.7639"
+      opacity="0.9"
+      stroke="currentColor"
+      stroke-width="1.5"
+    />
+    <path
+      d="M12.7023 1.52783L10.3511 4.7639"
+      opacity="0.1"
+      stroke="currentColor"
+      stroke-width="1.5"
+    />
+    <path
+      d="M12.7023 14.472L10.3511 11.236"
+      opacity="0.4"
+      stroke="currentColor"
+      stroke-width="1.5"
+    />
+    <path
+      d="M3.29773 14.472L5.64887 11.236"
+      opacity="0.6"
+      stroke="currentColor"
+      stroke-width="1.5"
+    />
+    <path
+      d="M15.6085 5.52783L11.8043 6.7639"
+      opacity="0.2"
+      stroke="currentColor"
+      stroke-width="1.5"
+    />
+    <path
+      d="M0.391602 10.472L4.19583 9.23598"
+      opacity="0.7"
+      stroke="currentColor"
+      stroke-width="1.5"
+    />
+    <path
+      d="M15.6085 10.4722L11.8043 9.2361"
+      opacity="0.3"
+      stroke="currentColor"
+      stroke-width="1.5"
+    />
+    <path
+      d="M0.391602 5.52783L4.19583 6.7639"
+      opacity="0.8"
+      stroke="currentColor"
+      stroke-width="1.5"
     />
   </svg>
 );
@@ -188,13 +232,7 @@ export const ExternalLinkIcon: Component<IconProps> = (props) => (
   >
     <path
       clip-rule="evenodd"
-      d="M3.5 3.5C3.5 3.22386 3.72386 3 4 3H7.25C7.66421 3 8 3.33579 8 3.75C8 4.16421 7.66421 4.5 7.25 4.5H4.5V11.5H11.5V8.75C11.5 8.33579 11.8358 8 12.25 8C12.6642 8 13 8.33579 13 8.75V12C13 12.5523 12.5523 13 12 13H4C3.44772 13 3 12.5523 3 12V3.5Z"
-      fill="currentColor"
-      fill-rule="evenodd"
-    />
-    <path
-      clip-rule="evenodd"
-      d="M10 3.75C10 3.33579 10.3358 3 10.75 3H12.25C12.6642 3 13 3.33579 13 3.75V5.25C13 5.66421 12.6642 6 12.25 6C11.8358 6 11.5 5.66421 11.5 5.25V4.56066L8.53033 7.53033C8.23744 7.82322 7.76256 7.82322 7.46967 7.53033C7.17678 7.23744 7.17678 6.76256 7.46967 6.46967L10.4393 3.5H10.75Z"
+      d="M13.5 10.25V13.25C13.5 13.3881 13.3881 13.5 13.25 13.5H2.75C2.61193 13.5 2.5 13.3881 2.5 13.25L2.5 2.75C2.5 2.61193 2.61193 2.5 2.75 2.5H5.75H6.5V1H5.75H2.75C1.7835 1 1 1.7835 1 2.75V13.25C1 14.2165 1.7835 15 2.75 15H13.25C14.2165 15 15 14.2165 15 13.25V10.25V9.5H13.5V10.25ZM9 1H9.75H14.2495C14.6637 1 14.9995 1.33579 14.9995 1.75V6.25V7H13.4995V6.25V3.56066L8.53033 8.52978L8 9.06011L6.93934 7.99945L7.46967 7.46912L12.4388 2.5H9.75H9V1Z"
       fill="currentColor"
       fill-rule="evenodd"
     />

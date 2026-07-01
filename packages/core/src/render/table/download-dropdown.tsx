@@ -6,7 +6,7 @@ import { extractTableDataFromElement, tableDataToCSV, tableDataToMarkdown } from
 
 export const TableDownloadDropdown: Component<{ class?: string }> = (props) => {
   const [isOpen, setIsOpen] = createSignal(false);
-  let dropdownRef: HTMLDivElement | undefined; // eslint-disable-line no-unassigned-vars
+  let dropdownRef: HTMLDivElement | undefined; // eslint-disable-line no-unassigned-vars -- assigned by Solid ref
 
   const downloadTableData = (format: "csv" | "md"): void => {
     if (!dropdownRef) return;

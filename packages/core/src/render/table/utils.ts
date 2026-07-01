@@ -54,7 +54,7 @@ export const tableDataToCSV = (data: TableData): string => {
   };
 
   const totalRows = headers.length > 0 ? rows.length + 1 : rows.length;
-  const csvRows: string[] = new Array(totalRows);
+  const csvRows: string[] = Array.from({ length: totalRows });
   let rowIndex = 0;
 
   if (headers.length > 0) {
@@ -102,7 +102,7 @@ export const tableDataToTSV = (data: TableData): string => {
   };
 
   const totalRows = headers.length > 0 ? rows.length + 1 : rows.length;
-  const tsvRows: string[] = new Array(totalRows);
+  const tsvRows: string[] = Array.from({ length: totalRows });
   let rowIndex = 0;
 
   if (headers.length > 0) {
@@ -144,21 +144,21 @@ export const escapeMarkdownTableCell = (cell: string): string => {
   return parts.join("");
 };
 
-export const tableDataToMarkdown = (data: TableData) => {
+export const tableDataToMarkdown = (data: TableData): string => {
   const { headers, rows } = data;
 
   if (headers.length === 0) {
     return "";
   }
 
-  const markdownRows: string[] = new Array(rows.length + 2);
+  const markdownRows: string[] = Array.from({ length: rows.length + 2 });
   let rowIndex = 0;
 
   const escapedHeaders = headers.map((h) => escapeMarkdownTableCell(h));
   markdownRows[rowIndex] = `| ${escapedHeaders.join(" | ")} |`;
   rowIndex += 1;
 
-  const separatorParts = new Array(headers.length);
+  const separatorParts: string[] = Array.from({ length: headers.length });
   for (let i = 0; i < headers.length; i += 1) {
     separatorParts[i] = "---";
   }
@@ -167,7 +167,7 @@ export const tableDataToMarkdown = (data: TableData) => {
 
   for (const row of rows) {
     if (row.length < headers.length) {
-      const paddedRow = new Array(headers.length);
+      const paddedRow: string[] = Array.from({ length: headers.length });
       for (let i = 0; i < headers.length; i += 1) {
         paddedRow[i] = i < row.length ? escapeMarkdownTableCell(row[i]) : "";
       }
