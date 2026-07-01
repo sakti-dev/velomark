@@ -132,6 +132,43 @@ describe("Velomark block rendering", () => {
     expect(lineSpans[0]?.classList.contains("vm-line")).toBe(true);
   });
 
+  it("respects startLine meta by setting counter-reset on highlighted code", () => {
+    const host = document.createElement("div");
+    document.body.append(host);
+
+    const dispose = render(
+      () => (
+        <Velomark
+          markdown={["```ts startLine=10", "const x = 1;", "```"].join("\n")}
+          plugins={{ code: mockCodePlugin }}
+        />
+      ),
+      host,
+    );
+    mountedRoots.push(dispose);
+
+    const code = host.querySelector("pre > code") as HTMLElement;
+    expect(code.style.counterReset).toBe("line 9");
+  });
+
+  it("omits line-number classes when noLineNumbers meta is present", () => {
+    const host = document.createElement("div");
+    document.body.append(host);
+
+    const dispose = render(
+      () => (
+        <Velomark
+          markdown={["```ts noLineNumbers", "const x = 1;", "```"].join("\n")}
+          plugins={{ code: mockCodePlugin }}
+        />
+      ),
+      host,
+    );
+    mountedRoots.push(dispose);
+
+    expect(host.querySelector("pre > code")?.classList.contains("vm-line-numbers")).toBe(false);
+  });
+
   it("renders task list items with disabled checkboxes", () => {
     const host = document.createElement("div");
     document.body.append(host);
@@ -190,7 +227,7 @@ describe("Velomark block rendering", () => {
     const highlighted = shell?.querySelector(".vm-code-highlighted");
     expect(highlighted).not.toBeNull();
     expect(shell?.querySelectorAll(".vm-code-highlighted span").length).toBeGreaterThan(0);
-    expect(highlighted?.querySelectorAll(":scope > span").length).toBeGreaterThan(1);
+    expect(highlighted?.querySelectorAll(":scope > span.vm-line > span").length).toBeGreaterThan(1);
   });
 
   it("omits the language label for unlabeled code fences but keeps the header", () => {

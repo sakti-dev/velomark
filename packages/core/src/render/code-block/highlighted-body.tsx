@@ -67,14 +67,23 @@ export const HighlightedCodeBlockBody: Component<HighlightedCodeBlockBodyProps> 
       data-language={props.language}
     >
       <pre>
-        <code class={cn(result() && "vm-code-highlighted")}>
+        <code
+          class={cn(result() && "vm-code-highlighted", props.lineNumbers && "vm-line-numbers")}
+          style={
+            props.lineNumbers && props.startLine && props.startLine > 1
+              ? { "counter-reset": `line ${props.startLine - 1}` }
+              : undefined
+          }
+        >
           <Show fallback={props.code} when={result()}>
             <For each={lines()}>
               {(line, lineIndex) => (
                 <>
-                  <For each={line}>
-                    {(token) => <span style={buildTokenStyle(token)}>{token.content}</span>}
-                  </For>
+                  <span class={cn(props.lineNumbers && "vm-line")}>
+                    <For each={line}>
+                      {(token) => <span style={buildTokenStyle(token)}>{token.content}</span>}
+                    </For>
+                  </span>
                   <Show when={lineIndex() < lines().length - 1}>{"\n"}</Show>
                 </>
               )}

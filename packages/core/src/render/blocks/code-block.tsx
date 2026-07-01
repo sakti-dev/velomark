@@ -34,11 +34,13 @@ export const CodeBlockView: Component = () => {
     );
   }
 
+  const effectiveLineNumbers = () => vm.codeBlockOptions?.lineNumbers ?? vm.lineNumbers;
   const options = () =>
-    resolveCodeBlockOptions({
-      ...vm.codeBlockOptions,
-      lineNumbers: vm.codeBlockOptions?.lineNumbers ?? vm.lineNumbers,
-    });
+    resolveCodeBlockOptions(
+      effectiveLineNumbers() !== undefined
+        ? { ...vm.codeBlockOptions, lineNumbers: effectiveLineNumbers() }
+        : vm.codeBlockOptions,
+    );
   const codePlugin = () => vm.plugins.code;
   const fenceMeta = () => parseCodeFenceMeta(data().meta);
   const showLineNumbers = () => options().lineNumbers && fenceMeta().lineNumbers;
