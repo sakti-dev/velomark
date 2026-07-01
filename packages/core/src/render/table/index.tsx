@@ -27,6 +27,7 @@ export const Table: Component<TableProps> = (props) => {
   return (
     <div
       class={cn("vm-table my-4 flex flex-col gap-2 rounded-lg border border-border bg-sidebar p-2")}
+      data-velomark="table-wrapper"
     >
       <div
         class={cn(
