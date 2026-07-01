@@ -244,7 +244,33 @@ describe("Velomark block rendering", () => {
     const highlighted = shell?.querySelector(".vm-code-highlighted");
     expect(highlighted).not.toBeNull();
     expect(shell?.querySelectorAll(".vm-code-highlighted span").length).toBeGreaterThan(0);
-    expect(highlighted?.querySelectorAll(":scope > span.vm-line > span").length).toBeGreaterThan(1);
+    expect(
+      highlighted?.querySelectorAll(":scope > span.vm-line > span.vm-token").length,
+    ).toBeGreaterThan(1);
+  });
+
+  it("redirects token colors to --vm-c CSS custom property", async () => {
+    const host = document.createElement("div");
+    document.body.append(host);
+
+    const dispose = render(
+      () => (
+        <Velomark markdown={"```ts\nconst answer = 42;\n```"} plugins={{ code: mockCodePlugin }} />
+      ),
+      host,
+    );
+    mountedRoots.push(dispose);
+
+    await waitFor(
+      () => (host.querySelectorAll(".vm-code-highlighted .vm-token").length ?? 0) > 0,
+      500,
+    );
+
+    const tokenSpan = host.querySelector(".vm-code-highlighted .vm-line span.vm-token");
+    expect(tokenSpan).not.toBeNull();
+    const style = tokenSpan?.getAttribute("style") ?? "";
+    expect(style).toContain("--vm-c");
+    expect(style).not.toMatch(/^\s*color:/);
   });
 
   it("omits the language label for unlabeled code fences but keeps the header", () => {

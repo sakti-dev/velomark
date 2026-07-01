@@ -1,29 +1,8 @@
-import { type Component, createEffect, createSignal, For, Show } from "solid-js";
+import { type Component, createEffect, createMemo, createSignal, For, Show } from "solid-js";
 import { cn } from "cnfast";
 
-import type {
-  CodeHighlighterPlugin,
-  HighlightResult,
-  HighlightToken,
-} from "../../lib/plugin-types";
-
-function buildTokenStyle(token: HighlightToken): Record<string, string> {
-  const style: Record<string, string> = {};
-
-  if (token.color) {
-    style.color = token.color;
-  }
-
-  if (token.bgColor) {
-    style["background-color"] = token.bgColor;
-  }
-
-  if (token.htmlStyle) {
-    Object.assign(style, token.htmlStyle);
-  }
-
-  return style;
-}
+import type { CodeHighlighterPlugin, HighlightResult } from "../../lib/plugin-types";
+import { buildTokenStyle, parseShikiStyle } from "./style-utils";
 
 export interface HighlightedCodeBlockBodyProps {
   code: string;
@@ -33,11 +12,6 @@ export interface HighlightedCodeBlockBodyProps {
   startLine?: number;
 }
 
-/**
- * Renders highlighted code tokens (produced by a `CodeHighlighterPlugin`)
- * inside the streamdown-aligned body shell. Core owns the token -> DOM
- * rendering; the plugin only supplies tokens.
- */
 export const HighlightedCodeBlockBody: Component<HighlightedCodeBlockBodyProps> = (props) => {
   const [result, setResult] = createSignal<HighlightResult | null>(null);
 
@@ -51,13 +25,20 @@ export const HighlightedCodeBlockBody: Component<HighlightedCodeBlockBodyProps> 
       },
       (next) => setResult(next),
     );
-
-    if (immediate) {
-      setResult(immediate);
-    }
+    if (immediate) setResult(immediate);
   });
 
   const lines = () => result()?.tokens ?? [];
+
+  const preStyle = createMemo(() => {
+    const r = result();
+    if (!r) return {};
+    return {
+      ...parseShikiStyle(r.bg, "--vm-bg"),
+      ...parseShikiStyle(r.fg, "--vm-fg"),
+      ...(typeof r.rootStyle === "string" ? parseShikiStyle(r.rootStyle, "--vm-bg") : {}),
+    };
+  });
 
   return (
     <div
@@ -66,7 +47,7 @@ export const HighlightedCodeBlockBody: Component<HighlightedCodeBlockBodyProps> 
       )}
       data-language={props.language}
     >
-      <pre>
+      <pre class="vm-code-pre" style={preStyle()}>
         <code
           class={cn(result() && "vm-code-highlighted", props.lineNumbers && "vm-line-numbers")}
           style={
@@ -81,7 +62,11 @@ export const HighlightedCodeBlockBody: Component<HighlightedCodeBlockBodyProps> 
                 <>
                   <span class={cn(props.lineNumbers && "vm-line")}>
                     <For each={line}>
-                      {(token) => <span style={buildTokenStyle(token)}>{token.content}</span>}
+                      {(token) => (
+                        <span class="vm-token" style={buildTokenStyle(token)}>
+                          {token.content}
+                        </span>
+                      )}
                     </For>
                   </span>
                   <Show when={lineIndex() < lines().length - 1}>{"\n"}</Show>
