@@ -50,6 +50,7 @@ export interface ListBlockData {
 export interface CodeBlockData {
   code: string;
   language?: string;
+  meta?: string;
 }
 
 export interface MathBlockData {
@@ -249,6 +250,7 @@ export function parseBlockBoundaries(markdown: string): DraftRenderBlock<ParsedB
     if (fenceMatch) {
       const sourceStart = line.start;
       const language = fenceMatch[1] || undefined;
+      const rawMeta = fenceMatch[2]?.trim() || undefined;
       const codeLines: string[] = [];
       let scanIndex = lineIndex + 1;
       let sourceEnd = markdown.length;
@@ -279,6 +281,7 @@ export function parseBlockBoundaries(markdown: string): DraftRenderBlock<ParsedB
         data: {
           language,
           code: codeLines.join("\n"),
+          meta: rawMeta,
         },
       });
       lineIndex = scanIndex;

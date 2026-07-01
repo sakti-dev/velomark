@@ -66,6 +66,29 @@ describe("parseBlockBoundaries", () => {
     });
   });
 
+  it("captures the fence meta string after the language", () => {
+    const blocks = parseBlockBoundaries(
+      ["```ts startLine=10 noLineNumbers", "const x = 1;", "```"].join("\n"),
+    );
+
+    expect(blocks).toHaveLength(1);
+    expect(blocks[0]?.kind).toBe("code");
+    expect(blocks[0]?.data).toMatchObject({
+      code: "const x = 1;",
+      language: "ts",
+      meta: "startLine=10 noLineNumbers",
+    });
+  });
+
+  it("treats a fence line with only trailing whitespace as having no meta", () => {
+    const blocks = parseBlockBoundaries(["```ts   ", "const x = 1;", "```"].join("\n"));
+
+    expect(blocks[0]?.data).toMatchObject({
+      language: "ts",
+      meta: undefined,
+    });
+  });
+
   it("parses ordered lists separately from unordered lists", () => {
     const blocks = parseBlockBoundaries(["1. One", "2. Two"].join("\n"));
 
