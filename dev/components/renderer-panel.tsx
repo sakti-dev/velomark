@@ -1,4 +1,5 @@
 import type { Component } from "solid-js";
+import { createCodePlugin } from "@velomark/code";
 import { Velomark } from "velomark";
 import type { VelomarkDebugMetrics } from "velomark";
 
@@ -7,6 +8,8 @@ export interface RendererPanelProps {
   onDebugMetrics?: (metrics: VelomarkDebugMetrics) => void;
   onSurfaceReady?: (element: HTMLDivElement) => void;
 }
+
+const codePlugin = createCodePlugin();
 
 export const RendererPanel: Component<RendererPanelProps> = (props) => {
   return (
@@ -30,6 +33,7 @@ export const RendererPanel: Component<RendererPanelProps> = (props) => {
             debug={false}
             markdown={props.markdown}
             onDebugMetrics={props.onDebugMetrics}
+            plugins={{ code: codePlugin as never }}
             remend={{}}
           />
         </div>

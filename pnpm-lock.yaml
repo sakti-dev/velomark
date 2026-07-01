@@ -254,6 +254,9 @@ importers:
       '@typescript/native-preview':
         specifier: 7.0.0-dev.20260509.2
         version: 7.0.0-dev.20260509.2
+      '@velomark/code':
+        specifier: workspace:*
+        version: link:packages/code
       '@vitest/coverage-v8':
         specifier: ^4.1.9
         version: 4.1.9(@vitest/browser@4.1.9)(vitest@4.1.9)
