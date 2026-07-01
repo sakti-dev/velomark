@@ -6,6 +6,7 @@ export type {
   InlineToken,
   RenderBlock,
   RenderDocument,
+  VelomarkCaret,
   VelomarkCodeBlockOptions,
   VelomarkCodeBlockRendererProps,
   VelomarkContainerRendererProps,

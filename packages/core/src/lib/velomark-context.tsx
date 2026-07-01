@@ -10,6 +10,7 @@ import type {
   ReferenceDefinitionMap,
   RenderBlock,
   RenderDocument,
+  VelomarkCaret,
   VelomarkCodeBlockOptions,
   VelomarkCodeBlockRendererProps,
   VelomarkContainerRendererProps,
@@ -20,6 +21,7 @@ import type { Component } from "solid-js";
 export interface VelomarkStore {
   plugins: PluginConfig;
   animationConfig: AnimateOptions | null;
+  caret?: VelomarkCaret;
   codeBlockOptions?: VelomarkCodeBlockOptions;
   codeBlockRenderers?: Record<string, Component<VelomarkCodeBlockRendererProps>>;
   containers?: Record<string, Component<VelomarkContainerRendererProps>>;
@@ -35,6 +37,7 @@ export interface VelomarkStore {
 
 export interface VelomarkProviderProps {
   animated?: boolean | AnimateOptions;
+  caret?: VelomarkCaret;
   children: JSX.Element;
   codeBlockOptions?: VelomarkCodeBlockOptions;
   codeBlockRenderers?: Record<string, Component<VelomarkCodeBlockRendererProps>>;
@@ -76,6 +79,7 @@ export function VelomarkProvider(props: VelomarkProviderProps) {
   const store: VelomarkStore = {
     plugins: props.plugins ?? {},
     animationConfig: resolveAnimationConfig(props.animated),
+    caret: props.caret,
     codeBlockOptions: props.codeBlockOptions,
     codeBlockRenderers: props.codeBlockRenderers,
     containers: props.containers,

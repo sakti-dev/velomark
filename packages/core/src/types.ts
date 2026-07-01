@@ -164,3 +164,5 @@ export interface VelomarkContainerRendererProps {
   children?: JSX.Element;
   name: string;
 }
+
+export type VelomarkCaret = "block" | "circle";
