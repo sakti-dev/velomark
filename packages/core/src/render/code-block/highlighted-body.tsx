@@ -1,8 +1,8 @@
-import { type Component, createEffect, createMemo, createSignal, For, Show } from "solid-js";
+import { type Component, createEffect, createSignal, For, Show } from "solid-js";
 import { cn } from "cnfast";
 
 import type { CodeHighlighterPlugin, HighlightResult } from "../../lib/plugin-types";
-import { buildTokenStyle, parseShikiStyle } from "./style-utils";
+import { buildTokenStyle } from "./style-utils";
 
 export interface HighlightedCodeBlockBodyProps {
   code: string;
@@ -30,16 +30,6 @@ export const HighlightedCodeBlockBody: Component<HighlightedCodeBlockBodyProps> 
 
   const lines = () => result()?.tokens ?? [];
 
-  const preStyle = createMemo(() => {
-    const r = result();
-    if (!r) return {};
-    return {
-      ...parseShikiStyle(r.bg, "--vm-bg"),
-      ...parseShikiStyle(r.fg, "--vm-fg"),
-      ...(typeof r.rootStyle === "string" ? parseShikiStyle(r.rootStyle, "--vm-bg") : {}),
-    };
-  });
-
   return (
     <div
       class={cn(
@@ -47,7 +37,7 @@ export const HighlightedCodeBlockBody: Component<HighlightedCodeBlockBodyProps> 
       )}
       data-language={props.language}
     >
-      <pre class="vm-code-pre" style={preStyle()}>
+      <pre>
         <code
           class={cn(result() && "vm-code-highlighted", props.lineNumbers && "vm-line-numbers")}
           style={
