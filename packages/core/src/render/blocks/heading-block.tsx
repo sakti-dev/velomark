@@ -2,7 +2,7 @@ import type { Component } from "solid-js";
 import { Dynamic } from "solid-js/web";
 import { cn } from "cnfast";
 
-import type { HeadingBlockData } from "../../parser/block-boundaries";
+import type { HeadingBlockData } from "../../lib/parser/block-boundaries";
 import type {
   ReferenceDefinitionMap,
   RenderBlock,

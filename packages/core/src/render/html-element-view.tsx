@@ -1,7 +1,7 @@
 import type { Component } from "solid-js";
 import { For, type JSX } from "solid-js";
 import { Dynamic } from "solid-js/web";
-import { parseInline } from "../parser/inline-parser";
+import { parseInline } from "../lib/parser/inline-parser";
 import type { ReferenceDefinitionMap, VelomarkContainerRendererProps } from "../types";
 import { type HtmlElementRenderChild, RenderInlineTokens } from "./inline/inline-token-view";
 

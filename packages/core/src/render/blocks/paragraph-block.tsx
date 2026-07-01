@@ -1,6 +1,6 @@
 import type { Component } from "solid-js";
 
-import type { ParagraphBlockData } from "../../parser/block-boundaries";
+import type { ParagraphBlockData } from "../../lib/parser/block-boundaries";
 import type {
   ReferenceDefinitionMap,
   RenderBlock,

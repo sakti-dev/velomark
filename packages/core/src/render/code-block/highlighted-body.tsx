@@ -1,7 +1,11 @@
 import { type Component, createEffect, createSignal, For, Show } from "solid-js";
 import { cn } from "cnfast";
 
-import type { CodeHighlighterPlugin, HighlightResult, HighlightToken } from "../../plugins/types";
+import type {
+  CodeHighlighterPlugin,
+  HighlightResult,
+  HighlightToken,
+} from "../../lib/plugin-types";
 
 function buildTokenStyle(token: HighlightToken): Record<string, string> {
   const style: Record<string, string> = {};

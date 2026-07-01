@@ -1,5 +1,5 @@
 import type { DraftRenderBlock } from "../model/stable-id";
-import type { ReferenceDefinitionMap } from "../types";
+import type { ReferenceDefinitionMap } from "../../types";
 import { type ParsedBlockData, parseBlockBoundaries } from "./block-boundaries";
 
 const REFERENCE_DEFINITION_RE =

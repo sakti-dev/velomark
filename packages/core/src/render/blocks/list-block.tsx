@@ -1,6 +1,6 @@
 import { type Component, For } from "solid-js";
 import { cn } from "cnfast";
-import type { ListBlockData } from "../../parser/block-boundaries";
+import type { ListBlockData } from "../../lib/parser/block-boundaries";
 import type {
   ReferenceDefinitionMap,
   RenderBlock,

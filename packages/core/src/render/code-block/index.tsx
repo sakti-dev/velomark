@@ -1,7 +1,7 @@
 import { type Component, type ComponentProps, Show, splitProps } from "solid-js";
 import { cn } from "cnfast";
 
-import type { CodeHighlighterPlugin } from "../../plugins/types";
+import type { CodeHighlighterPlugin } from "../../lib/plugin-types";
 import type { VelomarkCodeBlockOptions } from "../../types";
 import { CodeBlockBody } from "./body";
 import { CodeBlockContainer } from "./container";

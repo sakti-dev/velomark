@@ -1,8 +1,8 @@
 import type { Component } from "solid-js";
 import { Dynamic } from "solid-js/web";
 
-import { usePlugins } from "../../plugins/plugin-context";
-import type { CodeBlockData } from "../../parser/block-boundaries";
+import { usePlugins } from "../../lib/plugin-context";
+import type { CodeBlockData } from "../../lib/parser/block-boundaries";
 import type {
   RenderBlock,
   VelomarkCodeBlockOptions,

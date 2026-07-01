@@ -1,4 +1,4 @@
-import type { InlineToken, ReferenceDefinitionMap } from "../types";
+import type { InlineToken, ReferenceDefinitionMap } from "../../types";
 import { htmlElementChildrenToInlineTokens, parseSimpleHtmlElement } from "./html-element";
 
 const ESCAPABLE_CHARACTERS = new Set(["\\", "*", "`", "[", "]", "(", ")"]);

@@ -2,7 +2,7 @@ import type {
   CodeHighlighterPlugin,
   DiagramPlugin,
   MathRendererPlugin,
-} from "../src/plugins/types";
+} from "../src/lib/plugin-types";
 
 /**
  * Mock plugin implementations for unit tests. Exercise core's rendering paths

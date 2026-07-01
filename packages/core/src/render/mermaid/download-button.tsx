@@ -2,7 +2,7 @@ import { type Component, createEffect, createSignal, onCleanup, Show } from "sol
 import { cn } from "cnfast";
 
 import { DownloadIcon } from "../icons";
-import type { DiagramPlugin } from "../../plugins/types";
+import type { DiagramPlugin } from "../../lib/plugin-types";
 import { save, svgToPngBlob } from "./utils";
 
 let mermaidDownloadSequence = 0;

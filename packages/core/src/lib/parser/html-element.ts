@@ -1,4 +1,4 @@
-import type { InlineToken } from "../types";
+import type { InlineToken } from "../../types";
 
 export interface HtmlElementNode {
   attributes?: Record<string, string>;

@@ -3,7 +3,7 @@ import { Portal } from "solid-js/web";
 import { cn } from "cnfast";
 
 import { Maximize2Icon, XIcon } from "../icons";
-import type { DiagramPlugin } from "../../plugins/types";
+import type { DiagramPlugin } from "../../lib/plugin-types";
 import { MermaidDiagram } from "./diagram";
 import { lockBodyScroll, unlockBodyScroll } from "./utils";
 

@@ -1,5 +1,5 @@
 import type { ParsedBlockData } from "../parser/block-boundaries";
-import type { RenderBlock, RenderDocument } from "../types";
+import type { RenderBlock, RenderDocument } from "../../types";
 
 export interface RenderPatch {
   nextBlocks: RenderBlock<ParsedBlockData>[];

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vite-plus/test";
-import type { RenderBlock } from "../../types";
+import type { RenderBlock } from "../../../types";
 import { assignStableBlockIds } from "../stable-id";
 
 const BLOCK_ID_RE = /^b_[a-z0-9]{8}$/;

@@ -2,7 +2,7 @@ import { type Component, createEffect, createSignal, onCleanup, Show } from "sol
 import { cn } from "cnfast";
 import { isServer } from "solid-js/web";
 
-import type { DiagramPlugin } from "../../plugins/types";
+import type { DiagramPlugin } from "../../lib/plugin-types";
 import { PanZoom } from "./pan-zoom";
 
 let mermaidChartSequence = 0;

@@ -1,5 +1,5 @@
 import type { DraftRenderBlock } from "../model/stable-id";
-import type { RenderBlock } from "../types";
+import type { RenderBlock } from "../../types";
 import {
   isBlankLine,
   isTableSeparator,

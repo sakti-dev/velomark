@@ -1,6 +1,6 @@
 import { createContext, useContext, type JSX } from "solid-js";
 
-import type { PluginConfig } from "./types";
+import type { PluginConfig } from "./plugin-types";
 
 const PluginContext = createContext<PluginConfig>({});
 

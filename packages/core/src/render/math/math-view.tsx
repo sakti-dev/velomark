@@ -1,7 +1,7 @@
 import { type Component, createMemo, Show } from "solid-js";
 import { cn } from "cnfast";
 
-import { usePlugins } from "../../plugins/plugin-context";
+import { usePlugins } from "../../lib/plugin-context";
 
 /**
  * Renders math via a `MathRendererPlugin` (sync `render` → HTML string).

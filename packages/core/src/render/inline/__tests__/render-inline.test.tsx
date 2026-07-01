@@ -1,6 +1,6 @@
 import { render } from "solid-js/web";
 import { afterEach, describe, expect, it } from "vite-plus/test";
-import { PluginProvider } from "../../../plugins/plugin-context";
+import { PluginProvider } from "../../../lib/plugin-context";
 import type { VelomarkContainerRendererProps } from "../../../types";
 import { RenderInline } from "../render-inline";
 import { mockMathPlugin } from "../../../../test/mock-plugins";

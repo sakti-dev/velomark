@@ -1,5 +1,5 @@
 import type { CodeBlockData } from "../parser/block-boundaries";
-import type { RenderBlock } from "../types";
+import type { RenderBlock } from "../../types";
 
 export type DraftRenderBlock<TData = unknown> = Omit<RenderBlock<TData>, "id">;
 

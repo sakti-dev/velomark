@@ -1,9 +1,9 @@
 import { type Component, createEffect, createMemo, createSignal, For } from "solid-js";
 import { cn } from "cnfast";
-import { buildRenderDocument, collectRenderMetrics } from "../model/render-document";
-import { PluginProvider } from "../plugins/plugin-context";
-import type { PluginConfig } from "../plugins/types";
-import type { ParsedBlockData } from "../parser/block-boundaries";
+import { buildRenderDocument, collectRenderMetrics } from "../lib/model/render-document";
+import { PluginProvider } from "../lib/plugin-context";
+import type { PluginConfig } from "../lib/plugin-types";
+import type { ParsedBlockData } from "../lib/parser/block-boundaries";
 import type {
   RenderDocument,
   VelomarkCodeBlockOptions,

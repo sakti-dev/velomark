@@ -1,4 +1,4 @@
-export { parseInline } from "./parser/inline-parser";
+export { parseInline } from "./lib/parser/inline-parser";
 export type { VelomarkProps } from "./render/velomark";
 export { Velomark } from "./render/velomark";
 export type {
@@ -12,7 +12,7 @@ export type {
 } from "./types";
 
 // Plugin contract (feature packages register via <Velomark plugins={...}>)
-export { PluginProvider, usePlugins } from "./plugins/plugin-context";
+export { PluginProvider, usePlugins } from "./lib/plugin-context";
 export type {
   CjkPlugin,
   CodeHighlighterPlugin,
@@ -26,4 +26,4 @@ export type {
   MathRendererPlugin,
   MermaidInstance,
   PluginConfig,
-} from "./plugins/types";
+} from "./lib/plugin-types";

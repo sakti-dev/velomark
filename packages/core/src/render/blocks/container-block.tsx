@@ -1,6 +1,6 @@
 import { type Component, For } from "solid-js";
 import { Dynamic } from "solid-js/web";
-import type { ContainerBlockData } from "../../parser/block-boundaries";
+import type { ContainerBlockData } from "../../lib/parser/block-boundaries";
 import type {
   ReferenceDefinitionMap,
   RenderBlock,

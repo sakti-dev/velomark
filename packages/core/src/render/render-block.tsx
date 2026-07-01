@@ -11,7 +11,7 @@ import type {
   ParagraphBlockData,
   ParsedBlockData,
   TableBlockData,
-} from "../parser/block-boundaries";
+} from "../lib/parser/block-boundaries";
 import type {
   ReferenceDefinitionMap,
   RenderBlock,

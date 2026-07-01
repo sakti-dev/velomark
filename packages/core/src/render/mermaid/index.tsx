@@ -1,8 +1,8 @@
 import { type Component } from "solid-js";
 import { cn } from "cnfast";
 
-import type { CodeBlockData } from "../../parser/block-boundaries";
-import type { DiagramPlugin } from "../../plugins/types";
+import type { CodeBlockData } from "../../lib/parser/block-boundaries";
+import type { DiagramPlugin } from "../../lib/plugin-types";
 import type { RenderBlock } from "../../types";
 import { CodeBlockCopyButton } from "../code-block/copy-button";
 import { MermaidDiagram } from "./diagram";

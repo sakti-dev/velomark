@@ -8,7 +8,7 @@ import type {
 } from "../parser/block-boundaries";
 import { parseMarkdownToBlocks } from "../parser/block-parser";
 import { parseInline } from "../parser/inline-parser";
-import type { InlineToken, RenderBlock, RenderDocument, VelomarkDebugMetrics } from "../types";
+import type { InlineToken, RenderBlock, RenderDocument, VelomarkDebugMetrics } from "../../types";
 import type { DraftRenderBlock } from "./stable-id";
 import { assignStableBlockIds } from "./stable-id";
 

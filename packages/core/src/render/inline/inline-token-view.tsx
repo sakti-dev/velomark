@@ -2,7 +2,7 @@ import { type Component, For, type JSX } from "solid-js";
 import { Dynamic } from "solid-js/web";
 import { cn } from "cnfast";
 
-import type { HtmlElementChild } from "../../parser/html-element";
+import type { HtmlElementChild } from "../../lib/parser/html-element";
 import type {
   InlineToken,
   ReferenceDefinitionMap,

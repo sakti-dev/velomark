@@ -1,5 +1,5 @@
 import type { Component } from "solid-js";
-import type { HtmlElementBlockData } from "../../parser/block-boundaries";
+import type { HtmlElementBlockData } from "../../lib/parser/block-boundaries";
 import type {
   ReferenceDefinitionMap,
   RenderBlock,
