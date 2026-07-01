@@ -49,3 +49,24 @@
   animation: var(--vm-animation, vm-fadeIn) var(--vm-duration, 150ms) var(--vm-easing, ease)
     var(--vm-delay, 0ms) both;
 }
+
+.vm-line-numbers {
+  counter-reset: line;
+}
+
+.vm-line {
+  counter-increment: line;
+}
+
+.vm-line::before {
+  content: counter(line);
+  display: inline-block;
+  width: 1.5rem;
+  margin-right: 1rem;
+  text-align: right;
+  font-size: 0.8125rem;
+  color: var(--muted-foreground);
+  opacity: 0.5;
+  font-family: var(--vm-mono, ui-monospace, monospace);
+  user-select: none;
+}
