@@ -27,15 +27,9 @@ Line numbers via CSS counters (`vm-line-numbers` / `vm-line::before`), default O
 - Wire modal open/confirm/cancel flow
 - Export `onLinkCheck` callback
 
-### 3. [planned] Dual-theme Shiki dark mode
+### 3. [done] Dual-theme Shiki dark mode
 
-Velomark's `HighlightedCodeBlockBody` applies Shiki tokens as direct inline `color` styles. These don't respond to dark-mode class switches. Streamdown maps tokens to CSS custom properties (`--shiki-light` / `--shiki-dark`) so the consumer's `[data-theme="dark"]` selector can override.
-
-**Scope:**
-
-- Change token rendering from `style={{ color: token.color }}` to `style={{ "--shiki-light": ..., "--shiki-dark": ... }}`
-- Add CSS rules in `styles.css`: `:root { color: var(--shiki-light) }` + `[data-theme="dark"] { color: var(--shiki-dark) }`
-- Verify with `github-dark` / `github-light` themes
+Token styles redirected to `--vm-*` CSS custom properties; `.dark` selector in `styles.css` switches to Shiki's `--shiki-dark` / `--shiki-dark-bg` vars. New `@velomark/code` package provides the Shiki highlighter with dual-theme support out of the box.
 
 ### 4. [done] Streaming caret indicator
 
@@ -153,6 +147,7 @@ Streamdown hides the footnotes section while it's empty during streaming. Veloma
 - [done] Self-healing markdown (remend) — auto-completes unclosed inline formatting during streaming (`0658e45`)
 - [done] Code-block line numbers + startLine meta — CSS counters, default ON, per-fence noLineNumbers/startLine (`4e82467`)
 - [done] Streaming caret indicator — opt-in caret prop, CSS ::after blink, hidden on unclosed fences/tables (`4c4b074`)
+- [done] Dual-theme Shiki dark mode — `@velomark/code` package, CSS-var redirect + `.dark` selector, FENCE_RE widened (`f0bbcea`)
 
 ---
 
