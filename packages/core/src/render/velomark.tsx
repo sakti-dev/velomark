@@ -1,5 +1,6 @@
 import { type Component, For } from "solid-js";
 import { cn } from "cnfast";
+import type { RemendOptions } from "remend";
 import { BlockProvider } from "../lib/block-context";
 import { VelomarkProvider, useVelomark } from "../lib/velomark-context";
 import type {
@@ -23,6 +24,7 @@ export interface VelomarkProps {
   markdown: string;
   onDebugMetrics?: (metrics: VelomarkDebugMetrics) => void;
   plugins?: PluginConfig;
+  remend?: RemendOptions;
 }
 
 function VelomarkView(props: { class?: string }) {

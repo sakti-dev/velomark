@@ -19,6 +19,9 @@ export type { VelomarkStore } from "./lib/velomark-context";
 export type { BlockStore } from "./lib/block-context";
 export type { AnimateOptions } from "./types";
 
+// Remend self-healing markdown
+export type { RemendOptions } from "remend";
+
 // Plugin contract (feature packages register via <Velomark plugins={...}>)
 export type {
   CjkPlugin,
