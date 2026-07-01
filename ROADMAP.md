@@ -12,15 +12,9 @@ Tracking the remaining feature gaps between velomark and streamdown, prioritized
 
 Integrated remend as a pre-pass inside `parseMarkdownToBlocks` — auto-completes unclosed bold, italic, inline code, strikethrough, links, and math before block parsing. Exposed via `VelomarkProps.remend?: RemendOptions` (`{}` = enabled with defaults, `undefined` = disabled). Zero-dep npm dependency.
 
-### 1. [planned] Code-block line numbers + `startLine` meta
+### 1. [done] Code-block line numbers + `startLine` meta
 
-Streamdown renders line numbers via CSS counters in `code-block/body.tsx`, togglable per-fence via `showLineNumbers` / `noLineNumbers` meta and offset via `startLine=N`.
-
-**Scope:**
-
-- Add line-number gutter to `CodeBlockBody` and `HighlightedCodeBlockBody`
-- Parse `showLineNumbers` / `startLine` from fence meta string
-- Add `lineNumbers` default to `VelomarkCodeBlockOptions`
+Line numbers via CSS counters (`vm-line-numbers` / `vm-line::before`), default ON. Per-fence `noLineNumbers` meta hides; `startLine=N` offsets. Works on both plain and highlighted bodies. Global toggle via `VelomarkProps.lineNumbers` and `VelomarkCodeBlockOptions.lineNumbers`.
 
 ### 2. [planned] Wire up link-safety modal
 
@@ -43,15 +37,9 @@ Velomark's `HighlightedCodeBlockBody` applies Shiki tokens as direct inline `col
 - Add CSS rules in `styles.css`: `:root { color: var(--shiki-light) }` + `[data-theme="dark"] { color: var(--shiki-dark) }`
 - Verify with `github-dark` / `github-light` themes
 
-### 4. [planned] Streaming caret indicator
+### 4. [done] Streaming caret indicator
 
-Streamdown shows a blinking caret (`▋` or `●`) at the end of the last block while streaming, hiding it during incomplete code fences and tables.
-
-**Scope:**
-
-- Add `caret` prop to `VelomarkProps` (`"block" | "dot" | null`)
-- Render caret element at end of streaming block
-- Hide when last block is an incomplete code fence or table
+Opt-in `caret?: "block" | "circle"` prop renders a blinking caret inline at the end of the last streaming block via CSS `::after` + `--velomark-caret` var. Hidden when the last block is an unclosed code fence or incomplete table (detected via parsed `status`).
 
 ### 5. [planned] Granular controls config
 
@@ -163,6 +151,8 @@ Streamdown hides the footnotes section while it's empty during streaming. Veloma
 - [done] Table animation — `computeAnimationMulti` with table-level shared counter (`0a543dd`)
 - [done] Remove code-block skeleton loader — show streaming content instead (`8831ff6`)
 - [done] Self-healing markdown (remend) — auto-completes unclosed inline formatting during streaming (`0658e45`)
+- [done] Code-block line numbers + startLine meta — CSS counters, default ON, per-fence noLineNumbers/startLine (`4e82467`)
+- [done] Streaming caret indicator — opt-in caret prop, CSS ::after blink, hidden on unclosed fences/tables (`4c4b074`)
 
 ---
 
