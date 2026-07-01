@@ -1,4 +1,4 @@
-import { type Component, For, Show, createMemo } from "solid-js";
+import { type Component, createEffect, For, Show, createMemo } from "solid-js";
 import { cn } from "cnfast";
 import type { RemendOptions } from "remend";
 import { BlockProvider } from "../lib/block-context";
@@ -38,6 +38,8 @@ const CARET_CHARS: Record<VelomarkCaret, string> = {
 function VelomarkView(props: { class?: string }) {
   const vm = useVelomark();
 
+  let rootRef: HTMLDivElement | undefined; // eslint-disable-line no-unassigned-vars -- assigned by Solid ref
+
   const isStreaming = createMemo(() => vm.document.blocks.some((b) => b.status === "streaming"));
 
   const hideCaret = createMemo(() => {
@@ -57,11 +59,37 @@ function VelomarkView(props: { class?: string }) {
     return { "--velomark-caret": quoted };
   });
 
+  createEffect(() => {
+    const blocks = vm.document.blocks;
+    void blocks[blocks.length - 1]?.fingerprint;
+    const showing = showCaret();
+
+    const root = rootRef;
+    if (!root) return;
+
+    root.querySelectorAll("[data-velomark-caret]").forEach((el) => {
+      el.removeAttribute("data-velomark-caret");
+    });
+
+    if (!showing) return;
+
+    const blockEls = root.querySelectorAll(":scope > [data-velomark-block-kind]");
+    let target: Element | null =
+      blockEls.length > 0 ? blockEls[blockEls.length - 1]! : root.lastElementChild;
+    if (!target) return;
+
+    while (target!.lastElementChild) {
+      target = target!.lastElementChild;
+    }
+
+    target!.setAttribute("data-velomark-caret", "");
+  });
+
   return (
     <div
+      ref={rootRef}
       class={cn(
         "velomark space-y-4 whitespace-normal [&>*:first-child]:mt-0 [&>*:last-child]:mb-0",
-        showCaret() && "vm-caret-root",
         props.class,
       )}
       data-velomark-root=""

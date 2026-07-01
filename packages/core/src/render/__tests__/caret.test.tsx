@@ -12,7 +12,7 @@ afterEach(() => {
 });
 
 describe("streaming caret", () => {
-  it("renders the caret root class and CSS var when streaming and caret is set", () => {
+  it("places data-velomark-caret on deepest element and sets CSS var when streaming", () => {
     const host = document.createElement("div");
     document.body.append(host);
 
@@ -23,8 +23,8 @@ describe("streaming caret", () => {
     mountedRoots.push(dispose);
 
     const root = host.querySelector("[data-velomark-root]") as HTMLElement;
-    expect(root.classList.contains("vm-caret-root")).toBe(true);
     expect(root.style.getPropertyValue("--velomark-caret")).toContain("▋");
+    expect(host.querySelector("[data-velomark-caret]")).not.toBeNull();
   });
 
   it("does not render the caret when not streaming", () => {
@@ -37,8 +37,7 @@ describe("streaming caret", () => {
     );
     mountedRoots.push(dispose);
 
-    const root = host.querySelector("[data-velomark-root]") as HTMLElement;
-    expect(root.classList.contains("vm-caret-root")).toBe(false);
+    expect(host.querySelector("[data-velomark-caret]")).toBeNull();
   });
 
   it("hides the caret when the last streaming block is an unclosed code fence", () => {
@@ -51,8 +50,7 @@ describe("streaming caret", () => {
     );
     mountedRoots.push(dispose);
 
-    const root = host.querySelector("[data-velomark-root]") as HTMLElement;
-    expect(root.classList.contains("vm-caret-root")).toBe(false);
+    expect(host.querySelector("[data-velomark-caret]")).toBeNull();
   });
 
   it("supports the circle caret style", () => {
@@ -64,5 +62,20 @@ describe("streaming caret", () => {
 
     const root = host.querySelector("[data-velomark-root]") as HTMLElement;
     expect(root.style.getPropertyValue("--velomark-caret")).toContain("●");
+  });
+
+  it("pins the caret inside the last <li> when streaming a list", () => {
+    const host = document.createElement("div");
+    document.body.append(host);
+
+    const dispose = render(
+      () => <Velomark markdown={"- first\n- second stream"} caret="block" />,
+      host,
+    );
+    mountedRoots.push(dispose);
+
+    const caretEl = host.querySelector("[data-velomark-caret]");
+    expect(caretEl).not.toBeNull();
+    expect(caretEl?.tagName).toBe("LI");
   });
 });

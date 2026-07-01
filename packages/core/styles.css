@@ -71,8 +71,10 @@
   user-select: none;
 }
 
-.vm-caret-root > *:last-child::after {
+[data-velomark-caret]::after {
   content: var(--velomark-caret);
+  display: inline;
+  vertical-align: baseline;
   animation: vm-caret-blink 1s steps(2, start) infinite;
 }
 
