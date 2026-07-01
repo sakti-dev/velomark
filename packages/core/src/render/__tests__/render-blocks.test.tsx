@@ -675,7 +675,7 @@ describe("Velomark block rendering", () => {
     expect(mermaidBlock?.querySelector("pre")).toBeNull();
   });
 
-  it("falls back to bare source when mermaid rendering fails", async () => {
+  it("shows error message when mermaid rendering fails", async () => {
     const host = document.createElement("div");
     document.body.append(host);
 
@@ -690,15 +690,16 @@ describe("Velomark block rendering", () => {
     );
     mountedRoots.push(dispose);
 
-    await Promise.resolve();
-    await Promise.resolve();
+    await waitFor(() => {
+      return host.textContent?.includes("Mermaid Error") === true;
+    }, 200);
 
     const mermaidBlock = host.querySelector(".vm-mermaid");
     expect(mermaidBlock).not.toBeNull();
     expect(mermaidBlock?.querySelector(".vm-mermaid-diagram")).toBeNull();
     expect(mermaidBlock?.querySelector(".vm-code-header")).toBeNull();
     expect(mermaidBlock?.querySelector("button.vm-code-copy")).not.toBeNull();
-    expect(mermaidBlock?.querySelector("pre > code")?.textContent).toContain("not a valid diagram");
+    expect(mermaidBlock?.textContent).toContain("Mermaid Error");
   });
 
   it("allows language-specific custom code block renderers", () => {
