@@ -60,6 +60,27 @@ export function computeAnimation(
   return { entries, totalChars: charCounter.count };
 }
 
+/**
+ * Like `computeAnimation` but processes multiple token arrays in sequence
+ * with a SINGLE shared character counter. Used for table blocks where every
+ * cell must share the continuous stagger — matching streamdown's single
+ * `visitParents` pass over the entire table HAST.
+ */
+export function computeAnimationMulti(
+  inputs: { tokens: InlineToken[]; basePath: string }[],
+  config: AnimationConfig,
+  prevContentLength: number,
+): AnimationResult {
+  const entries = new Map<string, WordMeta[]>();
+  const charCounter: CharCounter = { count: 0, newIndex: 0 };
+
+  for (const input of inputs) {
+    walk(input.tokens, input.basePath, config, prevContentLength, charCounter, entries);
+  }
+
+  return { entries, totalChars: charCounter.count };
+}
+
 function walk(
   tokens: InlineToken[],
   basePath: string,
