@@ -1,6 +1,8 @@
 import { type Component, createEffect, createMemo, createSignal, For } from "solid-js";
 import { cn } from "cnfast";
 import { buildRenderDocument, collectRenderMetrics } from "../lib/model/render-document";
+import { BlockIncompleteContext } from "../lib/block-incomplete-context";
+import { hasIncompleteCodeFence } from "../lib/incomplete-code-utils";
 import { PluginProvider } from "../lib/plugin-context";
 import type { PluginConfig } from "../lib/plugin-types";
 import type { ParsedBlockData } from "../lib/parser/block-boundaries";
@@ -33,6 +35,7 @@ const BlockSlot: Component<{
   containers?: Record<string, Component<VelomarkContainerRendererProps>>;
   debug?: boolean;
   definitions: () => RenderDocument<ParsedBlockData>["definitions"];
+  docHasIncomplete: boolean;
   index: () => number;
 }> = (props) => {
   const block = createMemo(() => {
@@ -45,15 +48,19 @@ const BlockSlot: Component<{
   });
 
   return (
-    <RenderBlockView
-      block={block()}
-      codeBlockOptions={props.codeBlockOptions}
-      codeBlockRenderers={props.codeBlockRenderers}
-      containers={props.containers}
-      debug={props.debug}
-      definitions={props.definitions()}
-      index={props.index()}
-    />
+    <BlockIncompleteContext.Provider
+      value={() => block().status === "streaming" && props.docHasIncomplete}
+    >
+      <RenderBlockView
+        block={block()}
+        codeBlockOptions={props.codeBlockOptions}
+        codeBlockRenderers={props.codeBlockRenderers}
+        containers={props.containers}
+        debug={props.debug}
+        definitions={props.definitions()}
+        index={props.index()}
+      />
+    </BlockIncompleteContext.Provider>
   );
 };
 
@@ -65,6 +72,7 @@ export function Velomark(props: VelomarkProps) {
   const blockLookup = createMemo(
     () => new Map(document().blocks.map((block) => [block.id, block] as const)),
   );
+  const docHasIncomplete = createMemo(() => hasIncompleteCodeFence(props.markdown));
 
   createEffect(() => {
     setDocument((previous) => {
@@ -95,6 +103,7 @@ export function Velomark(props: VelomarkProps) {
               containers={props.containers}
               debug={props.debug}
               definitions={() => document().definitions}
+              docHasIncomplete={docHasIncomplete()}
               index={index}
             />
           )}

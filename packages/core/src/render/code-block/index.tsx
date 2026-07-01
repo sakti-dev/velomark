@@ -1,14 +1,16 @@
-import { type Component, type ComponentProps, Show, splitProps } from "solid-js";
+import { type Component, type ComponentProps, createMemo, Show, splitProps } from "solid-js";
 import { cn } from "cnfast";
 
 import type { CodeHighlighterPlugin } from "../../lib/plugin-types";
 import type { VelomarkCodeBlockOptions } from "../../types";
+import { useIsCodeFenceIncomplete } from "../../lib/block-incomplete-context";
 import { CodeBlockBody } from "./body";
 import { CodeBlockContainer } from "./container";
 import { CodeBlockCopyButton } from "./copy-button";
 import { CodeBlockContext } from "./context";
 import { CodeBlockDownloadButton } from "./download-button";
 import { CodeBlockHeader } from "./header";
+import { CodeBlockSkeleton } from "./skeleton";
 import { HighlightedCodeBlockBody } from "./highlighted-body";
 
 export { CodeBlockBody } from "./body";
@@ -72,6 +74,7 @@ export const CodeBlock: Component<CodeBlockProps> = (props) => {
     "children",
   ]);
 
+  const isIncomplete = createMemo(() => useIsCodeFenceIncomplete());
   const showHighlighted = () => Boolean(local.highlight && local.codePlugin);
 
   return (
@@ -97,8 +100,15 @@ export const CodeBlock: Component<CodeBlockProps> = (props) => {
           </div>
         </Show>
         <Show
-          when={showHighlighted()}
-          fallback={<CodeBlockBody code={local.code} language={local.language} />}
+          when={!isIncomplete() && showHighlighted()}
+          fallback={
+            <Show
+              when={isIncomplete()}
+              fallback={<CodeBlockBody code={local.code} language={local.language} />}
+            >
+              <CodeBlockSkeleton />
+            </Show>
+          }
         >
           <HighlightedCodeBlockBody
             code={local.code}
