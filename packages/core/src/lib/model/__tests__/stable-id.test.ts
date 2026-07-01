@@ -65,7 +65,47 @@ describe("assignStableBlockIds", () => {
     expect(next[2]?.id).not.toBe(previous[1]?.id);
   });
 
-  it("replaces the id when the tail block fingerprint changes", () => {
+  it("replaces the id when a complete block fingerprint changes", () => {
+    const previous = assignStableBlockIds(
+      [],
+      [
+        createDraftBlock({
+          sourceStart: 0,
+          sourceEnd: 12,
+          fingerprint: "paragraph:intro",
+          data: { text: "Intro" },
+        }),
+        createDraftBlock({
+          sourceStart: 14,
+          sourceEnd: 25,
+          fingerprint: "paragraph:tail-v1",
+          status: "complete",
+          data: { text: "Tail v1" },
+        }),
+      ],
+    );
+
+    const next = assignStableBlockIds(previous, [
+      createDraftBlock({
+        sourceStart: 0,
+        sourceEnd: 12,
+        fingerprint: "paragraph:intro",
+        data: { text: "Intro" },
+      }),
+      createDraftBlock({
+        sourceStart: 14,
+        sourceEnd: 31,
+        fingerprint: "paragraph:tail-v2",
+        status: "complete",
+        data: { text: "Tail v2 expanded" },
+      }),
+    ]);
+
+    expect(next[0]?.id).toBe(previous[0]?.id);
+    expect(next[1]?.id).not.toBe(previous[1]?.id);
+  });
+
+  it("preserves the id when a streaming tail block grows", () => {
     const previous = assignStableBlockIds(
       [],
       [
@@ -102,7 +142,7 @@ describe("assignStableBlockIds", () => {
     ]);
 
     expect(next[0]?.id).toBe(previous[0]?.id);
-    expect(next[1]?.id).not.toBe(previous[1]?.id);
+    expect(next[1]?.id).toBe(previous[1]?.id);
   });
 
   it("creates different ids for identical fingerprints at different source spans", () => {

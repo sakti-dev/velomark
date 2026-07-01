@@ -1,6 +1,6 @@
 import { render } from "solid-js/web";
 import { afterEach, describe, expect, it } from "vite-plus/test";
-import { PluginProvider } from "../../../lib/plugin-context";
+import { VelomarkProvider } from "../../../lib/velomark-context";
 import type { VelomarkContainerRendererProps } from "../../../types";
 import { RenderInline } from "../render-inline";
 import { mockMathPlugin } from "../../../../test/mock-plugins";
@@ -19,7 +19,14 @@ describe("RenderInline", () => {
     const host = document.createElement("div");
     document.body.append(host);
 
-    const dispose = render(() => <RenderInline text="Open [docs](https://example.com)" />, host);
+    const dispose = render(
+      () => (
+        <VelomarkProvider markdown="">
+          <RenderInline text="Open [docs](https://example.com)" />
+        </VelomarkProvider>
+      ),
+      host,
+    );
     mountedRoots.push(dispose);
 
     const link = host.querySelector("a");
@@ -32,7 +39,14 @@ describe("RenderInline", () => {
     const host = document.createElement("div");
     document.body.append(host);
 
-    const dispose = render(() => <RenderInline text="Use ~~old~~ behavior" />, host);
+    const dispose = render(
+      () => (
+        <VelomarkProvider markdown="">
+          <RenderInline text="Use ~~old~~ behavior" />
+        </VelomarkProvider>
+      ),
+      host,
+    );
     mountedRoots.push(dispose);
 
     const strike = host.querySelector("del");
@@ -44,7 +58,11 @@ describe("RenderInline", () => {
     document.body.append(host);
 
     const dispose = render(
-      () => <RenderInline text="Logo ![alt text](https://example.com/logo.png)" />,
+      () => (
+        <VelomarkProvider markdown="">
+          <RenderInline text="Logo ![alt text](https://example.com/logo.png)" />
+        </VelomarkProvider>
+      ),
       host,
     );
     mountedRoots.push(dispose);
@@ -61,10 +79,13 @@ describe("RenderInline", () => {
 
     const dispose = render(
       () => (
-        <RenderInline
-          definitions={{ guide: { href: "https://example.com/guide" } }}
-          text="Open [docs][guide]"
-        />
+        <VelomarkProvider
+          markdown={`[docs][guide]
+
+[guide]: https://example.com/guide`}
+        >
+          <RenderInline text="Open [docs][guide]" />
+        </VelomarkProvider>
       ),
       host,
     );
@@ -81,12 +102,13 @@ describe("RenderInline", () => {
 
     const dispose = render(
       () => (
-        <RenderInline
-          definitions={{
-            docs: { href: "https://example.com/guide", title: "Guide" },
-          }}
-          text="Open [docs][]"
-        />
+        <VelomarkProvider
+          markdown={`[docs][]
+
+[docs]: https://example.com/guide 'Guide'`}
+        >
+          <RenderInline text="Open [docs][]" />
+        </VelomarkProvider>
       ),
       host,
     );
@@ -104,15 +126,13 @@ describe("RenderInline", () => {
 
     const dispose = render(
       () => (
-        <RenderInline
-          definitions={{
-            logo: {
-              href: "https://example.com/logo.png",
-              title: "Brand logo",
-            },
-          }}
-          text="Logo ![logo]"
-        />
+        <VelomarkProvider
+          markdown={`Logo ![logo]
+
+[logo]: https://example.com/logo.png 'Brand logo'`}
+        >
+          <RenderInline text="Logo ![logo]" />
+        </VelomarkProvider>
       ),
       host,
     );
@@ -128,7 +148,14 @@ describe("RenderInline", () => {
     const host = document.createElement("div");
     document.body.append(host);
 
-    const dispose = render(() => <RenderInline text="Open [docs]" />, host);
+    const dispose = render(
+      () => (
+        <VelomarkProvider markdown="">
+          <RenderInline text="Open [docs]" />
+        </VelomarkProvider>
+      ),
+      host,
+    );
     mountedRoots.push(dispose);
 
     expect(host.querySelector("a")).toBeNull();
@@ -139,7 +166,14 @@ describe("RenderInline", () => {
     const host = document.createElement("div");
     document.body.append(host);
 
-    const dispose = render(() => <RenderInline text="Alpha[^1]" />, host);
+    const dispose = render(
+      () => (
+        <VelomarkProvider markdown="">
+          <RenderInline text="Alpha[^1]" />
+        </VelomarkProvider>
+      ),
+      host,
+    );
     mountedRoots.push(dispose);
 
     const footnoteRef = host.querySelector("sup a");
@@ -154,9 +188,9 @@ describe("RenderInline", () => {
 
     const dispose = render(
       () => (
-        <PluginProvider config={{ math: mockMathPlugin }}>
+        <VelomarkProvider markdown="Energy is $E = mc^2$ today" plugins={{ math: mockMathPlugin }}>
           <RenderInline text="Energy is $E = mc^2$ today" />
-        </PluginProvider>
+        </VelomarkProvider>
       ),
       host,
     );
@@ -180,7 +214,14 @@ describe("RenderInline", () => {
     const host = document.createElement("div");
     document.body.append(host);
 
-    const dispose = render(() => <RenderInline text={"Broken math $\\frac{1$"} />, host);
+    const dispose = render(
+      () => (
+        <VelomarkProvider markdown={"Broken math $\\frac{1$"}>
+          <RenderInline text={"Broken math $\\frac{1$"} />
+        </VelomarkProvider>
+      ),
+      host,
+    );
     mountedRoots.push(dispose);
 
     const inlineMath = host.querySelector(".vm-math");
@@ -196,7 +237,14 @@ describe("RenderInline", () => {
     const host = document.createElement("div");
     document.body.append(host);
 
-    const dispose = render(() => <RenderInline text="Text with <span>hi here" />, host);
+    const dispose = render(
+      () => (
+        <VelomarkProvider markdown="">
+          <RenderInline text="Text with <span>hi here" />
+        </VelomarkProvider>
+      ),
+      host,
+    );
     mountedRoots.push(dispose);
 
     const inlineHtml = host.querySelector(".vm-html");
@@ -209,7 +257,11 @@ describe("RenderInline", () => {
     document.body.append(host);
 
     const dispose = render(
-      () => <RenderInline text='Text with <span class="chip">hi</span> here' />,
+      () => (
+        <VelomarkProvider markdown="">
+          <RenderInline text='Text with <span class="chip">hi</span> here' />
+        </VelomarkProvider>
+      ),
       host,
     );
     mountedRoots.push(dispose);
@@ -226,9 +278,12 @@ describe("RenderInline", () => {
 
     const dispose = render(
       () => (
-        <PluginProvider config={{ math: mockMathPlugin }}>
+        <VelomarkProvider
+          markdown={'Text with <span class="chip">**bold** and $E = mc^2$</span> here'}
+          plugins={{ math: mockMathPlugin }}
+        >
           <RenderInline text={'Text with <span class="chip">**bold** and $E = mc^2$</span> here'} />
-        </PluginProvider>
+        </VelomarkProvider>
       ),
       host,
     );
@@ -253,7 +308,11 @@ describe("RenderInline", () => {
     document.body.append(host);
 
     const dispose = render(
-      () => <RenderInline text={"Text with <span class='chip' data-tone='info'>hi</span> here"} />,
+      () => (
+        <VelomarkProvider markdown="">
+          <RenderInline text={"Text with <span class='chip' data-tone='info'>hi</span> here"} />
+        </VelomarkProvider>
+      ),
       host,
     );
     mountedRoots.push(dispose);
@@ -268,7 +327,14 @@ describe("RenderInline", () => {
     const host = document.createElement("div");
     document.body.append(host);
 
-    const dispose = render(() => <RenderInline text='See :badge[Beta]{tone="info"} now' />, host);
+    const dispose = render(
+      () => (
+        <VelomarkProvider markdown="">
+          <RenderInline text='See :badge[Beta]{tone="info"} now' />
+        </VelomarkProvider>
+      ),
+      host,
+    );
     mountedRoots.push(dispose);
 
     const directive = host.querySelector('[data-velomark-text-directive="badge"]');
@@ -282,7 +348,11 @@ describe("RenderInline", () => {
     document.body.append(host);
 
     const dispose = render(
-      () => <RenderInline text={":badge[Beta]{tone='info' icon=bolt emphasis=\"high\"}"} />,
+      () => (
+        <VelomarkProvider markdown="">
+          <RenderInline text={":badge[Beta]{tone='info' icon=bolt emphasis=\"high\"}"} />
+        </VelomarkProvider>
+      ),
       host,
     );
     mountedRoots.push(dispose);
@@ -305,7 +375,11 @@ describe("RenderInline", () => {
     );
 
     const dispose = render(
-      () => <RenderInline containers={{ badge: Badge }} text='See :badge[Beta]{tone="info"} now' />,
+      () => (
+        <VelomarkProvider markdown="" containers={{ badge: Badge }}>
+          <RenderInline text='See :badge[Beta]{tone="info"} now' />
+        </VelomarkProvider>
+      ),
       host,
     );
     mountedRoots.push(dispose);
@@ -320,7 +394,14 @@ describe("RenderInline", () => {
     const host = document.createElement("div");
     document.body.append(host);
 
-    const dispose = render(() => <RenderInline text={"Alpha  \nBeta"} />, host);
+    const dispose = render(
+      () => (
+        <VelomarkProvider markdown="">
+          <RenderInline text={"Alpha  \nBeta"} />
+        </VelomarkProvider>
+      ),
+      host,
+    );
     mountedRoots.push(dispose);
 
     const br = host.querySelector("br");

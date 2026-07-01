@@ -24,7 +24,12 @@ export const RendererPanel: Component<RendererPanelProps> = (props) => {
         }}
       >
         <div class="markdown-content" data-component="markdown">
-          <Velomark debug={false} markdown={props.markdown} onDebugMetrics={props.onDebugMetrics} />
+          <Velomark
+            animated
+            debug={false}
+            markdown={props.markdown}
+            onDebugMetrics={props.onDebugMetrics}
+          />
         </div>
       </div>
     </section>

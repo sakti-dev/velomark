@@ -150,6 +150,14 @@ export interface VelomarkCodeBlockRendererProps {
   language?: string;
 }
 
+export interface AnimateOptions {
+  animation?: "fadeIn" | "blurIn" | "slideUp" | (string & {});
+  duration?: number;
+  easing?: string;
+  sep?: "word" | "char";
+  stagger?: number;
+}
+
 export interface VelomarkContainerRendererProps {
   attributes?: Record<string, string>;
   children?: JSX.Element;

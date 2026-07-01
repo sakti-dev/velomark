@@ -1,24 +1,5 @@
 import type { Component } from "solid-js";
-import type {
-  BlockquoteBlockData,
-  CodeBlockData,
-  ContainerBlockData,
-  HeadingBlockData,
-  HtmlBlockData,
-  HtmlElementBlockData,
-  ListBlockData,
-  MathBlockData,
-  ParagraphBlockData,
-  ParsedBlockData,
-  TableBlockData,
-} from "../lib/parser/block-boundaries";
-import type {
-  ReferenceDefinitionMap,
-  RenderBlock,
-  VelomarkCodeBlockOptions,
-  VelomarkCodeBlockRendererProps,
-  VelomarkContainerRendererProps,
-} from "../types";
+import { useBlock } from "../lib/block-context";
 import { BlockquoteBlock } from "./blocks/blockquote-block";
 import { CodeBlockView } from "./blocks/code-block";
 import { ContainerBlock } from "./blocks/container-block";
@@ -31,137 +12,33 @@ import { ParagraphBlock } from "./blocks/paragraph-block";
 import { ThematicBreakBlock } from "./blocks/thematic-break-block";
 import { Table } from "./table";
 
-export const RenderBlockView: Component<{
-  block: RenderBlock<ParsedBlockData>;
-  codeBlockRenderers?: Record<string, Component<VelomarkCodeBlockRendererProps>>;
-  codeBlockOptions?: VelomarkCodeBlockOptions;
-  containers?: Record<string, Component<VelomarkContainerRendererProps>>;
-  debug?: boolean;
-  definitions?: ReferenceDefinitionMap;
-  index: number;
-}> = (props) => {
-  switch (props.block.kind) {
+export const RenderBlockView: Component = () => {
+  const { block } = useBlock();
+
+  switch (block.kind) {
     case "paragraph":
-      return (
-        <ParagraphBlock
-          block={props.block as RenderBlock<ParagraphBlockData>}
-          containers={props.containers}
-          debug={props.debug}
-          definitions={props.definitions}
-          index={props.index}
-        />
-      );
+      return <ParagraphBlock />;
     case "heading":
-      return (
-        <HeadingBlock
-          block={props.block as RenderBlock<HeadingBlockData>}
-          containers={props.containers}
-          debug={props.debug}
-          definitions={props.definitions}
-          index={props.index}
-        />
-      );
+      return <HeadingBlock />;
     case "blockquote":
-      return (
-        <BlockquoteBlock
-          block={props.block as RenderBlock<BlockquoteBlockData>}
-          containers={props.containers}
-          debug={props.debug}
-          definitions={props.definitions}
-          index={props.index}
-        />
-      );
+      return <BlockquoteBlock />;
     case "list":
-      return (
-        <ListBlock
-          block={props.block as RenderBlock<ListBlockData>}
-          containers={props.containers}
-          debug={props.debug}
-          definitions={props.definitions}
-          index={props.index}
-        />
-      );
+      return <ListBlock />;
     case "code":
-      return (
-        <CodeBlockView
-          block={props.block as RenderBlock<CodeBlockData>}
-          codeBlockOptions={props.codeBlockOptions}
-          codeBlockRenderers={props.codeBlockRenderers}
-          debug={props.debug}
-          index={props.index}
-        />
-      );
+      return <CodeBlockView />;
     case "container":
-      return (
-        <ContainerBlock
-          block={props.block as RenderBlock<ContainerBlockData>}
-          codeBlockRenderers={props.codeBlockRenderers}
-          containers={props.containers}
-          debug={props.debug}
-          definitions={props.definitions}
-          index={props.index}
-        />
-      );
+      return <ContainerBlock />;
     case "html":
-      return (
-        <HtmlBlock
-          block={props.block as RenderBlock<HtmlBlockData>}
-          debug={props.debug}
-          index={props.index}
-        />
-      );
+      return <HtmlBlock />;
     case "html-element":
-      return (
-        <HtmlElementBlock
-          block={props.block as RenderBlock<HtmlElementBlockData>}
-          containers={props.containers}
-          debug={props.debug}
-          definitions={props.definitions}
-          index={props.index}
-        />
-      );
+      return <HtmlElementBlock />;
     case "math":
-      return (
-        <MathBlock
-          block={props.block as RenderBlock<MathBlockData>}
-          debug={props.debug}
-          index={props.index}
-        />
-      );
+      return <MathBlock />;
     case "thematic-break":
-      return (
-        <ThematicBreakBlock blockId={props.block.id} debug={props.debug} index={props.index} />
-      );
+      return <ThematicBreakBlock />;
     case "table":
-      return (
-        <Table
-          block={props.block as RenderBlock<TableBlockData>}
-          containers={props.containers}
-          debug={props.debug}
-          definitions={props.definitions}
-          index={props.index}
-        />
-      );
+      return <Table />;
     default:
-      return (
-        <ParagraphBlock
-          block={
-            {
-              ...props.block,
-              kind: "paragraph",
-              data: {
-                text:
-                  "text" in (props.block.data as Record<string, unknown>)
-                    ? ((props.block.data as { text?: string }).text ?? "")
-                    : "",
-              },
-            } as RenderBlock<ParagraphBlockData>
-          }
-          containers={props.containers}
-          debug={props.debug}
-          definitions={props.definitions}
-          index={props.index}
-        />
-      );
+      return <ParagraphBlock />;
   }
 };

@@ -12,8 +12,14 @@ export type {
   VelomarkDebugMetrics,
 } from "./types";
 
+// Context providers
+export { VelomarkProvider, useVelomark } from "./lib/velomark-context";
+export { BlockProvider, useBlock } from "./lib/block-context";
+export type { VelomarkStore } from "./lib/velomark-context";
+export type { BlockStore } from "./lib/block-context";
+export type { AnimateOptions } from "./types";
+
 // Plugin contract (feature packages register via <Velomark plugins={...}>)
-export { PluginProvider, usePlugins } from "./lib/plugin-context";
 export type {
   CjkPlugin,
   CodeHighlighterPlugin,

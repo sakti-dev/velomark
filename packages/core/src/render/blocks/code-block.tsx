@@ -1,68 +1,54 @@
 import type { Component } from "solid-js";
 import { Dynamic } from "solid-js/web";
 
-import { usePlugins } from "../../lib/plugin-context";
 import type { CodeBlockData } from "../../lib/parser/block-boundaries";
-import type {
-  RenderBlock,
-  VelomarkCodeBlockOptions,
-  VelomarkCodeBlockRendererProps,
-} from "../../types";
+import type { RenderBlock } from "../../types";
+import { useVelomark } from "../../lib/velomark-context";
+import { useBlock } from "../../lib/block-context";
 import { CodeBlock, resolveCodeBlockOptions } from "../code-block";
 import { MermaidPluginView } from "../mermaid";
 
-export const CodeBlockView: Component<{
-  block: RenderBlock<CodeBlockData>;
-  codeBlockRenderers?: Record<string, Component<VelomarkCodeBlockRendererProps>>;
-  codeBlockOptions?: VelomarkCodeBlockOptions;
-  debug?: boolean;
-  index: number;
-}> = (props) => {
-  const plugins = usePlugins();
-  const language = () => props.block.data.language?.trim() || undefined;
-  const customRenderer = () =>
-    language() ? props.codeBlockRenderers?.[language() ?? ""] : undefined;
+export const CodeBlockView: Component = () => {
+  const vm = useVelomark();
+  const { block, index } = useBlock();
+  const data = () => block.data as CodeBlockData;
+  const language = () => data().language?.trim() || undefined;
+  const customRenderer = () => (language() ? vm.codeBlockRenderers?.[language() ?? ""] : undefined);
   const resolvedCustomRenderer = customRenderer();
 
   if (resolvedCustomRenderer) {
-    return (
-      <Dynamic
-        code={props.block.data.code}
-        component={resolvedCustomRenderer}
-        language={language()}
-      />
-    );
+    return <Dynamic code={data().code} component={resolvedCustomRenderer} language={language()} />;
   }
 
-  const mermaidPlugin = () => plugins.mermaid;
+  const mermaidPlugin = () => vm.plugins.mermaid;
 
   if (language() === "mermaid" && mermaidPlugin()) {
     return (
       <MermaidPluginView
-        block={props.block}
-        debug={props.debug}
-        index={props.index}
+        block={block as RenderBlock<CodeBlockData>}
+        debug={vm.debug}
+        index={index}
         plugin={mermaidPlugin() as NonNullable<ReturnType<typeof mermaidPlugin>>}
       />
     );
   }
 
-  const options = () => resolveCodeBlockOptions(props.codeBlockOptions);
-  const codePlugin = () => plugins.code;
+  const options = () => resolveCodeBlockOptions(vm.codeBlockOptions);
+  const codePlugin = () => vm.plugins.code;
 
   return (
     <CodeBlock
-      code={props.block.data.code}
+      code={data().code}
       copyButton={options().copyButton}
-      data-velomark-block-id={props.debug ? props.block.id : undefined}
-      data-velomark-block-index={props.index}
-      data-velomark-block-kind={props.block.kind}
-      data-velomark-incomplete={props.block.status === "streaming" ? "" : undefined}
+      data-velomark-block-id={vm.debug ? block.id : undefined}
+      data-velomark-block-index={index}
+      data-velomark-block-kind={block.kind}
+      data-velomark-incomplete={block.status === "streaming" ? "" : undefined}
       highlight={options().highlight}
       language={language()}
       languageLabel={options().languageLabel}
       codePlugin={codePlugin() ?? undefined}
-      isIncomplete={props.block.status === "streaming"}
+      isIncomplete={block.status === "streaming"}
     />
   );
 };

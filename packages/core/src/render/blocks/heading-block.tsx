@@ -1,13 +1,9 @@
 import type { Component } from "solid-js";
 import { Dynamic } from "solid-js/web";
 import { cn } from "cnfast";
-
 import type { HeadingBlockData } from "../../lib/parser/block-boundaries";
-import type {
-  ReferenceDefinitionMap,
-  RenderBlock,
-  VelomarkContainerRendererProps,
-} from "../../types";
+import { useBlock } from "../../lib/block-context";
+import { useVelomark } from "../../lib/velomark-context";
 import { RenderInline } from "../inline/render-inline";
 
 const HEADING_CLASS: Record<number, string> = {
@@ -19,29 +15,22 @@ const HEADING_CLASS: Record<number, string> = {
   6: "mt-6 mb-2 font-semibold text-sm",
 };
 
-export const HeadingBlock: Component<{
-  block: RenderBlock<HeadingBlockData>;
-  containers?: Record<string, Component<VelomarkContainerRendererProps>>;
-  debug?: boolean;
-  definitions?: ReferenceDefinitionMap;
-  index: number;
-}> = (props) => {
-  const depth = () => Math.min(Math.max(props.block.data.depth, 1), 6);
+export const HeadingBlock: Component = () => {
+  const vm = useVelomark();
+  const { block, index } = useBlock();
+  const data = () => block.data as HeadingBlockData;
+  const depth = () => Math.min(Math.max(data().depth, 1), 6);
 
   return (
     <Dynamic
       class={cn(HEADING_CLASS[depth()])}
       component={`h${depth()}`}
-      data-velomark-block-id={props.debug ? props.block.id : undefined}
-      data-velomark-block-index={props.index}
-      data-velomark-block-kind={props.block.kind}
-      data-velomark-incomplete={props.block.status === "streaming" ? "" : undefined}
+      data-velomark-block-id={vm.debug ? block.id : undefined}
+      data-velomark-block-index={index}
+      data-velomark-block-kind={block.kind}
+      data-velomark-incomplete={block.status === "streaming" ? "" : undefined}
     >
-      <RenderInline
-        containers={props.containers}
-        definitions={props.definitions}
-        text={props.block.data.text}
-      />
+      <RenderInline text={data().text} />
     </Dynamic>
   );
 };

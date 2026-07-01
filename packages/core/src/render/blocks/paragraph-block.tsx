@@ -1,32 +1,22 @@
 import type { Component } from "solid-js";
-
 import type { ParagraphBlockData } from "../../lib/parser/block-boundaries";
-import type {
-  ReferenceDefinitionMap,
-  RenderBlock,
-  VelomarkContainerRendererProps,
-} from "../../types";
+import { useBlock } from "../../lib/block-context";
+import { useVelomark } from "../../lib/velomark-context";
 import { RenderInline } from "../inline/render-inline";
 
-export const ParagraphBlock: Component<{
-  block: RenderBlock<ParagraphBlockData>;
-  containers?: Record<string, Component<VelomarkContainerRendererProps>>;
-  debug?: boolean;
-  definitions?: ReferenceDefinitionMap;
-  index: number;
-}> = (props) => {
+export const ParagraphBlock: Component = () => {
+  const vm = useVelomark();
+  const { block, index } = useBlock();
+  const data = () => block.data as ParagraphBlockData;
+
   return (
     <p
-      data-velomark-block-id={props.debug ? props.block.id : undefined}
-      data-velomark-block-index={props.index}
-      data-velomark-block-kind={props.block.kind}
-      data-velomark-incomplete={props.block.status === "streaming" ? "" : undefined}
+      data-velomark-block-id={vm.debug ? block.id : undefined}
+      data-velomark-block-index={index}
+      data-velomark-block-kind={block.kind}
+      data-velomark-incomplete={block.status === "streaming" ? "" : undefined}
     >
-      <RenderInline
-        containers={props.containers}
-        definitions={props.definitions}
-        text={props.block.data.text}
-      />
+      <RenderInline text={data().text} />
     </p>
   );
 };

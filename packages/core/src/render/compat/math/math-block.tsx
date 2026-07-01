@@ -2,23 +2,24 @@ import type { Component } from "solid-js";
 import { cn } from "cnfast";
 
 import type { MathBlockData } from "../../../lib/parser/block-boundaries";
-import type { RenderBlock } from "../../../types";
+import { useBlock } from "../../../lib/block-context";
+import { useVelomark } from "../../../lib/velomark-context";
 import { MathView } from "./math-view";
 
-export const MathBlock: Component<{
-  block: RenderBlock<MathBlockData>;
-  debug?: boolean;
-  index: number;
-}> = (props) => {
+export const MathBlock: Component = () => {
+  const vm = useVelomark();
+  const { block, index } = useBlock();
+  const data = () => block.data as MathBlockData;
+
   return (
     <div
       class={cn("my-4 rounded-md border border-border bg-background p-4")}
-      data-velomark-block-id={props.debug ? props.block.id : undefined}
-      data-velomark-block-index={props.index}
-      data-velomark-block-kind={props.block.kind}
-      data-velomark-incomplete={props.block.status === "streaming" ? "" : undefined}
+      data-velomark-block-id={vm.debug ? block.id : undefined}
+      data-velomark-block-index={index}
+      data-velomark-block-kind={block.kind}
+      data-velomark-incomplete={block.status === "streaming" ? "" : undefined}
     >
-      <MathView displayMode={true} formula={props.block.data.value} />
+      <MathView displayMode={true} formula={data().value} />
     </div>
   );
 };

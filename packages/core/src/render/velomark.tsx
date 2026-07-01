@@ -1,22 +1,20 @@
-import { type Component, createEffect, createMemo, createSignal, For } from "solid-js";
+import { type Component, For } from "solid-js";
 import { cn } from "cnfast";
-import { buildRenderDocument, collectRenderMetrics } from "../lib/model/render-document";
-import { BlockIncompleteContext } from "../lib/block-incomplete-context";
-import { hasIncompleteCodeFence } from "../lib/incomplete-code-utils";
-import { PluginProvider } from "../lib/plugin-context";
-import type { PluginConfig } from "../lib/plugin-types";
-import type { ParsedBlockData } from "../lib/parser/block-boundaries";
+import { BlockProvider } from "../lib/block-context";
+import { VelomarkProvider, useVelomark } from "../lib/velomark-context";
 import type {
-  RenderDocument,
+  AnimateOptions,
   VelomarkCodeBlockOptions,
   VelomarkCodeBlockRendererProps,
   VelomarkContainerRendererProps,
   VelomarkDebugMetrics,
 } from "../types";
+import type { PluginConfig } from "../lib/plugin-types";
 import { FootnotesSection } from "./compat/footnotes/footnotes-section";
 import { RenderBlockView } from "./render-block";
 
 export interface VelomarkProps {
+  animated?: AnimateOptions | boolean;
   class?: string;
   codeBlockOptions?: VelomarkCodeBlockOptions;
   codeBlockRenderers?: Record<string, Component<VelomarkCodeBlockRendererProps>>;
@@ -27,95 +25,32 @@ export interface VelomarkProps {
   plugins?: PluginConfig;
 }
 
-const BlockSlot: Component<{
-  blockId: string;
-  blockLookup: () => Map<string, RenderDocument<ParsedBlockData>["blocks"][number]>;
-  codeBlockOptions?: VelomarkCodeBlockOptions;
-  codeBlockRenderers?: Record<string, Component<VelomarkCodeBlockRendererProps>>;
-  containers?: Record<string, Component<VelomarkContainerRendererProps>>;
-  debug?: boolean;
-  definitions: () => RenderDocument<ParsedBlockData>["definitions"];
-  docHasIncomplete: boolean;
-  index: () => number;
-}> = (props) => {
-  const block = createMemo(() => {
-    const resolvedBlock = props.blockLookup().get(props.blockId);
-    if (!resolvedBlock) {
-      throw new Error(`Missing block for id ${props.blockId}`);
-    }
-
-    return resolvedBlock;
-  });
-
+function VelomarkView(props: { class?: string }) {
+  const vm = useVelomark();
   return (
-    <BlockIncompleteContext.Provider
-      value={() => block().status === "streaming" && props.docHasIncomplete}
+    <div
+      class={cn(
+        "velomark space-y-4 whitespace-normal [&>*:first-child]:mt-0 [&>*:last-child]:mb-0",
+        props.class,
+      )}
+      data-velomark-root=""
     >
-      <RenderBlockView
-        block={block()}
-        codeBlockOptions={props.codeBlockOptions}
-        codeBlockRenderers={props.codeBlockRenderers}
-        containers={props.containers}
-        debug={props.debug}
-        definitions={props.definitions()}
-        index={props.index()}
-      />
-    </BlockIncompleteContext.Provider>
+      <For each={vm.blockIds}>
+        {(blockId, index) => (
+          <BlockProvider blockId={blockId} index={index()}>
+            <RenderBlockView />
+          </BlockProvider>
+        )}
+      </For>
+      <FootnotesSection />
+    </div>
   );
-};
+}
 
 export function Velomark(props: VelomarkProps) {
-  const [document, setDocument] = createSignal<RenderDocument<ParsedBlockData>>(
-    buildRenderDocument(undefined, props.markdown),
-  );
-  const blockIds = createMemo(() => document().blocks.map((block) => block.id));
-  const blockLookup = createMemo(
-    () => new Map(document().blocks.map((block) => [block.id, block] as const)),
-  );
-  const docHasIncomplete = createMemo(() => hasIncompleteCodeFence(props.markdown));
-
-  createEffect(() => {
-    setDocument((previous) => {
-      const nextDocument = buildRenderDocument(previous, props.markdown);
-
-      props.onDebugMetrics?.(collectRenderMetrics(previous.blocks, nextDocument.blocks));
-
-      return nextDocument;
-    });
-  });
-
   return (
-    <PluginProvider config={props.plugins ?? {}}>
-      <div
-        class={cn(
-          "velomark space-y-4 whitespace-normal [&>*:first-child]:mt-0 [&>*:last-child]:mb-0",
-          props.class,
-        )}
-        data-velomark-root=""
-      >
-        <For each={blockIds()}>
-          {(blockId, index) => (
-            <BlockSlot
-              blockId={blockId}
-              blockLookup={blockLookup}
-              codeBlockOptions={props.codeBlockOptions}
-              codeBlockRenderers={props.codeBlockRenderers}
-              containers={props.containers}
-              debug={props.debug}
-              definitions={() => document().definitions}
-              docHasIncomplete={docHasIncomplete()}
-              index={index}
-            />
-          )}
-        </For>
-        <FootnotesSection
-          codeBlockRenderers={props.codeBlockRenderers}
-          containers={props.containers}
-          definitions={document().definitions}
-          footnoteDefinitions={document().footnoteDefinitions}
-          order={document().footnoteReferenceOrder}
-        />
-      </div>
-    </PluginProvider>
+    <VelomarkProvider {...props}>
+      <VelomarkView class={props.class} />
+    </VelomarkProvider>
   );
 }

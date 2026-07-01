@@ -1,25 +1,16 @@
 import { type Component, For, Show } from "solid-js";
 import { cn } from "cnfast";
-import type { ParsedBlockData } from "../../../lib/parser/block-boundaries";
-import type {
-  ReferenceDefinitionMap,
-  RenderBlock,
-  VelomarkCodeBlockRendererProps,
-  VelomarkContainerRendererProps,
-} from "../../../types";
+import { useVelomark } from "../../../lib/velomark-context";
+import { BlockProvider } from "../../../lib/block-context";
 import { RenderBlockView } from "../../render-block";
 
-export const FootnotesSection: Component<{
-  codeBlockRenderers?: Record<string, Component<VelomarkCodeBlockRendererProps>>;
-  containers?: Record<string, Component<VelomarkContainerRendererProps>>;
-  definitions: ReferenceDefinitionMap;
-  footnoteDefinitions: Record<string, RenderBlock<ParsedBlockData>[]>;
-  order: string[];
-}> = (props) => {
+export const FootnotesSection: Component = () => {
+  const vm = useVelomark();
+
   const orderedFootnotes = () =>
-    props.order
+    vm.footnoteReferenceOrder
       .map((identifier) => ({
-        blocks: props.footnoteDefinitions[identifier],
+        blocks: vm.footnoteDefinitions[identifier],
         identifier,
       }))
       .filter((entry) => entry.blocks !== undefined);
@@ -35,13 +26,9 @@ export const FootnotesSection: Component<{
                 <div>
                   <For each={entry.blocks}>
                     {(block, index) => (
-                      <RenderBlockView
-                        block={block}
-                        codeBlockRenderers={props.codeBlockRenderers}
-                        containers={props.containers}
-                        definitions={props.definitions}
-                        index={index()}
-                      />
+                      <BlockProvider block={block} blockId={block.id} index={index()}>
+                        <RenderBlockView />
+                      </BlockProvider>
                     )}
                   </For>
                 </div>

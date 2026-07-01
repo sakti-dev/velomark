@@ -1,32 +1,25 @@
 import type { Component } from "solid-js";
 import type { HtmlElementBlockData } from "../../../lib/parser/block-boundaries";
-import type {
-  ReferenceDefinitionMap,
-  RenderBlock,
-  VelomarkContainerRendererProps,
-} from "../../../types";
+import { useBlock } from "../../../lib/block-context";
+import { useVelomark } from "../../../lib/velomark-context";
 import { HtmlElementView } from "./html-element-view";
 
-export const HtmlElementBlock: Component<{
-  block: RenderBlock<HtmlElementBlockData>;
-  containers?: Record<string, Component<VelomarkContainerRendererProps>>;
-  debug?: boolean;
-  definitions?: ReferenceDefinitionMap;
-  index: number;
-}> = (props) => {
+export const HtmlElementBlock: Component = () => {
+  const vm = useVelomark();
+  const { block, index } = useBlock();
+  const data = () => block.data as HtmlElementBlockData;
+
   return (
     <div
-      data-velomark-block-id={props.debug ? props.block.id : undefined}
-      data-velomark-block-index={props.index}
-      data-velomark-block-kind={props.block.kind}
-      data-velomark-incomplete={props.block.status === "streaming" ? "" : undefined}
+      data-velomark-block-id={vm.debug ? block.id : undefined}
+      data-velomark-block-index={index}
+      data-velomark-block-kind={block.kind}
+      data-velomark-incomplete={block.status === "streaming" ? "" : undefined}
     >
       <HtmlElementView
-        attributes={props.block.data.attributes}
-        children={props.block.data.children}
-        containers={props.containers}
-        definitions={props.definitions}
-        tagName={props.block.data.tagName}
+        attributes={data().attributes}
+        children={data().children}
+        tagName={data().tagName}
       />
     </div>
   );

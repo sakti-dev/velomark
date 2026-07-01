@@ -11,7 +11,15 @@ function areSameBlock(
   left: RenderBlock<ParsedBlockData> | undefined,
   right: RenderBlock<ParsedBlockData> | undefined,
 ): boolean {
-  return Boolean(left && right && left.id === right.id);
+  return Boolean(
+    left &&
+    right &&
+    left.id === right.id &&
+    left.kind === right.kind &&
+    left.sourceStart === right.sourceStart &&
+    left.sourceEnd === right.sourceEnd &&
+    left.fingerprint === right.fingerprint,
+  );
 }
 
 export function planRenderPatch(

@@ -3,7 +3,7 @@ import { cn } from "cnfast";
 
 import type { CodeHighlighterPlugin } from "../../lib/plugin-types";
 import type { VelomarkCodeBlockOptions } from "../../types";
-import { useIsCodeFenceIncomplete } from "../../lib/block-incomplete-context";
+import { useBlock } from "../../lib/block-context";
 import { CodeBlockBody } from "./body";
 import { CodeBlockContainer } from "./container";
 import { CodeBlockCopyButton } from "./copy-button";
@@ -74,7 +74,8 @@ export const CodeBlock: Component<CodeBlockProps> = (props) => {
     "children",
   ]);
 
-  const isIncomplete = createMemo(() => useIsCodeFenceIncomplete());
+  const block = useBlock();
+  const isIncomplete = createMemo(() => block.isCodeFenceIncomplete);
   const showHighlighted = () => Boolean(local.highlight && local.codePlugin);
 
   return (

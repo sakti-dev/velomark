@@ -1,11 +1,13 @@
 import { type Component, createMemo, Show } from "solid-js";
 import { cn } from "cnfast";
 
-import { usePlugins } from "../../../lib/plugin-context";
+import { useVelomark } from "../../../lib/velomark-context";
 
 export const MathView: Component<{ displayMode: boolean; formula: string }> = (props) => {
-  const plugins = usePlugins();
-  const result = createMemo(() => plugins.math?.render(props.formula, props.displayMode) ?? null);
+  const vm = useVelomark();
+  const result = createMemo(
+    () => vm.plugins.math?.render(props.formula, props.displayMode) ?? null,
+  );
 
   const fallback = () =>
     props.displayMode ? (

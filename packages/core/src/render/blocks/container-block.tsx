@@ -1,52 +1,35 @@
 import { type Component, For } from "solid-js";
 import { Dynamic } from "solid-js/web";
 import type { ContainerBlockData } from "../../lib/parser/block-boundaries";
-import type {
-  ReferenceDefinitionMap,
-  RenderBlock,
-  VelomarkCodeBlockRendererProps,
-  VelomarkContainerRendererProps,
-} from "../../types";
+import { useBlock } from "../../lib/block-context";
+import { BlockProvider } from "../../lib/block-context";
+import { useVelomark } from "../../lib/velomark-context";
 import { directiveAttributeProps } from "../compat/directives/directive-attribute-props";
 import { RenderBlockView } from "../render-block";
 
-function withNestedId(
-  parent: RenderBlock<ContainerBlockData>,
-  index: number,
-): RenderBlock<ContainerBlockData["children"][number]["data"]> {
-  const child = parent.data.children[index];
-  if (!child) {
-    throw new Error("Missing container child block");
-  }
+export const ContainerBlock: Component = () => {
+  const vm = useVelomark();
+  const { block, index } = useBlock();
+  const data = () => block.data as ContainerBlockData;
 
-  return {
-    ...child,
-    id: `${parent.id}:container:${index}`,
-  };
-}
-
-export const ContainerBlock: Component<{
-  block: RenderBlock<ContainerBlockData>;
-  codeBlockRenderers?: Record<string, Component<VelomarkCodeBlockRendererProps>>;
-  containers?: Record<string, Component<VelomarkContainerRendererProps>>;
-  debug?: boolean;
-  definitions?: ReferenceDefinitionMap;
-  index: number;
-}> = (props) => {
-  const customContainer = () => props.containers?.[props.block.data.name];
+  const customContainer = () => vm.containers?.[data().name];
   const resolvedCustomContainer = customContainer();
 
   const renderedChildren = (
-    <For each={props.block.data.children}>
-      {(_, index) => (
-        <RenderBlockView
-          block={withNestedId(props.block, index())}
-          codeBlockRenderers={props.codeBlockRenderers}
-          containers={props.containers}
-          debug={props.debug}
-          definitions={props.definitions}
-          index={index()}
-        />
+    <For each={data().children}>
+      {(child, childIndex) => (
+        <BlockProvider
+          block={
+            {
+              ...child,
+              id: `${block.id}:container:${childIndex()}`,
+            } as never
+          }
+          blockId={`${block.id}:container:${childIndex()}`}
+          index={childIndex()}
+        >
+          <RenderBlockView />
+        </BlockProvider>
       )}
     </For>
   );
@@ -54,9 +37,9 @@ export const ContainerBlock: Component<{
   if (resolvedCustomContainer) {
     return (
       <Dynamic
-        attributes={props.block.data.attributes}
+        attributes={data().attributes}
         component={resolvedCustomContainer}
-        name={props.block.data.name}
+        name={data().name}
       >
         {renderedChildren}
       </Dynamic>
@@ -65,17 +48,13 @@ export const ContainerBlock: Component<{
 
   return (
     <div
-      data-velomark-block-id={props.debug ? props.block.id : undefined}
-      data-velomark-block-index={props.index}
-      data-velomark-block-kind={props.block.kind}
-      data-velomark-incomplete={props.block.status === "streaming" ? "" : undefined}
-      data-velomark-container={
-        props.block.data.directiveType === "container" ? props.block.data.name : undefined
-      }
-      data-velomark-leaf-directive={
-        props.block.data.directiveType === "leaf" ? props.block.data.name : undefined
-      }
-      {...directiveAttributeProps(props.block.data.attributes)}
+      data-velomark-block-id={vm.debug ? block.id : undefined}
+      data-velomark-block-index={index}
+      data-velomark-block-kind={block.kind}
+      data-velomark-incomplete={block.status === "streaming" ? "" : undefined}
+      data-velomark-container={data().directiveType === "container" ? data().name : undefined}
+      data-velomark-leaf-directive={data().directiveType === "leaf" ? data().name : undefined}
+      {...directiveAttributeProps(data().attributes)}
     >
       {renderedChildren}
     </div>

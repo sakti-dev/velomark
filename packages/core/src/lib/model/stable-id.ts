@@ -51,6 +51,28 @@ function isCodeGrowthMatch<TData>(
   );
 }
 
+/**
+ * Detects streaming growth in text-bearing blocks (paragraph, heading, etc.).
+ * During streaming, the last block's text grows — sourceEnd and fingerprint
+ * change, but it's still the same logical block. Preserving the ID prevents
+ * <For> from remounting the entire subtree on every token.
+ *
+ * Only applies when the previous block was still streaming. Once a block is
+ * complete, any content divergence is treated as a genuinely different block.
+ */
+function isStreamGrowthMatch<TData>(
+  previous: RenderBlock<TData> | undefined,
+  next: DraftRenderBlock<TData>,
+): previous is RenderBlock<TData> {
+  return Boolean(
+    previous &&
+    previous.kind === next.kind &&
+    previous.sourceStart === next.sourceStart &&
+    next.sourceEnd >= previous.sourceEnd &&
+    previous.status === "streaming",
+  );
+}
+
 export function assignStableBlockIds<TData>(
   previousBlocks: RenderBlock<TData>[],
   nextBlocks: DraftRenderBlock<TData>[],
@@ -58,16 +80,15 @@ export function assignStableBlockIds<TData>(
   return nextBlocks.map((nextBlock, index) => {
     const previousBlock = previousBlocks[index];
 
-    if (isStableMatch(previousBlock, nextBlock) || isCodeGrowthMatch(previousBlock, nextBlock)) {
-      return {
-        ...nextBlock,
-        id: previousBlock.id,
-      };
-    }
+    const stable = isStableMatch(previousBlock, nextBlock);
+    const codeGrowth = isCodeGrowthMatch(previousBlock, nextBlock);
+    const streamGrowth = isStreamGrowthMatch(previousBlock, nextBlock);
+    const matched = stable || codeGrowth || streamGrowth;
+    const newId = matched ? previousBlock!.id : buildDeterministicId(nextBlock);
 
     return {
       ...nextBlock,
-      id: buildDeterministicId(nextBlock),
+      id: newId,
     };
   });
 }

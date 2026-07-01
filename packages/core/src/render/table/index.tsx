@@ -1,31 +1,24 @@
 import { type Component, For } from "solid-js";
 import { cn } from "cnfast";
 import type { TableBlockData } from "../../lib/parser/block-boundaries";
-import type {
-  ReferenceDefinitionMap,
-  RenderBlock,
-  VelomarkContainerRendererProps,
-} from "../../types";
+import { useBlock } from "../../lib/block-context";
+import { useVelomark } from "../../lib/velomark-context";
 import { RenderInline } from "../inline/render-inline";
 import { TableCopyDropdown } from "./copy-dropdown";
 import { TableDownloadDropdown } from "./download-dropdown";
 import { TableFullscreenButton } from "./fullscreen-button";
 
-export interface TableProps {
-  block: RenderBlock<TableBlockData>;
-  containers?: Record<string, Component<VelomarkContainerRendererProps>>;
-  debug?: boolean;
-  definitions?: ReferenceDefinitionMap;
-  index: number;
-}
-
 const alignClass = (align: string | undefined) =>
   cn(align === "center" ? "text-center" : align === "right" ? "text-right" : "text-left");
 
-export const Table: Component<TableProps> = (props) => {
-  const header = () => props.block.data.rows[0] ?? [];
-  const bodyRows = () => props.block.data.rows.slice(1);
-  const align = (index: number) => props.block.data.align[index] ?? "left";
+export const Table: Component = () => {
+  const vm = useVelomark();
+  const { block, index } = useBlock();
+  const data = () => block.data as TableBlockData;
+
+  const header = () => data().rows[0] ?? [];
+  const bodyRows = () => data().rows.slice(1);
+  const align = (index: number) => data().align[index] ?? "left";
 
   const tableHeader = () => (
     <thead class={cn("bg-muted/80")}>
@@ -38,11 +31,7 @@ export const Table: Component<TableProps> = (props) => {
                 alignClass(align(index())),
               )}
             >
-              <RenderInline
-                containers={props.containers}
-                definitions={props.definitions}
-                text={cell}
-              />
+              <RenderInline text={cell} />
             </th>
           )}
         </For>
@@ -58,11 +47,7 @@ export const Table: Component<TableProps> = (props) => {
             <For each={row}>
               {(cell, index) => (
                 <td class={cn("px-4 py-2 text-sm", alignClass(align(index())))}>
-                  <RenderInline
-                    containers={props.containers}
-                    definitions={props.definitions}
-                    text={cell}
-                  />
+                  <RenderInline text={cell} />
                 </td>
               )}
             </For>
@@ -92,10 +77,10 @@ export const Table: Component<TableProps> = (props) => {
       >
         <table
           class={cn("w-full divide-y divide-border")}
-          data-velomark-block-id={props.debug ? props.block.id : undefined}
-          data-velomark-block-index={props.index}
-          data-velomark-block-kind={props.block.kind}
-          data-velomark-incomplete={props.block.status === "streaming" ? "" : undefined}
+          data-velomark-block-id={vm.debug ? block.id : undefined}
+          data-velomark-block-index={index}
+          data-velomark-block-kind={block.kind}
+          data-velomark-incomplete={block.status === "streaming" ? "" : undefined}
         >
           {tableHeader()}
           {tableBody()}

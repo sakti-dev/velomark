@@ -1,71 +1,60 @@
 import { type Component, For } from "solid-js";
 import { cn } from "cnfast";
 import type { ListBlockData } from "../../lib/parser/block-boundaries";
-import type {
-  ReferenceDefinitionMap,
-  RenderBlock,
-  VelomarkContainerRendererProps,
-} from "../../types";
+import { useBlock } from "../../lib/block-context";
+import { BlockProvider } from "../../lib/block-context";
+import { useVelomark } from "../../lib/velomark-context";
+import { RenderBlockView } from "../render-block";
 import { RenderInline } from "../inline/render-inline";
 
-export const ListBlock: Component<{
-  block: RenderBlock<ListBlockData>;
-  containers?: Record<string, Component<VelomarkContainerRendererProps>>;
-  debug?: boolean;
-  definitions?: ReferenceDefinitionMap;
-  index: number;
-}> = (props) => {
+export const ListBlock: Component = () => {
+  const vm = useVelomark();
+  const { block, index } = useBlock();
+  const data = () => block.data as ListBlockData;
+
   const commonProps = {
-    "data-velomark-block-id": props.debug ? props.block.id : undefined,
-    "data-velomark-block-index": props.index,
-    "data-velomark-block-kind": props.block.kind,
-    "data-velomark-incomplete": props.block.status === "streaming" ? "" : undefined,
+    "data-velomark-block-id": vm.debug ? block.id : undefined,
+    "data-velomark-block-index": index,
+    "data-velomark-block-kind": block.kind,
+    "data-velomark-incomplete": block.status === "streaming" ? "" : undefined,
   } as const;
 
-  const items = () => props.block.data.items;
+  const items = () => data().items;
   const renderItemContent = (item: ListBlockData["items"][number]) => (
     <>
       {item.checked === undefined ? (
-        <RenderInline
-          containers={props.containers}
-          definitions={props.definitions}
-          text={item.text}
-        />
+        <RenderInline text={item.text} />
       ) : (
         <label>
           <input checked={item.checked} disabled type="checkbox" />
           <span>
-            <RenderInline
-              containers={props.containers}
-              definitions={props.definitions}
-              text={item.text}
-            />
+            <RenderInline text={item.text} />
           </span>
         </label>
       )}
       <For each={item.children ?? []}>
-        {(child) => (
-          <ListBlock
+        {(child, childIndex) => (
+          <BlockProvider
             block={{
-              id: `${props.block.id}:${child.kind}:${item.text}`,
+              id: `${block.id}:${child.kind}:${item.text}`,
               kind: child.kind,
-              sourceStart: props.block.sourceStart,
-              sourceEnd: props.block.sourceEnd,
-              status: props.block.status,
-              fingerprint: `${props.block.fingerprint}:${child.kind}:${item.text}`,
-              data: child.data,
+              sourceStart: block.sourceStart,
+              sourceEnd: block.sourceEnd,
+              status: block.status,
+              fingerprint: `${block.fingerprint}:${child.kind}:${item.text}`,
+              data: child.data as never,
             }}
-            containers={props.containers}
-            debug={props.debug}
-            definitions={props.definitions}
-            index={props.index}
-          />
+            blockId={`${block.id}:${child.kind}:${item.text}`}
+            index={childIndex()}
+          >
+            <RenderBlockView />
+          </BlockProvider>
         )}
       </For>
     </>
   );
 
-  if (props.block.data.ordered) {
+  if (data().ordered) {
     return (
       <ol {...commonProps} class={cn("list-inside list-decimal whitespace-normal [li_&]:pl-6")}>
         <For each={items()}>
