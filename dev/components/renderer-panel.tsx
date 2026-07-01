@@ -29,6 +29,7 @@ export const RendererPanel: Component<RendererPanelProps> = (props) => {
             debug={false}
             markdown={props.markdown}
             onDebugMetrics={props.onDebugMetrics}
+            remend={{}}
           />
         </div>
       </div>

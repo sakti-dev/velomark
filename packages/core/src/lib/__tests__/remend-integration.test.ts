@@ -50,7 +50,7 @@ describe("parseMarkdownToBlocks with remend", () => {
   it("respects custom option to disable bold healing", () => {
     const { blocks: withHealing } = parseMarkdownToBlocks("This is **bold", {});
     const { blocks: withoutBold } = parseMarkdownToBlocks("This is **bold", { bold: false });
-    expect((withHealing[0]?.data as { text: string }).text).toContain("**bold**");
-    expect((withoutBold[0]?.data as { text: string }).text).toBe("This is **bold");
+    expect((withHealing[0].data as { text: string }).text).toContain("**bold**");
+    expect((withoutBold[0].data as { text: string }).text).toBe("This is **bold");
   });
 });
