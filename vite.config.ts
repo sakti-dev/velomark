@@ -1,6 +1,6 @@
 import { defineConfig } from "vite-plus";
 
-import { solidTest } from "./tooling/solid-test";
+import { solidTest } from "./packages/core/tooling/solid-test";
 
 export default defineConfig({
   staged: {

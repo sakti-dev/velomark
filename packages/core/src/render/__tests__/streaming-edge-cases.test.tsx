@@ -34,7 +34,8 @@ describe("Velomark streaming edge cases", () => {
   it("keeps rendering stable while a fenced code block is unfinished", async () => {
     const host = document.createElement("div");
     document.body.append(host);
-    const [markdown, setMarkdown] = createSignal(loadFixture("unfinished-fence.md"));
+    const unfinishedFence = "```ts\nconst answer =\n";
+    const [markdown, setMarkdown] = createSignal(unfinishedFence);
 
     const dispose = render(() => <Velomark markdown={markdown()} />, host);
     mountedRoots.push(dispose);
@@ -42,7 +43,7 @@ describe("Velomark streaming edge cases", () => {
     expect(host.querySelector('[data-velomark-block-kind="code"]')).not.toBeNull();
     expect(host.querySelector("pre > code")?.textContent).toContain("const answer =");
 
-    setMarkdown([loadFixture("unfinished-fence.md"), "42;", "```"].join(""));
+    setMarkdown(`${unfinishedFence}42;\n\`\`\``);
     await waitFor(() =>
       (host.querySelector("pre > code")?.textContent ?? "").includes("const answer =\n42;"),
     );

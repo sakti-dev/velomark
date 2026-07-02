@@ -1,7 +1,7 @@
 import { defineConfig } from "vite-plus";
 import solid from "vite-plugin-solid";
 
-import { solidTest } from "../../tooling/solid-test";
+import { solidTest } from "./tooling/solid-test";
 
 export default defineConfig({
   pack: {
