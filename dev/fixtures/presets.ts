@@ -1,5 +1,6 @@
 import type { PlaygroundPreset } from "../types/playground";
 import incremarkSolidExample from "./incremark-solid-example";
+import mermaidStreamExample from "./mermaid-stream-example";
 
 export const playgroundPresets: PlaygroundPreset[] = [
   {
@@ -8,5 +9,12 @@ export const playgroundPresets: PlaygroundPreset[] = [
     description:
       "Copied from the Incremark Solid example sample and expanded with a broader Mermaid section for renderer evaluation.",
     markdown: incremarkSolidExample,
+  },
+  {
+    id: "mermaid-stream",
+    label: "Mermaid Stream",
+    description:
+      "All mermaid diagram types (flowchart, sequence, state, journey, gantt, pie, mindmap) for testing render during simulate stream.",
+    markdown: mermaidStreamExample,
   },
 ];

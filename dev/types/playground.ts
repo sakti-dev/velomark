@@ -1,6 +1,6 @@
 export interface PlaygroundPreset {
   description: string;
-  id: "incremark-solid-example";
+  id: string;
   label: string;
   markdown: string;
 }
