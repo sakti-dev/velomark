@@ -238,3 +238,35 @@ export const ExternalLinkIcon: Component<IconProps> = (props) => (
     />
   </svg>
 );
+
+export type IconComponent = Component<IconProps>;
+
+export interface IconMap {
+  CheckIcon: IconComponent;
+  CopyIcon: IconComponent;
+  DownloadIcon: IconComponent;
+  ExternalLinkIcon: IconComponent;
+  Loader2Icon: IconComponent;
+  Maximize2Icon: IconComponent;
+  RotateCcwIcon: IconComponent;
+  XIcon: IconComponent;
+  ZoomInIcon: IconComponent;
+  ZoomOutIcon: IconComponent;
+}
+
+export const defaultIcons: IconMap = {
+  CheckIcon,
+  CopyIcon,
+  DownloadIcon,
+  ExternalLinkIcon,
+  Loader2Icon,
+  Maximize2Icon,
+  RotateCcwIcon,
+  XIcon,
+  ZoomInIcon,
+  ZoomOutIcon,
+};
+
+export function resolveIcons(overrides?: Partial<IconMap>): IconMap {
+  return { ...defaultIcons, ...overrides };
+}

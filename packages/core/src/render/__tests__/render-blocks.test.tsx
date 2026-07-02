@@ -332,10 +332,8 @@ describe("Velomark block rendering", () => {
     await vi.advanceTimersByTimeAsync(1);
 
     expect(clipboard.writeText).toHaveBeenCalledWith("const answer = 42;");
-    expect(host.querySelector("button.vm-code-copy")?.getAttribute("aria-label")).toBe(
-      "Copied code",
-    );
-    expect(host.querySelector('button[aria-label="Copied code"] svg')).not.toBeNull();
+    expect(host.querySelector("button.vm-code-copy")?.getAttribute("aria-label")).toBe("Copied");
+    expect(host.querySelector('button[aria-label="Copied"] svg')).not.toBeNull();
 
     await vi.advanceTimersByTimeAsync(2000);
 
@@ -692,7 +690,7 @@ describe("Velomark block rendering", () => {
     mountedRoots.push(dispose);
 
     await waitFor(() => {
-      return host.textContent?.includes("Mermaid Error") === true;
+      return host.textContent?.includes("Diagram error") === true;
     }, 200);
 
     const mermaidBlock = host.querySelector(".vm-mermaid");
@@ -700,7 +698,7 @@ describe("Velomark block rendering", () => {
     expect(mermaidBlock?.querySelector(".vm-mermaid-diagram")).toBeNull();
     expect(mermaidBlock?.querySelector(".vm-code-header")).toBeNull();
     expect(mermaidBlock?.querySelector("button.vm-code-copy")).not.toBeNull();
-    expect(mermaidBlock?.textContent).toContain("Mermaid Error");
+    expect(mermaidBlock?.textContent).toContain("Diagram error");
   });
 
   it("allows language-specific custom code block renderers", () => {

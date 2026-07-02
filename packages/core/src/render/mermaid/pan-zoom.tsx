@@ -1,7 +1,7 @@
 import { type Component, type JSX, createMemo, createSignal, onCleanup, onMount } from "solid-js";
 import { cn } from "cnfast";
 
-import { RotateCcwIcon, ZoomInIcon, ZoomOutIcon } from "../icons";
+import { useVelomark } from "../../lib/velomark-context";
 
 export interface PanZoomProps {
   children?: JSX.Element;
@@ -149,41 +149,42 @@ const ShowControls: Component<{
   onZoomOut: () => void;
   onReset: () => void;
 }> = (props) => {
+  const vm = useVelomark();
   if (!props.show) {
     return null;
   }
   return (
     <div
       class={cn(
-        "absolute z-10 flex flex-col gap-1 rounded-md border border-border bg-background/80 p-1 supports-[backdrop-filter]:bg-background/70 supports-[backdrop-filter]:backdrop-blur-sm",
+        "absolute z-10 flex flex-col gap-1 rounded-md border border-border bg-background/80 p-1 supports-backdrop-filter:bg-background/70 supports-backdrop-filter:backdrop-blur-sm",
         props.fullscreen ? "bottom-4 left-4" : "bottom-2 left-2",
       )}
     >
       <button
         class="flex items-center justify-center rounded p-1.5 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground disabled:cursor-not-allowed disabled:opacity-50"
         disabled={props.zoom >= props.maxZoom}
-        title="Zoom in"
+        title={vm.t.zoomIn}
         type="button"
         onClick={() => props.onZoomIn()}
       >
-        <ZoomInIcon size={16} />
+        <vm.icons.ZoomInIcon size={16} />
       </button>
       <button
         class="flex items-center justify-center rounded p-1.5 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground disabled:cursor-not-allowed disabled:opacity-50"
         disabled={props.zoom <= props.minZoom}
-        title="Zoom out"
+        title={vm.t.zoomOut}
         type="button"
         onClick={() => props.onZoomOut()}
       >
-        <ZoomOutIcon size={16} />
+        <vm.icons.ZoomOutIcon size={16} />
       </button>
       <button
         class="flex items-center justify-center rounded p-1.5 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-        title="Reset zoom and pan"
+        title={vm.t.zoomReset}
         type="button"
         onClick={() => props.onReset()}
       >
-        <RotateCcwIcon size={16} />
+        <vm.icons.RotateCcwIcon size={16} />
       </button>
     </div>
   );

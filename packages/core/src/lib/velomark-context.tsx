@@ -12,6 +12,10 @@ import { buildRenderDocument, collectRenderMetrics } from "./model/render-docume
 import { hasIncompleteCodeFence } from "./incomplete-code-utils";
 import type { PluginConfig } from "./plugin-types";
 import type { ParsedBlockData } from "./parser/block-boundaries";
+import { resolveTranslations } from "./translations";
+import type { VelomarkTranslations } from "./translations";
+import type { IconMap } from "../render/icons";
+import { resolveIcons } from "../render/icons";
 import type {
   AnimateOptions,
   ControlsConfig,
@@ -26,7 +30,10 @@ import type {
 } from "../types";
 import type { Component } from "solid-js";
 
+export type AllowedTags = Record<string, string[]>;
+
 export interface VelomarkStore {
+  allowedTags?: AllowedTags;
   plugins: PluginConfig;
   animationConfig: AnimateOptions | null;
   caret?: VelomarkCaret;
@@ -38,18 +45,22 @@ export interface VelomarkStore {
   dir?: "auto" | "ltr" | "rtl";
   document: RenderDocument<ParsedBlockData>;
   blockIds: string[];
+  icons: IconMap;
   isStreaming: () => boolean;
   lineNumbers?: boolean;
   linkSafety?: boolean;
   linkSafetyUrl?: string | null;
+  literalTagContent?: string[];
   openLinkSafety?: (url: string) => void;
   definitions: ReferenceDefinitionMap;
   footnoteDefinitions: Record<string, RenderBlock<ParsedBlockData>[]>;
   footnoteReferenceOrder: string[];
   docHasIncomplete: boolean;
+  t: VelomarkTranslations;
 }
 
 export interface VelomarkProviderProps {
+  allowedTags?: AllowedTags;
   animated?: boolean | AnimateOptions;
   caret?: VelomarkCaret;
   children: JSX.Element;
@@ -59,14 +70,17 @@ export interface VelomarkProviderProps {
   controls?: ControlsConfig;
   debug?: boolean;
   dir?: "auto" | "ltr" | "rtl";
+  icons?: Partial<IconMap>;
   lineNumbers?: boolean;
   linkSafety?: boolean;
+  literalTagContent?: string[];
   markdown: string;
   onAnimationEnd?: () => void;
   onAnimationStart?: () => void;
   onDebugMetrics?: (metrics: VelomarkDebugMetrics) => void;
   plugins?: PluginConfig;
   remend?: RemendOptions;
+  translations?: Partial<VelomarkTranslations>;
 }
 
 const VelomarkContext = createContext<VelomarkStore>();
@@ -111,6 +125,7 @@ export function VelomarkProvider(props: VelomarkProviderProps) {
   });
 
   const store: VelomarkStore = {
+    allowedTags: props.allowedTags,
     plugins: props.plugins ?? {},
     animationConfig: resolveAnimationConfig(props.animated),
     caret: props.caret,
@@ -120,8 +135,10 @@ export function VelomarkProvider(props: VelomarkProviderProps) {
     controls: props.controls,
     debug: props.debug ?? false,
     dir: props.dir,
+    icons: resolveIcons(props.icons),
     lineNumbers: props.lineNumbers,
     linkSafety: props.linkSafety,
+    literalTagContent: props.literalTagContent,
     get linkSafetyUrl() {
       return linkSafetyUrl();
     },
@@ -146,6 +163,9 @@ export function VelomarkProvider(props: VelomarkProviderProps) {
     },
     get docHasIncomplete() {
       return hasIncompleteCodeFence(props.markdown);
+    },
+    get t() {
+      return resolveTranslations(props.translations);
     },
   };
 

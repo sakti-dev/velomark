@@ -17,8 +17,12 @@ import type {
 import type { PluginConfig } from "../lib/plugin-types";
 import { FootnotesSection } from "./compat/footnotes/footnotes-section";
 import { RenderBlockView } from "./render-block";
+import type { IconMap } from "./icons";
+import type { VelomarkTranslations } from "../lib/translations";
+import type { AllowedTags } from "../lib/velomark-context";
 
 export interface VelomarkProps {
+  allowedTags?: AllowedTags;
   animated?: AnimateOptions | boolean;
   caret?: VelomarkCaret;
   children?: JSX.Element;
@@ -29,14 +33,17 @@ export interface VelomarkProps {
   controls?: ControlsConfig;
   debug?: boolean;
   dir?: "auto" | "ltr" | "rtl";
+  icons?: Partial<IconMap>;
   lineNumbers?: boolean;
   linkSafety?: boolean;
+  literalTagContent?: string[];
   markdown: string;
   onAnimationEnd?: () => void;
   onAnimationStart?: () => void;
   onDebugMetrics?: (metrics: VelomarkDebugMetrics) => void;
   plugins?: PluginConfig;
   remend?: RemendOptions;
+  translations?: Partial<VelomarkTranslations>;
 }
 
 const CARET_CHARS: Record<VelomarkCaret, string> = {

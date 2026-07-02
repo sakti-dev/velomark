@@ -1,8 +1,8 @@
 import { type Component } from "solid-js";
 import { cn } from "cnfast";
 import { save } from "../../lib/utils";
+import { useVelomark } from "../../lib/velomark-context";
 import { useCodeBlockContext } from "./context";
-import { DownloadIcon } from "../icons";
 
 const languageExtensionMap: Record<string, string> = {
   "1c": "1c",
@@ -318,6 +318,7 @@ export const CodeBlockDownloadButton: Component<{
   language?: string;
   class?: string;
 }> = (props) => {
+  const vm = useVelomark();
   const context = useCodeBlockContext();
   const extension = () =>
     props.language && props.language in languageExtensionMap
@@ -337,10 +338,10 @@ export const CodeBlockDownloadButton: Component<{
         props.class,
       )}
       onClick={handleDownload}
-      title="Download"
+      title={vm.t.downloadFile}
       type="button"
     >
-      <DownloadIcon size={14} />
+      <vm.icons.DownloadIcon size={14} />
     </button>
   );
 };

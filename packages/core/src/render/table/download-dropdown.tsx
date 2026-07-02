@@ -1,10 +1,11 @@
 import { type Component, createSignal, onCleanup, onMount, Show } from "solid-js";
 import { cn } from "cnfast";
 import { save } from "../../lib/utils";
-import { DownloadIcon } from "../icons";
+import { useVelomark } from "../../lib/velomark-context";
 import { extractTableDataFromElement, tableDataToCSV, tableDataToMarkdown } from "./utils";
 
 export const TableDownloadDropdown: Component<{ class?: string }> = (props) => {
+  const vm = useVelomark();
   const [isOpen, setIsOpen] = createSignal(false);
   let dropdownRef: HTMLDivElement | undefined; // eslint-disable-line no-unassigned-vars -- assigned by Solid ref
 
@@ -41,10 +42,10 @@ export const TableDownloadDropdown: Component<{ class?: string }> = (props) => {
           props.class,
         )}
         onClick={() => setIsOpen(!isOpen())}
-        title="Download table"
+        title={vm.t.downloadTable}
         type="button"
       >
-        <DownloadIcon size={14} />
+        <vm.icons.DownloadIcon size={14} />
       </button>
       <Show when={isOpen()}>
         <div
@@ -57,14 +58,14 @@ export const TableDownloadDropdown: Component<{ class?: string }> = (props) => {
             onClick={() => downloadTableData("csv")}
             type="button"
           >
-            CSV
+            {vm.t.tableFormatCsv}
           </button>
           <button
             class={cn("w-full px-3 py-2 text-left text-sm transition-colors hover:bg-muted/40")}
             onClick={() => downloadTableData("md")}
             type="button"
           >
-            Markdown
+            {vm.t.tableFormatMarkdown}
           </button>
         </div>
       </Show>

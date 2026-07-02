@@ -1,7 +1,7 @@
 import { type Component, createEffect, createSignal, onCleanup, Show } from "solid-js";
 import { cn } from "cnfast";
 
-import { DownloadIcon } from "../icons";
+import { useVelomark } from "../../lib/velomark-context";
 import type { DiagramPlugin } from "../../lib/plugin-types";
 import { save, svgToPngBlob } from "./utils";
 
@@ -21,6 +21,7 @@ export interface MermaidDownloadDropdownProps {
 type MermaidFormat = "mmd" | "png" | "svg";
 
 export const MermaidDownloadDropdown: Component<MermaidDownloadDropdownProps> = (props) => {
+  const vm = useVelomark();
   const [isOpen, setIsOpen] = createSignal(false);
   let containerRef: HTMLDivElement | undefined;
 
@@ -88,11 +89,11 @@ export const MermaidDownloadDropdown: Component<MermaidDownloadDropdownProps> = 
           "vm-mermaid-download cursor-pointer p-1 text-muted-foreground transition-all hover:text-foreground disabled:cursor-not-allowed disabled:opacity-50",
           props.class,
         )}
-        title="Download diagram"
+        title={vm.t.downloadDiagram}
         type="button"
         onClick={() => setIsOpen((open) => !open)}
       >
-        <DownloadIcon size={14} />
+        <vm.icons.DownloadIcon size={14} />
       </button>
       <Show when={isOpen()}>
         <div
@@ -102,27 +103,27 @@ export const MermaidDownloadDropdown: Component<MermaidDownloadDropdownProps> = 
         >
           <button
             class="w-full px-3 py-2 text-left text-sm transition-colors hover:bg-muted/40"
-            title="Download diagram as SVG"
+            title={vm.t.downloadDiagramAsSvg}
             type="button"
             onClick={() => downloadMermaid("svg")}
           >
-            SVG
+            {vm.t.mermaidFormatSvg}
           </button>
           <button
             class="w-full px-3 py-2 text-left text-sm transition-colors hover:bg-muted/40"
-            title="Download diagram as PNG"
+            title={vm.t.downloadDiagramAsPng}
             type="button"
             onClick={() => downloadMermaid("png")}
           >
-            PNG
+            {vm.t.mermaidFormatPng}
           </button>
           <button
             class="w-full px-3 py-2 text-left text-sm transition-colors hover:bg-muted/40"
-            title="Download diagram as MMD"
+            title={vm.t.downloadDiagramAsMmd}
             type="button"
             onClick={() => downloadMermaid("mmd")}
           >
-            MMD
+            {vm.t.mermaidFormatMmd}
           </button>
         </div>
       </Show>

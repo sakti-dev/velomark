@@ -1,7 +1,9 @@
-import { type Component, createEffect, createSignal, onCleanup, Show } from "solid-js";
+import { type Component, createEffect, createSignal, onCleanup, Show, useContext } from "solid-js";
 import { cn } from "cnfast";
 import { lockBodyScroll, unlockBodyScroll } from "../../lib/scroll-lock";
-import { CheckIcon, CopyIcon, ExternalLinkIcon, XIcon } from "../icons";
+import { VelomarkContext } from "../../lib/velomark-context";
+import { defaultTranslations } from "../../lib/translations";
+import { defaultIcons } from "../icons";
 
 const COPY_RESET_DELAY_MS = 2000;
 
@@ -13,6 +15,9 @@ export interface LinkSafetyModalProps {
 }
 
 export const LinkSafetyModal: Component<LinkSafetyModalProps> = (props) => {
+  const ctx = useContext(VelomarkContext);
+  const t = ctx?.t ?? defaultTranslations;
+  const icons = ctx?.icons ?? defaultIcons;
   const [copied, setCopied] = createSignal(false);
   let timeoutId: ReturnType<typeof setTimeout> | undefined;
 
@@ -80,20 +85,18 @@ export const LinkSafetyModal: Component<LinkSafetyModalProps> = (props) => {
               "absolute top-4 right-4 rounded-md p-1 text-muted-foreground transition-all hover:bg-muted hover:text-foreground",
             )}
             onClick={() => props.onClose()}
-            title="Close"
+            title={t.close}
             type="button"
           >
-            <XIcon size={16} />
+            <icons.XIcon size={16} />
           </button>
 
           <div class={cn("flex flex-col gap-2")}>
             <div class={cn("flex items-center gap-2 font-semibold text-lg")}>
-              <ExternalLinkIcon size={20} />
-              <span>Open external link</span>
+              <icons.ExternalLinkIcon size={20} />
+              <span>{t.openExternalLink}</span>
             </div>
-            <p class={cn("text-muted-foreground text-sm")}>
-              You are about to open an external link. Please verify the URL before continuing.
-            </p>
+            <p class={cn("text-muted-foreground text-sm")}>{t.externalLinkWarning}</p>
           </div>
 
           <div
@@ -117,13 +120,13 @@ export const LinkSafetyModal: Component<LinkSafetyModalProps> = (props) => {
                 when={copied()}
                 fallback={
                   <>
-                    <CopyIcon size={14} />
-                    <span>Copy link</span>
+                    <icons.CopyIcon size={14} />
+                    <span>{t.copyLink}</span>
                   </>
                 }
               >
-                <CheckIcon size={14} />
-                <span>Copied</span>
+                <icons.CheckIcon size={14} />
+                <span>{t.copied}</span>
               </Show>
             </button>
             <button
@@ -133,8 +136,8 @@ export const LinkSafetyModal: Component<LinkSafetyModalProps> = (props) => {
               onClick={handleConfirm}
               type="button"
             >
-              <ExternalLinkIcon size={14} />
-              <span>Open link</span>
+              <icons.ExternalLinkIcon size={14} />
+              <span>{t.openLink}</span>
             </button>
           </div>
         </div>

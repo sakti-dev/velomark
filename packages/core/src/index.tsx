@@ -17,9 +17,13 @@ export type {
 // Context providers
 export { VelomarkProvider, useVelomark } from "./lib/velomark-context";
 export { BlockProvider, useBlock } from "./lib/block-context";
-export type { VelomarkStore } from "./lib/velomark-context";
+export type { VelomarkStore, AllowedTags } from "./lib/velomark-context";
 export type { BlockStore } from "./lib/block-context";
 export type { AnimateOptions } from "./types";
+export type { VelomarkTranslations } from "./lib/translations";
+export { defaultTranslations } from "./lib/translations";
+export type { IconMap, IconComponent } from "./render/icons";
+export { defaultIcons } from "./render/icons";
 
 // Remend self-healing markdown
 export type { RemendOptions } from "remend";

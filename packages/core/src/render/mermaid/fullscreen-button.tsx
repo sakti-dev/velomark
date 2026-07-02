@@ -2,7 +2,7 @@ import { type Component, createEffect, createSignal, onCleanup, Show } from "sol
 import { Portal } from "solid-js/web";
 import { cn } from "cnfast";
 
-import { Maximize2Icon, XIcon } from "../icons";
+import { useVelomark } from "../../lib/velomark-context";
 import type { DiagramPlugin } from "../../lib/plugin-types";
 import { MermaidDiagram } from "./diagram";
 import { lockBodyScroll, unlockBodyScroll } from "./utils";
@@ -15,6 +15,7 @@ export interface MermaidFullscreenButtonProps {
 }
 
 export const MermaidFullscreenButton: Component<MermaidFullscreenButtonProps> = (props) => {
+  const vm = useVelomark();
   const [isFullscreen, setIsFullscreen] = createSignal(false);
 
   const toggle = () => setIsFullscreen((open) => !open);
@@ -47,11 +48,11 @@ export const MermaidFullscreenButton: Component<MermaidFullscreenButtonProps> = 
           "vm-mermaid-fullscreen cursor-pointer p-1 text-muted-foreground transition-all hover:text-foreground disabled:cursor-not-allowed disabled:opacity-50",
           props.class,
         )}
-        title="View fullscreen"
+        title={vm.t.viewFullscreen}
         type="button"
         onClick={toggle}
       >
-        <Maximize2Icon size={14} />
+        <vm.icons.Maximize2Icon size={14} />
       </button>
       <Show when={isFullscreen()}>
         <Portal mount={document.body}>
@@ -62,14 +63,14 @@ export const MermaidFullscreenButton: Component<MermaidFullscreenButtonProps> = 
           >
             <button
               class="absolute top-4 right-4 z-10 rounded-md p-2 text-muted-foreground transition-all hover:bg-muted hover:text-foreground"
-              title="Exit fullscreen"
+              title={vm.t.exitFullscreen}
               type="button"
               onClick={(event) => {
                 event.stopPropagation();
                 setIsFullscreen(false);
               }}
             >
-              <XIcon size={20} />
+              <vm.icons.XIcon size={20} />
             </button>
             <div
               class="flex size-full items-center justify-center p-4"

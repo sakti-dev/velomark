@@ -1,7 +1,7 @@
 import { type Component, Show, createSignal } from "solid-js";
 import { cn } from "cnfast";
 
-import { DownloadIcon } from "./icons";
+import { useVelomark } from "../lib/velomark-context";
 
 const fileExtensionPattern = /\.[^/.]+$/;
 
@@ -28,6 +28,7 @@ export interface ImageComponentProps {
  * hover overlay and a download button (shown once the image has loaded).
  */
 export const ImageComponent: Component<ImageComponentProps> = (props) => {
+  const vm = useVelomark();
   const [imageLoaded, setImageLoaded] = createSignal(false);
   const [imageError, setImageError] = createSignal(false);
 
@@ -123,11 +124,11 @@ export const ImageComponent: Component<ImageComponentProps> = (props) => {
             class={cn(
               "vm-image-download absolute right-2 bottom-2 flex h-8 w-8 cursor-pointer items-center justify-center rounded-md border border-border bg-background/90 shadow-sm backdrop-blur-sm transition-all duration-200 hover:bg-background opacity-0 group-hover:opacity-100",
             )}
-            title="Download image"
+            title={vm.t.downloadImage}
             type="button"
             onClick={() => downloadImage()}
           >
-            <DownloadIcon size={14} />
+            <vm.icons.DownloadIcon size={14} />
           </button>
         </Show>
       </div>

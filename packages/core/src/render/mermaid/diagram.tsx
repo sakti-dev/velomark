@@ -2,6 +2,7 @@ import { type Component, createEffect, createSignal, onCleanup, Switch, Match } 
 import { cn } from "cnfast";
 import { isServer } from "solid-js/web";
 
+import { useVelomark } from "../../lib/velomark-context";
 import type { DiagramPlugin } from "../../lib/plugin-types";
 import { PanZoom } from "./pan-zoom";
 
@@ -23,6 +24,7 @@ export interface MermaidDiagramProps {
 }
 
 export const MermaidDiagram: Component<MermaidDiagramProps> = (props) => {
+  const vm = useVelomark();
   const [svg, setSvg] = createSignal("");
   const [lastValidSvg, setLastValidSvg] = createSignal("");
   const [error, setError] = createSignal<string | null>(null);
@@ -116,18 +118,20 @@ export const MermaidDiagram: Component<MermaidDiagramProps> = (props) => {
         <div class={cn("my-4 flex justify-center p-4", props.class)}>
           <div class={cn("flex items-center space-x-2 text-muted-foreground")}>
             <div class={cn("h-4 w-4 animate-spin rounded-full border-current border-b-2")} />
-            <span class={cn("text-sm")}>Loading diagram...</span>
+            <span class={cn("text-sm")}>{vm.t.loadingDiagram}</span>
           </div>
         </div>
       </Match>
       <Match when={error()}>
         <div class={cn("rounded-md bg-red-50 p-4", props.class)}>
-          <p class={cn("font-mono text-red-700 text-sm")}>Mermaid Error: {error()}</p>
+          <p class={cn("font-mono text-red-700 text-sm")}>
+            {vm.t.diagramError}: {error()}
+          </p>
           <button class={cn("text-red-600 text-xs")} onClick={retry}>
-            Retry
+            {vm.t.retry}
           </button>
           <details class={cn("mt-2")}>
-            <summary class={cn("text-red-600 text-xs")}>Show Code</summary>
+            <summary class={cn("text-red-600 text-xs")}>{vm.t.showCode}</summary>
             <pre class={cn("mt-2 overflow-x-auto rounded bg-red-100 p-2 text-red-800 text-xs")}>
               {props.chart}
             </pre>

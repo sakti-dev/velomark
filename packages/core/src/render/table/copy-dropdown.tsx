@@ -1,6 +1,6 @@
 import { type Component, createSignal, onCleanup, onMount, Show } from "solid-js";
 import { cn } from "cnfast";
-import { CheckIcon, CopyIcon } from "../icons";
+import { useVelomark } from "../../lib/velomark-context";
 import {
   extractTableDataFromElement,
   tableDataToCSV,
@@ -11,6 +11,7 @@ import {
 const COPY_RESET_DELAY_MS = 2000;
 
 export const TableCopyDropdown: Component<{ class?: string }> = (props) => {
+  const vm = useVelomark();
   const [isOpen, setIsOpen] = createSignal(false);
   const [isCopied, setIsCopied] = createSignal(false);
   let dropdownRef: HTMLDivElement | undefined; // eslint-disable-line no-unassigned-vars -- assigned by Solid ref
@@ -62,11 +63,11 @@ export const TableCopyDropdown: Component<{ class?: string }> = (props) => {
           props.class,
         )}
         onClick={() => setIsOpen(!isOpen())}
-        title="Copy table"
+        title={vm.t.copyTable}
         type="button"
       >
-        <Show when={isCopied()} fallback={<CopyIcon size={14} />}>
-          <CheckIcon size={14} />
+        <Show when={isCopied()} fallback={<vm.icons.CopyIcon size={14} />}>
+          <vm.icons.CheckIcon size={14} />
         </Show>
       </button>
       <Show when={isOpen()}>
@@ -80,21 +81,21 @@ export const TableCopyDropdown: Component<{ class?: string }> = (props) => {
             onClick={() => copyTableData("md")}
             type="button"
           >
-            Markdown
+            {vm.t.tableFormatMarkdown}
           </button>
           <button
             class={cn("w-full px-3 py-2 text-left text-sm transition-colors hover:bg-muted/40")}
             onClick={() => copyTableData("csv")}
             type="button"
           >
-            CSV
+            {vm.t.tableFormatCsv}
           </button>
           <button
             class={cn("w-full px-3 py-2 text-left text-sm transition-colors hover:bg-muted/40")}
             onClick={() => copyTableData("tsv")}
             type="button"
           >
-            TSV
+            {vm.t.tableFormatTsv}
           </button>
         </div>
       </Show>

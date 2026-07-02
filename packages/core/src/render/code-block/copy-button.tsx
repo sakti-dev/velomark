@@ -1,8 +1,8 @@
 import { type Component, createSignal, onCleanup } from "solid-js";
 import { cn } from "cnfast";
 
+import { useVelomark } from "../../lib/velomark-context";
 import { useCodeBlockContext } from "./context";
-import { CheckIcon, CopyIcon } from "../icons";
 
 const COPY_RESET_DELAY_MS = 2000;
 
@@ -12,6 +12,7 @@ export interface CodeBlockCopyButtonProps {
 }
 
 export const CodeBlockCopyButton: Component<CodeBlockCopyButtonProps> = (props) => {
+  const vm = useVelomark();
   const context = useCodeBlockContext();
   const [copied, setCopied] = createSignal<boolean>(false);
   let timeoutId: ReturnType<typeof setTimeout> | undefined;
@@ -40,18 +41,20 @@ export const CodeBlockCopyButton: Component<CodeBlockCopyButtonProps> = (props) 
     }
   });
 
+  const label = () => (copied() ? vm.t.copied : vm.t.copyCode);
+
   return (
     <button
-      aria-label={copied() ? "Copied code" : "Copy code"}
+      aria-label={label()}
       class={cn(
         "vm-code-copy cursor-pointer p-1 text-muted-foreground transition-all hover:text-foreground disabled:cursor-not-allowed disabled:opacity-50",
         props.class,
       )}
-      title={copied() ? "Copied code" : "Copy code"}
+      title={label()}
       type="button"
       onClick={() => copyToClipboard()}
     >
-      {copied() ? <CheckIcon size={14} /> : <CopyIcon size={14} />}
+      {copied() ? <vm.icons.CheckIcon size={14} /> : <vm.icons.CopyIcon size={14} />}
     </button>
   );
 };

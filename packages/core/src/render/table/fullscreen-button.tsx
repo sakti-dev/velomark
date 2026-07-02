@@ -10,7 +10,7 @@ import {
 import { Portal } from "solid-js/web";
 import { cn } from "cnfast";
 import { lockBodyScroll, unlockBodyScroll } from "../../lib/scroll-lock";
-import { Maximize2Icon, XIcon } from "../icons";
+import { useVelomark } from "../../lib/velomark-context";
 import { TableCopyDropdown } from "./copy-dropdown";
 import { TableDownloadDropdown } from "./download-dropdown";
 
@@ -20,6 +20,7 @@ export const TableFullscreenButton: Component<{
   showDownload?: boolean;
   class?: string;
 }> = (props) => {
+  const vm = useVelomark();
   const [isFullscreen, setIsFullscreen] = createSignal(false);
   const showCopy = () => props.showCopy ?? true;
   const showDownload = () => props.showDownload ?? true;
@@ -52,10 +53,10 @@ export const TableFullscreenButton: Component<{
           props.class,
         )}
         onClick={() => setIsFullscreen(true)}
-        title="View fullscreen"
+        title={vm.t.viewFullscreen}
         type="button"
       >
-        <Maximize2Icon size={14} />
+        <vm.icons.Maximize2Icon size={14} />
       </button>
       <Show when={isFullscreen()}>
         <Portal mount={document.body}>
@@ -65,7 +66,7 @@ export const TableFullscreenButton: Component<{
             onClick={handleClose}
             role="dialog"
             aria-modal="true"
-            aria-label="View fullscreen"
+            aria-label={vm.t.viewFullscreen}
           >
             <div
               class={cn("flex h-full flex-col")}
@@ -84,10 +85,10 @@ export const TableFullscreenButton: Component<{
                     "rounded-md p-1 text-muted-foreground transition-all hover:bg-muted hover:text-foreground",
                   )}
                   onClick={handleClose}
-                  title="Exit fullscreen"
+                  title={vm.t.exitFullscreen}
                   type="button"
                 >
-                  <XIcon size={20} />
+                  <vm.icons.XIcon size={20} />
                 </button>
               </div>
               <div
