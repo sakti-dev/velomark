@@ -20,9 +20,9 @@ REPO_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 
 # ── Helpers ─────────────────────────────────────────────────
 
-npm_version_exists() {
+pnpm_version_exists() {
   local pkg="$1" version="$2"
-  npm view "$pkg" version 2>/dev/null | grep -q "^${version}$"
+  pnpm view "$pkg" version 2>/dev/null | grep -q "^${version}$"
 }
 
 read_json_field() {
@@ -38,7 +38,7 @@ PACKAGE_DIRS=("core" "code" "math" "mermaid")
 
 info "Checking prerequisites..."
 
-command -v npm &>/dev/null || error "npm not found."
+command -v pnpm &>/dev/null || error "pnpm not found."
 command -v vp &>/dev/null  || error "vp not found."
 
 if [[ -n "$(git -C "$REPO_ROOT" status --porcelain)" ]]; then
@@ -60,7 +60,7 @@ for dir in "${PACKAGE_DIRS[@]}"; do
   PKG_NAMES["$dir"]="$name"
   PKG_VERSIONS["$dir"]="$version"
 
-  if npm_version_exists "$name" "$version"; then
+  if pnpm_version_exists "$name" "$version"; then
     warn "$name@$version already published — skipping."
     SHOULD_PUBLISH["$dir"]=false
   else
@@ -80,7 +80,7 @@ if [[ "$ANY" == false ]]; then
 fi
 
 # Check npm login
-npm whoami &>/dev/null || error "Not logged in to npm. Run 'npm login' first."
+pnpm whoami &>/dev/null || error "Not logged in to npm. Run 'pnpm login' first."
 
 # ── Summary ─────────────────────────────────────────────────
 
@@ -127,7 +127,7 @@ for dir in "${PACKAGE_DIRS[@]}"; do
 
   info "Publishing $name@$version to npm..."
   cd "$REPO_ROOT/packages/$dir"
-  npm publish --ignore-scripts
+  pnpm publish --ignore-scripts
   info "$name published."
 done
 
