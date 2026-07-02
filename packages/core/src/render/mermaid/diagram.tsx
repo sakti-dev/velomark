@@ -59,6 +59,9 @@ export const MermaidDiagram: Component<MermaidDiagramProps> = (props) => {
         if (activeRenderToken !== renderToken) {
           return;
         }
+        if (props.isIncomplete) {
+          return;
+        }
         if (!(lastValidSvg() || svg())) {
           const errorMessage =
             err instanceof Error ? err.message : "Failed to render Mermaid chart";
