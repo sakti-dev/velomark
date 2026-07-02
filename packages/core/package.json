@@ -1,7 +1,6 @@
 {
   "name": "@velomark/core",
   "version": "1.0.0",
-  "private": true,
   "files": [
     "dist",
     "styles.css"
