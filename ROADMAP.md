@@ -56,13 +56,11 @@ Velomark only has boolean `copyButton` / `downloadButton` on code blocks. Stream
 
 ## Tier 2 — Feature Parity
 
-### 6. [planned] `isAnimating` state + disable controls while streaming
+### 6. [done] `isStreaming` context + `onAnimationStart` / `onAnimationEnd` callbacks
 
-Derive an `isAnimating` signal from the block store (`status === "streaming"`). Use it to:
+`isStreaming` memo (block-status-based, already existed for caret) is now exposed via `VelomarkStore` for child components. `docHasIncomplete` signal (unclosed code fence detection) drives the new lifecycle callbacks: `onAnimationStart` fires when the document transitions to incomplete, `onAnimationEnd` fires when it completes. Callbacks are deduplicated — they fire only on transitions, not on every content growth.
 
-- Disable copy/download buttons during stream
-- Gate the caret indicator (#4)
-- Fire `onAnimationStart` / `onAnimationEnd` callbacks
+No button disabling (deferred to #5 granular controls config).
 
 ### 7. [done] Mermaid loading / error / retry UX
 
@@ -79,14 +77,9 @@ Ported streamdown's `Mermaid` component pattern to velomark's `MermaidDiagram`:
 
 Fixed critical SolidJS bug: `CodeBlockView` used non-reactive `if/else` for the mermaid language check. Since Solid component bodies run once, the branch was locked at creation time. During streaming, a fence language arrives gradually (`m` → `merma` → `mermaid`); if not `"mermaid"` at first evaluation, the block permanently rendered as a regular `CodeBlock`. Replaced with `<Switch>`/`<Match>` so the branch is reactive — when language transitions to `"mermaid"`, Solid swaps `CodeBlock` → `MermaidPluginView` in place.
 
-### 9. [planned] RTL text direction
+### 9. [done] RTL text direction
 
-`detectTextDirection` utility exists in velomark's lib but isn't wired up. Streamdown sets `dir="auto"` on the container and per-block.
-
-**Scope:**
-
-- Add `dir` prop to `VelomarkProps` (`"auto" | "ltr" | "rtl"`)
-- Set `dir` attribute on block containers
+Native HTML `dir` attribute support via `VelomarkProps.dir?: "auto" | "ltr" | "rtl"`. Applied to the container and all text-bearing block elements (paragraph, heading, blockquote paragraphs, list items). Uses browser-native `dir="auto"` per-element (Unicode Bidi Algorithm first-strong detection) — more accurate and zero-JS-cost compared to a regex-based approach. `detectTextDirection` dead-code util deleted.
 
 ### 10. [planned] Rich table clipboard
 
@@ -117,13 +110,13 @@ Port streamdown's `createCn` / `prefixClasses` to support Tailwind v4 `prefix()`
 
 For AI UIs with `<mention>`-style custom tags. Streamdown whitelists tags via `allowedTags` and escapes markdown inside them via `literalTagContent`. Requires sanitizer integration.
 
-### 15. [planned] `normalizeHtmlIndentation`
+### 15. [not-porting] `normalizeHtmlIndentation`
 
-Small utility that dedents multi-line HTML blocks so they aren't misinterpreted as indented code blocks.
+Velomark's parser has no indented-code-block detection — lines are `.trim()`'d before pattern matching, so indented HTML like `    <div>` already parses as an HTML block. The problem this solves (indented lines → code blocks) doesn't exist in velomark.
 
-### 16. [planned] Empty-footnote filtering during streaming
+### 16. [done] Empty-footnote filtering during streaming
 
-Streamdown hides the footnotes section while it's empty during streaming. Velomark renders it unconditionally.
+Already implemented — `footnotes-section.tsx` gates rendering on `orderedFootnotes().length > 0` via `<Show>`. Empty footnote sections are hidden during streaming and always.
 
 ---
 
@@ -146,6 +139,10 @@ Streamdown hides the footnotes section while it's empty during streaming. Veloma
 - [done] Mermaid fullscreen close fix — `stopPropagation` on close button prevents double-toggle (`b5026c9`)
 - [done] Caret DOM walk — JS walk to deepest last element child instead of CSS `::after` on block wrapper; works inside lists/blockquotes/headings (`b92b37b`)
 - [done] Debug log cleanup — removed 5 stale `console.log` from animation/inline rendering code (`c834001`)
+- [done] RTL text direction — native `dir` prop (`"auto" | "ltr" | "rtl"`) on container + text blocks; browser-native bidi detection; `detectTextDirection` deleted
+- [done] isStreaming context exposure — `isStreaming` + `docHasIncomplete` exposed via `VelomarkStore`
+- [done] onAnimationStart/onAnimationEnd — lifecycle callbacks fired on `docHasIncomplete` transitions
+- [done] Empty-footnote filtering — already gated via `<Show when={orderedFootnotes().length > 0}>`
 
 ---
 
@@ -153,4 +150,6 @@ Streamdown hides the footnotes section while it's empty during streaming. Veloma
 
 - **`mode="static"`** — velomark's reactive store handles non-streaming naturally
 - **Animation rehype plugin** — velomark's memo-based pre-computation is cleaner than HAST mutation
-- **Remark/rehype plugins** — velomark's custom parser doesn't need them; CJK uses `prePass`/`postPass` transforms
+- **Remark/rehype plugins** — velomark's custom parser doesn't need them
+- **CJK plugin (streamdown-cjk)** — velomark's naive `indexOf` emphasis pairing already works for CJK (no flanking rules to fight); no autolink detection means no autolink-boundary problem. The problems streamdown-cjk solves are remark-specific.
+- **`normalizeHtmlIndentation`** — velomark has no indented-code-block detection; lines are trimmed before pattern matching, so indented HTML already works
