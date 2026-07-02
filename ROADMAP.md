@@ -16,16 +16,9 @@ Integrated remend as a pre-pass inside `parseMarkdownToBlocks` — auto-complete
 
 Line numbers via CSS counters (`vm-line-numbers` / `vm-line::before`), default ON. Per-fence `noLineNumbers` meta hides; `startLine=N` offsets. Works on both plain and highlighted bodies. Global toggle via `VelomarkProps.lineNumbers` and `VelomarkCodeBlockOptions.lineNumbers`.
 
-### 2. [planned] Wire up link-safety modal
+### 2. [done] Wire up link-safety modal
 
-`LinkSafetyModal` already exists in `render/compat/link-safety-modal.tsx` but isn't connected to link clicks. Streamdown intercepts all link clicks, shows a confirmation modal with the URL, and fires `onLinkCheck` callback.
-
-**Scope:**
-
-- Add `linkSafety` prop to `VelomarkProps` (boolean or config object)
-- Intercept `<a>` clicks in `InlineTokenView` link rendering
-- Wire modal open/confirm/cancel flow
-- Export `onLinkCheck` callback
+`linkSafety?: boolean` prop on `VelomarkProps` intercepts `<a>` clicks in `InlineTokenView`, renders `LinkSafetyModal` via Portal at document body. Modal shows the URL with copy + open buttons. Close button and Escape key dismiss. On confirm, opens URL via `window.open(url, "_blank", "noopener,noreferrer")`.
 
 ### 3. [done] Dual-theme Shiki dark mode
 
@@ -35,22 +28,9 @@ Token styles redirected to `--vm-*` CSS custom properties; `.dark` selector in `
 
 Opt-in `caret?: "block" | "circle"` prop renders a blinking caret inline at the end of the last streaming block. Uses JS DOM walk to pin `data-velomark-caret` on the deepest last element child (works inside lists, blockquotes, headings). Hidden when the last block is an unclosed code fence or incomplete table.
 
-### 5. [planned] Granular controls config
+### 5. [done] Granular controls config
 
-Velomark only has boolean `copyButton` / `downloadButton` on code blocks. Streamdown has a `ControlsConfig` covering copy/download/fullscreen per component type (code, table, mermaid).
-
-**Scope:**
-
-- Add `controls` prop to `VelomarkProps`:
-  ```ts
-  type ControlsConfig = {
-    code?: { copy?: boolean; download?: boolean };
-    table?: { copy?: boolean; download?: boolean; fullscreen?: boolean };
-    mermaid?: { download?: boolean; fullscreen?: boolean; panZoom?: boolean };
-  };
-  ```
-- Thread through to each component via context
-- Merge with existing per-component options
+`controls?: ControlsConfig` prop on `VelomarkProps` — per-component-type visibility for copy/download/fullscreen/panZoom buttons. Threaded through `VelomarkStore` context. Applied to table (copy/download/fullscreen) and mermaid (download/fullscreen/panZoom) via `<Show>` wrappers with `?? true` defaults. Code blocks already had per-block `copyButton`/`downloadButton` options.
 
 ---
 
@@ -81,14 +61,9 @@ Fixed critical SolidJS bug: `CodeBlockView` used non-reactive `if/else` for the 
 
 Native HTML `dir` attribute support via `VelomarkProps.dir?: "auto" | "ltr" | "rtl"`. Applied to the container and all text-bearing block elements (paragraph, heading, blockquote paragraphs, list items). Uses browser-native `dir="auto"` per-element (Unicode Bidi Algorithm first-strong detection) — more accurate and zero-JS-cost compared to a regex-based approach. `detectTextDirection` dead-code util deleted.
 
-### 10. [planned] Rich table clipboard
+### 10. [done] Rich table clipboard
 
-Streamdown's `TableCopyDropdown` copies as `text/plain` (TSV) AND `text/html` (formatted table) for spreadsheet/Docs paste. Velomark likely does plain-text only.
-
-**Scope:**
-
-- Add `text/html` clipboard data in `TableCopyDropdown`
-- Port `extractTableDataFromElement` if needed
+Already implemented — `TableCopyDropdown` writes both `text/plain` (CSV/TSV/Markdown) and `text/html` (table `outerHTML`) via `ClipboardItem` for spreadsheet/Docs paste.
 
 ---
 
@@ -143,6 +118,9 @@ Already implemented — `footnotes-section.tsx` gates rendering on `orderedFootn
 - [done] isStreaming context exposure — `isStreaming` + `docHasIncomplete` exposed via `VelomarkStore`
 - [done] onAnimationStart/onAnimationEnd — lifecycle callbacks fired on `docHasIncomplete` transitions
 - [done] Empty-footnote filtering — already gated via `<Show when={orderedFootnotes().length > 0}>`
+- [done] Granular controls config — `ControlsConfig` prop for per-type button visibility (table/mermaid)
+- [done] Link safety modal — `linkSafety` prop intercepts `<a>` clicks, shows confirmation modal
+- [done] Rich table clipboard — `text/html` + `text/plain` via `ClipboardItem` (already implemented)
 
 ---
 
