@@ -23,7 +23,7 @@
   "type": "module",
   "scripts": {
     "build": "vp run -r build",
-    "dev": "vp dev dev",
+    "dev": "vp dev apps/docs",
     "test": "vp test",
     "test:all": "vp run -r test",
     "check": "vp check",
@@ -62,5 +62,12 @@
   },
   "peerDependencies": {
     "solid-js": "^1.9.10"
+  },
+  "devEngines": {
+    "packageManager": {
+      "name": "pnpm",
+      "version": "11.9.0",
+      "onFail": "download"
+    }
   }
 }

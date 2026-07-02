@@ -11,6 +11,6 @@ export default defineConfig({
   },
   fmt: {},
   test: solidTest({
-    client: ["dev/**/__tests__/**/*.test.{ts,tsx}", "scripts/__tests__/**/*.test.{ts,tsx}"],
+    client: ["apps/docs/**/__tests__/**/*.test.{ts,tsx}", "scripts/__tests__/**/*.test.{ts,tsx}"],
   }),
 });
