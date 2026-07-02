@@ -70,7 +70,9 @@ export const ListBlock: Component = () => {
       <ol {...commonProps} class={cn("list-inside list-decimal whitespace-normal [li_&]:pl-6")}>
         <For each={itemKeys()}>
           {(_key, itemIndex) => (
-            <li class={cn("py-1 [&>p]:inline")}>{renderItemContent(itemIndex())}</li>
+            <li class={cn("py-1 [&>p]:inline")} dir={vm.dir}>
+              {renderItemContent(itemIndex())}
+            </li>
           )}
         </For>
       </ol>
@@ -81,7 +83,9 @@ export const ListBlock: Component = () => {
     <ul {...commonProps} class={cn("list-inside list-disc whitespace-normal [li_&]:pl-6")}>
       <For each={itemKeys()}>
         {(_key, itemIndex) => (
-          <li class={cn("py-1 [&>p]:inline")}>{renderItemContent(itemIndex())}</li>
+          <li class={cn("py-1 [&>p]:inline")} dir={vm.dir}>
+            {renderItemContent(itemIndex())}
+          </li>
         )}
       </For>
     </ul>

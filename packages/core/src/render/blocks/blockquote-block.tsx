@@ -20,7 +20,7 @@ export const BlockquoteBlock: Component = () => {
     >
       <For each={data().paragraphs}>
         {(paragraph) => (
-          <p>
+          <p dir={vm.dir}>
             <RenderInline text={paragraph} />
           </p>
         )}

@@ -29,6 +29,7 @@ export const HeadingBlock: Component = () => {
       data-velomark-block-index={index}
       data-velomark-block-kind={block.kind}
       data-velomark-incomplete={block.status === "streaming" ? "" : undefined}
+      dir={vm.dir}
     >
       <RenderInline text={data().text} />
     </Dynamic>
