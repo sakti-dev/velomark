@@ -62,12 +62,5 @@
   },
   "peerDependencies": {
     "solid-js": "^1.9.10"
-  },
-  "devEngines": {
-    "packageManager": {
-      "name": "pnpm",
-      "version": "11.5.3",
-      "onFail": "download"
-    }
   }
 }
