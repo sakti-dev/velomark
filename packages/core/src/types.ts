@@ -143,6 +143,12 @@ export interface VelomarkCodeBlockOptions {
   lineNumbers?: boolean;
 }
 
+export interface ControlsConfig {
+  code?: { copy?: boolean; download?: boolean };
+  mermaid?: { download?: boolean; fullscreen?: boolean; panZoom?: boolean };
+  table?: { copy?: boolean; download?: boolean; fullscreen?: boolean };
+}
+
 export interface VelomarkCodeBlockRendererProps {
   code: string;
   language?: string;

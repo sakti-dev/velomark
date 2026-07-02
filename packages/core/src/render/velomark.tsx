@@ -1,10 +1,13 @@
 import { type Component, createEffect, For, Show, createMemo, type JSX } from "solid-js";
+import { Portal } from "solid-js/web";
 import { cn } from "cnfast";
 import type { RemendOptions } from "remend";
 import { BlockProvider } from "../lib/block-context";
 import { VelomarkProvider, useVelomark } from "../lib/velomark-context";
+import { LinkSafetyModal } from "./compat/link-safety-modal";
 import type {
   AnimateOptions,
+  ControlsConfig,
   VelomarkCaret,
   VelomarkCodeBlockOptions,
   VelomarkCodeBlockRendererProps,
@@ -23,9 +26,11 @@ export interface VelomarkProps {
   codeBlockOptions?: VelomarkCodeBlockOptions;
   codeBlockRenderers?: Record<string, Component<VelomarkCodeBlockRendererProps>>;
   containers?: Record<string, Component<VelomarkContainerRendererProps>>;
+  controls?: ControlsConfig;
   debug?: boolean;
   dir?: "auto" | "ltr" | "rtl";
   lineNumbers?: boolean;
+  linkSafety?: boolean;
   markdown: string;
   onAnimationEnd?: () => void;
   onAnimationStart?: () => void;
@@ -111,6 +116,18 @@ function VelomarkView(props: { class?: string }) {
         <span />
       </Show>
       <FootnotesSection />
+      <Show when={vm.linkSafetyUrl}>
+        <Portal mount={document.body}>
+          <LinkSafetyModal
+            isOpen={true}
+            url={vm.linkSafetyUrl ?? ""}
+            onClose={() => vm.openLinkSafety?.("")}
+            onConfirm={() => {
+              if (vm.linkSafetyUrl) window.open(vm.linkSafetyUrl, "_blank", "noopener,noreferrer");
+            }}
+          />
+        </Portal>
+      </Show>
     </div>
   );
 }

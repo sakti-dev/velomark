@@ -1,4 +1,4 @@
-import { type Component, createMemo, For, useContext } from "solid-js";
+import { type Component, createMemo, For, Show, useContext } from "solid-js";
 import { cn } from "cnfast";
 import type { TableBlockData } from "../../lib/parser/block-boundaries";
 import { useBlock } from "../../lib/block-context";
@@ -157,12 +157,18 @@ export const Table: Component = () => {
       data-velomark="table-wrapper"
     >
       <div class={cn("flex justify-end gap-1")} data-velomark="table-actions">
-        <TableCopyDropdown />
-        <TableDownloadDropdown />
-        <TableFullscreenButton>
-          {tableHeader()}
-          {tableBody()}
-        </TableFullscreenButton>
+        <Show when={vm.controls?.table?.copy ?? true}>
+          <TableCopyDropdown />
+        </Show>
+        <Show when={vm.controls?.table?.download ?? true}>
+          <TableDownloadDropdown />
+        </Show>
+        <Show when={vm.controls?.table?.fullscreen ?? true}>
+          <TableFullscreenButton>
+            {tableHeader()}
+            {tableBody()}
+          </TableFullscreenButton>
+        </Show>
       </div>
       <div
         class={cn(

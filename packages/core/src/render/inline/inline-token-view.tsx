@@ -175,6 +175,11 @@ export const InlineTokenView: Component<{
         <a
           class={cn("font-medium text-primary underline wrap-anywhere")}
           href={(props.token as TokenOf<"link">).href}
+          onClick={(e) => {
+            if (!vm.linkSafety) return;
+            e.preventDefault();
+            vm.openLinkSafety?.((props.token as TokenOf<"link">).href);
+          }}
           rel="noopener noreferrer"
           target="_blank"
           title={(props.token as TokenOf<"link">).title}

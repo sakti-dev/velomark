@@ -1,5 +1,12 @@
 import type { RemendOptions } from "remend";
-import { type JSX, createContext, createEffect, createMemo, useContext } from "solid-js";
+import {
+  type JSX,
+  createContext,
+  createEffect,
+  createMemo,
+  createSignal,
+  useContext,
+} from "solid-js";
 import { createStore, reconcile, unwrap } from "solid-js/store";
 import { buildRenderDocument, collectRenderMetrics } from "./model/render-document";
 import { hasIncompleteCodeFence } from "./incomplete-code-utils";
@@ -7,6 +14,7 @@ import type { PluginConfig } from "./plugin-types";
 import type { ParsedBlockData } from "./parser/block-boundaries";
 import type {
   AnimateOptions,
+  ControlsConfig,
   ReferenceDefinitionMap,
   RenderBlock,
   RenderDocument,
@@ -25,12 +33,16 @@ export interface VelomarkStore {
   codeBlockOptions?: VelomarkCodeBlockOptions;
   codeBlockRenderers?: Record<string, Component<VelomarkCodeBlockRendererProps>>;
   containers?: Record<string, Component<VelomarkContainerRendererProps>>;
+  controls?: ControlsConfig;
   debug: boolean;
   dir?: "auto" | "ltr" | "rtl";
   document: RenderDocument<ParsedBlockData>;
   blockIds: string[];
   isStreaming: () => boolean;
   lineNumbers?: boolean;
+  linkSafety?: boolean;
+  linkSafetyUrl?: string | null;
+  openLinkSafety?: (url: string) => void;
   definitions: ReferenceDefinitionMap;
   footnoteDefinitions: Record<string, RenderBlock<ParsedBlockData>[]>;
   footnoteReferenceOrder: string[];
@@ -44,9 +56,11 @@ export interface VelomarkProviderProps {
   codeBlockOptions?: VelomarkCodeBlockOptions;
   codeBlockRenderers?: Record<string, Component<VelomarkCodeBlockRendererProps>>;
   containers?: Record<string, Component<VelomarkContainerRendererProps>>;
+  controls?: ControlsConfig;
   debug?: boolean;
   dir?: "auto" | "ltr" | "rtl";
   lineNumbers?: boolean;
+  linkSafety?: boolean;
   markdown: string;
   onAnimationEnd?: () => void;
   onAnimationStart?: () => void;
@@ -83,6 +97,8 @@ export function VelomarkProvider(props: VelomarkProviderProps) {
 
   const isStreaming = createMemo(() => document.blocks.some((b) => b.status === "streaming"));
 
+  const [linkSafetyUrl, setLinkSafetyUrl] = createSignal<string | null>(null);
+
   let wasIncomplete = false;
   createEffect(() => {
     const incomplete = hasIncompleteCodeFence(props.markdown);
@@ -101,9 +117,15 @@ export function VelomarkProvider(props: VelomarkProviderProps) {
     codeBlockOptions: props.codeBlockOptions,
     codeBlockRenderers: props.codeBlockRenderers,
     containers: props.containers,
+    controls: props.controls,
     debug: props.debug ?? false,
     dir: props.dir,
     lineNumbers: props.lineNumbers,
+    linkSafety: props.linkSafety,
+    get linkSafetyUrl() {
+      return linkSafetyUrl();
+    },
+    openLinkSafety: (url: string) => setLinkSafetyUrl(url),
     get document() {
       return document;
     },
