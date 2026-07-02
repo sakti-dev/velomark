@@ -33,7 +33,7 @@ Token styles redirected to `--vm-*` CSS custom properties; `.dark` selector in `
 
 ### 4. [done] Streaming caret indicator
 
-Opt-in `caret?: "block" | "circle"` prop renders a blinking caret inline at the end of the last streaming block via CSS `::after` + `--velomark-caret` var. Hidden when the last block is an unclosed code fence or incomplete table (detected via parsed `status`).
+Opt-in `caret?: "block" | "circle"` prop renders a blinking caret inline at the end of the last streaming block. Uses JS DOM walk to pin `data-velomark-caret` on the deepest last element child (works inside lists, blockquotes, headings). Hidden when the last block is an unclosed code fence or incomplete table.
 
 ### 5. [planned] Granular controls config
 
@@ -64,30 +64,20 @@ Derive an `isAnimating` signal from the block store (`status === "streaming"`). 
 - Gate the caret indicator (#4)
 - Fire `onAnimationStart` / `onAnimationEnd` callbacks
 
-### 7. [planned] Mermaid loading / error / retry UX
+### 7. [done] Mermaid loading / error / retry UX
 
-Velomark's mermaid falls back to source on error. Streamdown shows:
+Ported streamdown's `Mermaid` component pattern to velomark's `MermaidDiagram`:
 
-- Loading spinner during render
-- Custom error component with retry button
-- Retains last valid SVG during re-renders
-- `mermaid.errorComponent` prop for custom error UI
+- `lastValidSvg` signal retains previous successful render during streaming
+- Loading spinner during async render
+- Error state with retry button (shown only when block is complete and no valid SVG)
+- Unique chart IDs (hash + timestamp + random) instead of sequential integers
+- Errors suppressed during streaming (`isIncomplete` — partial content expected to fail)
+- `@velomark/mermaid` package (`createMermaidPlugin`) — exact port of streamdown-mermaid
 
-**Scope:**
+### 8. [done] Reactive CodeBlockView branching — mermaid during streaming
 
-- Add loading state to `MermaidDiagram`
-- Add retry mechanism
-- Add `errorComponent` to mermaid plugin options
-- Retain last valid SVG in a signal
-
-### 8. [planned] Deferred mermaid rendering
-
-Port streamdown's `useDeferredRender` hook (IntersectionObserver + `requestIdleCallback` + debounce). Mermaid diagrams are expensive to render; defer until visible + idle.
-
-**Scope:**
-
-- Create SolidJS `createDeferredRender` primitive
-- Apply to `MermaidPluginView`
+Fixed critical SolidJS bug: `CodeBlockView` used non-reactive `if/else` for the mermaid language check. Since Solid component bodies run once, the branch was locked at creation time. During streaming, a fence language arrives gradually (`m` → `merma` → `mermaid`); if not `"mermaid"` at first evaluation, the block permanently rendered as a regular `CodeBlock`. Replaced with `<Switch>`/`<Match>` so the branch is reactive — when language transitions to `"mermaid"`, Solid swaps `CodeBlock` → `MermaidPluginView` in place.
 
 ### 9. [planned] RTL text direction
 
@@ -148,6 +138,14 @@ Streamdown hides the footnotes section while it's empty during streaming. Veloma
 - [done] Code-block line numbers + startLine meta — CSS counters, default ON, per-fence noLineNumbers/startLine (`4e82467`)
 - [done] Streaming caret indicator — opt-in caret prop, CSS ::after blink, hidden on unclosed fences/tables (`4c4b074`)
 - [done] Dual-theme Shiki dark mode — `@velomark/code` package, CSS-var redirect + `.dark` selector, FENCE_RE widened (`f0bbcea`)
+- [done] `@velomark/code` package — Shiki highlighter plugin ported from streamdown-code, singleton cache, dual themes, streaming highlight (`f9948d9`)
+- [done] `@velomark/math` package — KaTeX renderer plugin, wraps `katex.renderToString` with velomark's `MathRendererPlugin` interface
+- [done] `@velomark/mermaid` package — Mermaid diagram plugin, exact port of streamdown-mermaid with lazy-init + configurable theme/security
+- [done] Mermaid streaming fix — reactive `<Switch>`/`<Match>` in `CodeBlockView` so mermaid blocks are detected during streaming when language arrives gradually (`395eaa7`)
+- [done] Mermaid error/loading/retry UX — `lastValidSvg`, error suppression during streaming, loading spinner, retry button (`7b85964`)
+- [done] Mermaid fullscreen close fix — `stopPropagation` on close button prevents double-toggle (`b5026c9`)
+- [done] Caret DOM walk — JS walk to deepest last element child instead of CSS `::after` on block wrapper; works inside lists/blockquotes/headings (`b92b37b`)
+- [done] Debug log cleanup — removed 5 stale `console.log` from animation/inline rendering code (`c834001`)
 
 ---
 
