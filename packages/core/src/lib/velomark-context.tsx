@@ -1,5 +1,5 @@
 import type { RemendOptions } from "remend";
-import { type JSX, createContext, createEffect, useContext } from "solid-js";
+import { type JSX, createContext, createEffect, createMemo, useContext } from "solid-js";
 import { createStore, reconcile, unwrap } from "solid-js/store";
 import { buildRenderDocument, collectRenderMetrics } from "./model/render-document";
 import { hasIncompleteCodeFence } from "./incomplete-code-utils";
@@ -29,6 +29,7 @@ export interface VelomarkStore {
   dir?: "auto" | "ltr" | "rtl";
   document: RenderDocument<ParsedBlockData>;
   blockIds: string[];
+  isStreaming: () => boolean;
   lineNumbers?: boolean;
   definitions: ReferenceDefinitionMap;
   footnoteDefinitions: Record<string, RenderBlock<ParsedBlockData>[]>;
@@ -47,6 +48,8 @@ export interface VelomarkProviderProps {
   dir?: "auto" | "ltr" | "rtl";
   lineNumbers?: boolean;
   markdown: string;
+  onAnimationEnd?: () => void;
+  onAnimationStart?: () => void;
   onDebugMetrics?: (metrics: VelomarkDebugMetrics) => void;
   plugins?: PluginConfig;
   remend?: RemendOptions;
@@ -78,6 +81,19 @@ export function VelomarkProvider(props: VelomarkProviderProps) {
     setDocument(reconcile(next, { key: "id" }));
   });
 
+  const isStreaming = createMemo(() => document.blocks.some((b) => b.status === "streaming"));
+
+  let wasIncomplete = false;
+  createEffect(() => {
+    const incomplete = hasIncompleteCodeFence(props.markdown);
+    if (incomplete && !wasIncomplete) {
+      props.onAnimationStart?.();
+    } else if (!incomplete && wasIncomplete) {
+      props.onAnimationEnd?.();
+    }
+    wasIncomplete = incomplete;
+  });
+
   const store: VelomarkStore = {
     plugins: props.plugins ?? {},
     animationConfig: resolveAnimationConfig(props.animated),
@@ -93,6 +109,9 @@ export function VelomarkProvider(props: VelomarkProviderProps) {
     },
     get blockIds() {
       return document.blocks.map((b) => b.id);
+    },
+    get isStreaming() {
+      return isStreaming;
     },
     get definitions() {
       return document.definitions;

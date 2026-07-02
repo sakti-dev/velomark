@@ -27,6 +27,8 @@ export interface VelomarkProps {
   dir?: "auto" | "ltr" | "rtl";
   lineNumbers?: boolean;
   markdown: string;
+  onAnimationEnd?: () => void;
+  onAnimationStart?: () => void;
   onDebugMetrics?: (metrics: VelomarkDebugMetrics) => void;
   plugins?: PluginConfig;
   remend?: RemendOptions;
@@ -42,7 +44,7 @@ function VelomarkView(props: { class?: string }) {
 
   let rootRef: HTMLDivElement | undefined; // eslint-disable-line no-unassigned-vars -- assigned by Solid ref
 
-  const isStreaming = createMemo(() => vm.document.blocks.some((b) => b.status === "streaming"));
+  const isStreaming = vm.isStreaming;
 
   const hideCaret = createMemo(() => {
     const blocks = vm.document.blocks;
