@@ -1,5 +1,8 @@
 import { createSignal, onCleanup } from "solid-js";
-import { buildRenderDocument, collectRenderMetrics } from "../../src/core/model/render-document";
+import {
+  buildRenderDocument,
+  collectRenderMetrics,
+} from "../../packages/core/src/lib/model/render-document";
 import type {
   PlaygroundBenchmarkResult,
   PlaygroundBenchmarkState,

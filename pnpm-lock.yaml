@@ -257,6 +257,9 @@ importers:
       '@velomark/code':
         specifier: workspace:*
         version: link:packages/code
+      '@velomark/core':
+        specifier: workspace:*
+        version: link:packages/core
       '@velomark/math':
         specifier: workspace:*
         version: link:packages/math
@@ -281,9 +284,6 @@ importers:
       typescript:
         specifier: ^5.4.5
         version: 5.4.5
-      velomark:
-        specifier: workspace:*
-        version: link:packages/core
       vite:
         specifier: npm:@voidzero-dev/vite-plus-core@latest
         version: '@voidzero-dev/vite-plus-core@0.2.1(@types/node@20.12.12)(jiti@2.6.1)(typescript@5.4.5)(yaml@2.8.2)'

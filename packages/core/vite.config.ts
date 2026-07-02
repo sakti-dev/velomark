@@ -12,6 +12,7 @@ export default defineConfig({
     clean: true,
   },
   test: solidTest({
-    client: ["src/**/__tests__/**/*.test.{ts,tsx}"],
+    client: ["src/**/__tests__/**/*.test.{ts,tsx}", "test/**/*.test.{ts,tsx}"],
+    ssr: ["test/server.test.tsx"],
   }),
 });

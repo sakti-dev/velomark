@@ -1,5 +1,5 @@
 {
-  "name": "velomark",
+  "name": "@velomark/core",
   "version": "0.0.0",
   "private": true,
   "files": [
@@ -9,10 +9,12 @@
   "type": "module",
   "exports": {
     ".": {
-      "types": "./src/index.tsx",
-      "import": "./src/index.tsx"
+      "development": "./src/index.tsx",
+      "types": "./dist/index.d.mts",
+      "import": "./dist/index.mjs"
     },
-    "./styles.css": "./styles.css"
+    "./styles.css": "./styles.css",
+    "./package.json": "./package.json"
   },
   "scripts": {
     "build": "vp pack",

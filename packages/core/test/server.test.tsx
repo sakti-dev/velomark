@@ -1,6 +1,6 @@
 import { isServer, renderToString } from "solid-js/web";
 import { describe, expect, it } from "vite-plus/test";
-import { Velomark } from "../src";
+import { Velomark } from "@velomark/core";
 
 describe("environment", () => {
   it("runs on server", () => {
@@ -11,7 +11,7 @@ describe("environment", () => {
 
 describe("package surface", () => {
   it("exports the renderer entrypoint instead of starter placeholders", async () => {
-    const entry = await import("../src");
+    const entry = await import("@velomark/core");
 
     expect(entry).toHaveProperty("Velomark");
     expect(entry).not.toHaveProperty("Hello");

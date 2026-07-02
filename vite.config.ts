@@ -11,13 +11,6 @@ export default defineConfig({
   },
   fmt: {},
   test: solidTest({
-    client: [
-      "src/**/__tests__/**/*.test.{ts,tsx}",
-      "dev/**/__tests__/**/*.test.{ts,tsx}",
-      "test/*.test.{ts,tsx}",
-    ],
-    coverageExclude: ["src/**/__tests__/**", "src/**/*.test.{ts,tsx}", "src/**/*.d.ts"],
-    coverageInclude: ["src/**/*.{ts,tsx}"],
-    ssr: ["test/server.test.tsx"],
+    client: ["dev/**/__tests__/**/*.test.{ts,tsx}", "scripts/__tests__/**/*.test.{ts,tsx}"],
   }),
 });

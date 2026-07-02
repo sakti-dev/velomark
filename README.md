@@ -36,7 +36,7 @@ You can also use `npm` or `yarn` if that is what your app already uses.
 ## Quick start
 
 ```tsx
-import { Velomark } from "velomark";
+import { Velomark } from "@velomark/core";
 import "velomark/styles.css";
 
 const markdown = `# Hello
@@ -59,7 +59,7 @@ export function Example() {
 
 ```tsx
 import { createSignal } from "solid-js";
-import { Velomark } from "velomark";
+import { Velomark } from "@velomark/core";
 import "velomark/styles.css";
 
 export function StreamingExample() {
@@ -81,7 +81,7 @@ export function StreamingExample() {
 ### Use the built-in dark theme
 
 ```tsx
-import { Velomark } from "velomark";
+import { Velomark } from "@velomark/core";
 import "velomark/styles.css";
 
 export function DarkExample(props: { markdown: string }) {
@@ -92,7 +92,7 @@ export function DarkExample(props: { markdown: string }) {
 ### Override part of the theme
 
 ```tsx
-import { Velomark } from "velomark";
+import { Velomark } from "@velomark/core";
 import "velomark/styles.css";
 
 export function BrandedExample(props: { markdown: string }) {
@@ -118,7 +118,7 @@ export function BrandedExample(props: { markdown: string }) {
 ### Apply a theme to a host element
 
 ```ts
-import { applyTheme } from "velomark";
+import { applyTheme } from "@velomark/core";
 
 const host = document.querySelector(".markdown-preview");
 
@@ -130,8 +130,8 @@ if (host instanceof HTMLElement) {
 ### Override a language-specific code block renderer
 
 ```tsx
-import type { VelomarkCodeBlockRendererProps } from "velomark";
-import { Velomark } from "velomark";
+import type { VelomarkCodeBlockRendererProps } from "@velomark/core";
+import { Velomark } from "@velomark/core";
 import "velomark/styles.css";
 
 function JsonBlock(props: VelomarkCodeBlockRendererProps) {
@@ -157,8 +157,8 @@ export function CustomCodeExample(props: { markdown: string }) {
 ### Override a directive container
 
 ```tsx
-import type { VelomarkContainerRendererProps } from "velomark";
-import { Velomark } from "velomark";
+import type { VelomarkContainerRendererProps } from "@velomark/core";
+import { Velomark } from "@velomark/core";
 import "velomark/styles.css";
 
 function Callout(props: VelomarkContainerRendererProps) {
@@ -270,7 +270,7 @@ import {
   velomarkColors,
   velomarkThemePresets,
   velomarkTokens,
-} from "velomark";
+} from "@velomark/core";
 ```
 
 The public contract is:
@@ -325,7 +325,7 @@ import type {
   VelomarkProps,
   VelomarkTheme,
   VelomarkThemeName,
-} from "velomark";
+} from "@velomark/core";
 ```
 
 ### Parser export

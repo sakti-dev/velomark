@@ -2,8 +2,8 @@ import type { Component } from "solid-js";
 import { createCodePlugin } from "@velomark/code";
 import { createMathPlugin } from "@velomark/math";
 import { createMermaidPlugin } from "@velomark/mermaid";
-import { Velomark } from "velomark";
-import type { VelomarkDebugMetrics } from "velomark";
+import { Velomark } from "@velomark/core";
+import type { VelomarkDebugMetrics } from "@velomark/core";
 
 export interface RendererPanelProps {
   markdown: string;

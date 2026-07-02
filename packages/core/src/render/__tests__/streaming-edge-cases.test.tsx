@@ -43,7 +43,9 @@ describe("Velomark streaming edge cases", () => {
     expect(host.querySelector("pre > code")?.textContent).toContain("const answer =");
 
     setMarkdown([loadFixture("unfinished-fence.md"), "42;", "```"].join(""));
-    await Promise.resolve();
+    await waitFor(() =>
+      (host.querySelector("pre > code")?.textContent ?? "").includes("const answer =\n42;"),
+    );
 
     expect(host.querySelector("pre > code")?.textContent).toContain("const answer =\n42;");
   });
