@@ -69,21 +69,21 @@ Already implemented — `TableCopyDropdown` writes both `text/plain` (CSV/TSV/Ma
 
 ## Tier 3 — Ecosystem Polish
 
-### 11. [planned] i18n / translations context
+### 11. [done] i18n / translations context
 
-Port streamdown's `translations-context.tsx` (28 UI strings) to a Solid context. Allows consumers to localize button labels, tooltips, error messages.
+`translations?: Partial<VelomarkTranslations>` prop — 36 UI string keys covering all button labels, tooltips, error messages, and modal text. Threaded through `VelomarkStore.t`. All hardcoded strings in components replaced with `vm.t.*`. Defaults in `lib/translations.ts`, exported as `defaultTranslations`.
 
-### 12. [planned] Icon override system
+### 12. [done] Icon override system
 
-Port streamdown's `icon-context.tsx`. Allows consumers to swap any icon (copy, download, fullscreen, caret, etc.) via an `icons` prop.
+`icons?: Partial<IconMap>` prop — 10 icon keys (CheckIcon, CopyIcon, DownloadIcon, ExternalLinkIcon, Loader2Icon, Maximize2Icon, RotateCcwIcon, XIcon, ZoomInIcon, ZoomOutIcon). Threaded through `VelomarkStore.icons`. All components use `vm.icons.*` instead of direct imports. Defaults in `render/icons.tsx`, exported as `defaultIcons`.
 
-### 13. [planned] Tailwind `prefix` support
+### 13. [not-planned] Tailwind `prefix` support
 
-Port streamdown's `createCn` / `prefixClasses` to support Tailwind v4 `prefix()` configuration. Consumers using a class prefix (e.g. `tw-`) need this for styles to apply.
+Velomark uses `cn` from `cnfast` directly — consumers with a Tailwind prefix should configure `cnfast` at the app level, not per-component.
 
-### 14. [planned] Custom HTML `allowedTags` + `literalTagContent`
+### 14. [done] Custom HTML `allowedTags` + `literalTagContent`
 
-For AI UIs with `<mention>`-style custom tags. Streamdown whitelists tags via `allowedTags` and escapes markdown inside them via `literalTagContent`. Requires sanitizer integration.
+`allowedTags?: Record<string, string[]>` whitelists custom HTML tags and their allowed attributes — unknown tags are stripped (children preserved), unlisted attributes filtered. `literalTagContent?: string[]` renders tag content as literal text (no markdown parsing). Node-level filter in `HtmlElementView` — no sanitizer dependency, no HTML string round-tripping.
 
 ### 15. [not-porting] `normalizeHtmlIndentation`
 
@@ -121,6 +121,9 @@ Already implemented — `footnotes-section.tsx` gates rendering on `orderedFootn
 - [done] Granular controls config — `ControlsConfig` prop for per-type button visibility (table/mermaid)
 - [done] Link safety modal — `linkSafety` prop intercepts `<a>` clicks, shows confirmation modal
 - [done] Rich table clipboard — `text/html` + `text/plain` via `ClipboardItem` (already implemented)
+- [done] i18n translations — 36 UI string keys, `translations` prop, all components use `vm.t.*`
+- [done] Icon override system — 10 icon keys, `icons` prop, all components use `vm.icons.*`
+- [done] allowedTags + literalTagContent — tag/attribute whitelist + literal content rendering in HtmlElementView
 
 ---
 
@@ -131,3 +134,4 @@ Already implemented — `footnotes-section.tsx` gates rendering on `orderedFootn
 - **Remark/rehype plugins** — velomark's custom parser doesn't need them
 - **CJK plugin (streamdown-cjk)** — velomark's naive `indexOf` emphasis pairing already works for CJK (no flanking rules to fight); no autolink detection means no autolink-boundary problem. The problems streamdown-cjk solves are remark-specific.
 - **`normalizeHtmlIndentation`** — velomark has no indented-code-block detection; lines are trimmed before pattern matching, so indented HTML already works
+- **Tailwind `prefix` support** — velomark uses `cnfast` directly; prefix config belongs at the app level
