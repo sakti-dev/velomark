@@ -1,4 +1,4 @@
-import { type Component, createEffect, For, Show, createMemo } from "solid-js";
+import { type Component, createEffect, For, Show, createMemo, type JSX } from "solid-js";
 import { cn } from "cnfast";
 import type { RemendOptions } from "remend";
 import { BlockProvider } from "../lib/block-context";
@@ -18,11 +18,13 @@ import { RenderBlockView } from "./render-block";
 export interface VelomarkProps {
   animated?: AnimateOptions | boolean;
   caret?: VelomarkCaret;
+  children?: JSX.Element;
   class?: string;
   codeBlockOptions?: VelomarkCodeBlockOptions;
   codeBlockRenderers?: Record<string, Component<VelomarkCodeBlockRendererProps>>;
   containers?: Record<string, Component<VelomarkContainerRendererProps>>;
   debug?: boolean;
+  dir?: "auto" | "ltr" | "rtl";
   lineNumbers?: boolean;
   markdown: string;
   onDebugMetrics?: (metrics: VelomarkDebugMetrics) => void;
@@ -93,6 +95,7 @@ function VelomarkView(props: { class?: string }) {
         props.class,
       )}
       data-velomark-root=""
+      dir={vm.dir}
       style={caretStyle()}
     >
       <For each={vm.blockIds}>
@@ -113,6 +116,7 @@ function VelomarkView(props: { class?: string }) {
 export function Velomark(props: VelomarkProps) {
   return (
     <VelomarkProvider {...props}>
+      {props.children}
       <VelomarkView class={props.class} />
     </VelomarkProvider>
   );

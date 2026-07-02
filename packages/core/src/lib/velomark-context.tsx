@@ -26,6 +26,7 @@ export interface VelomarkStore {
   codeBlockRenderers?: Record<string, Component<VelomarkCodeBlockRendererProps>>;
   containers?: Record<string, Component<VelomarkContainerRendererProps>>;
   debug: boolean;
+  dir?: "auto" | "ltr" | "rtl";
   document: RenderDocument<ParsedBlockData>;
   blockIds: string[];
   lineNumbers?: boolean;
@@ -43,6 +44,7 @@ export interface VelomarkProviderProps {
   codeBlockRenderers?: Record<string, Component<VelomarkCodeBlockRendererProps>>;
   containers?: Record<string, Component<VelomarkContainerRendererProps>>;
   debug?: boolean;
+  dir?: "auto" | "ltr" | "rtl";
   lineNumbers?: boolean;
   markdown: string;
   onDebugMetrics?: (metrics: VelomarkDebugMetrics) => void;
@@ -84,6 +86,7 @@ export function VelomarkProvider(props: VelomarkProviderProps) {
     codeBlockRenderers: props.codeBlockRenderers,
     containers: props.containers,
     debug: props.debug ?? false,
+    dir: props.dir,
     lineNumbers: props.lineNumbers,
     get document() {
       return document;
