@@ -64,7 +64,10 @@ export const MermaidFullscreenButton: Component<MermaidFullscreenButtonProps> = 
               class="absolute top-4 right-4 z-10 rounded-md p-2 text-muted-foreground transition-all hover:bg-muted hover:text-foreground"
               title="Exit fullscreen"
               type="button"
-              onClick={toggle}
+              onClick={(event) => {
+                event.stopPropagation();
+                setIsFullscreen(false);
+              }}
             >
               <XIcon size={20} />
             </button>
