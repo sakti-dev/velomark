@@ -24,6 +24,11 @@ export const CodeBlockView: Component = () => {
   const mermaidPlugin = () => vm.plugins.mermaid;
 
   if (language() === "mermaid" && mermaidPlugin()) {
+    console.log("[CodeBlockView] mermaid block", {
+      status: block.status,
+      codeLen: data().code.length,
+      first50: data().code.slice(0, 50),
+    });
     return (
       <MermaidPluginView
         block={block as RenderBlock<CodeBlockData>}

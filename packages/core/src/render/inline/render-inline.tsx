@@ -26,27 +26,11 @@ export const RenderInline: Component<{ text?: string }> = (props) => {
   const animMeta = createMemo(() => {
     const ts = tokens();
     const isStreaming = blockAccessor?.()?.isStreaming ?? false;
-    const status = blockAccessor?.()?.status ?? "no-block";
     if (!resolvedConfig || !isStreaming) {
-      console.log("[RenderInline.animMeta] SKIP", {
-        hasConfig: !!resolvedConfig,
-        isStreaming,
-        status,
-        text: props.text?.slice(0, 60),
-        prevContentLength,
-        tokenCount: ts.length,
-      });
       return null;
     }
 
     const result = computeAnimation(ts, resolvedConfig, prevContentLength);
-    console.log("[RenderInline.animMeta] COMPUTE", {
-      text: props.text?.slice(0, 60),
-      prevContentLength,
-      totalChars: result.totalChars,
-      entryCount: result.entries.size,
-      paths: [...result.entries.keys()],
-    });
     prevContentLength = result.totalChars;
     return result.entries;
   });
