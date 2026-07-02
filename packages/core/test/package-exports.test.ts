@@ -15,9 +15,8 @@ describe("package exports", () => {
     };
   };
 
-  it("points the main export at packed dist artifacts with source fallback for dev", () => {
+  it("points the main export at packed dist artifacts", () => {
     const main = packageJson.exports["."];
-    expect(main.development).toBe("./src/index.tsx");
     expect(main.types).toBe("./dist/index.d.mts");
     expect(main.import).toBe("./dist/index.mjs");
   });
