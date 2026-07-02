@@ -127,7 +127,7 @@ for dir in "${PACKAGE_DIRS[@]}"; do
 
   info "Publishing $name@$version to npm..."
   cd "$REPO_ROOT/packages/$dir"
-  pnpm publish --ignore-scripts
+  pnpm publish --access public --ignore-scripts
   info "$name published."
 done
 

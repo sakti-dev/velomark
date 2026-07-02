@@ -15,6 +15,9 @@
     "./styles.css": "./styles.css",
     "./package.json": "./package.json"
   },
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "build": "vp pack",
     "test": "vp test",
