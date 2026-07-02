@@ -14,6 +14,7 @@ export interface AnimationConfig {
   easing: string;
   sep: "word" | "char";
   stagger: number;
+  maxStaggerWindow: number;
 }
 
 export function resolveAnimationConfig(config: AnimateOptions): AnimationConfig {
@@ -23,6 +24,7 @@ export function resolveAnimationConfig(config: AnimateOptions): AnimationConfig 
     easing: config.easing ?? "ease",
     sep: config.sep ?? "word",
     stagger: config.stagger ?? 40,
+    maxStaggerWindow: config.maxStaggerWindow ?? 400,
   };
 }
 
@@ -36,6 +38,25 @@ export interface AnimationResult {
 interface CharCounter {
   count: number;
   newIndex: number;
+}
+
+interface PendingWord {
+  meta: WordMeta;
+  index: number;
+}
+
+/**
+ * After the walk, compress stagger for large batches so the full cascade
+ * finishes within `maxStaggerWindow`. Small batches keep the linear stagger.
+ */
+function applyAdaptiveStagger(pending: PendingWord[], config: AnimationConfig): void {
+  const count = pending.length;
+  if (count <= 1) return;
+
+  const stagger = Math.min(config.stagger, config.maxStaggerWindow / count);
+  for (const { meta, index } of pending) {
+    meta.delay = index * stagger;
+  }
 }
 
 /**
@@ -54,8 +75,11 @@ export function computeAnimation(
 ): AnimationResult {
   const entries = new Map<string, WordMeta[]>();
   const charCounter: CharCounter = { count: 0, newIndex: 0 };
+  const pending: PendingWord[] = [];
 
-  walk(tokens, "", config, prevContentLength, charCounter, entries);
+  walk(tokens, "", config, prevContentLength, charCounter, entries, pending);
+
+  applyAdaptiveStagger(pending, config);
 
   return { entries, totalChars: charCounter.count };
 }
@@ -73,10 +97,13 @@ export function computeAnimationMulti(
 ): AnimationResult {
   const entries = new Map<string, WordMeta[]>();
   const charCounter: CharCounter = { count: 0, newIndex: 0 };
+  const pending: PendingWord[] = [];
 
   for (const input of inputs) {
-    walk(input.tokens, input.basePath, config, prevContentLength, charCounter, entries);
+    walk(input.tokens, input.basePath, config, prevContentLength, charCounter, entries, pending);
   }
+
+  applyAdaptiveStagger(pending, config);
 
   return { entries, totalChars: charCounter.count };
 }
@@ -88,6 +115,7 @@ function walk(
   prevLen: number,
   charCounter: CharCounter,
   entries: Map<string, WordMeta[]>,
+  pending: PendingWord[],
 ): void {
   for (let i = 0; i < tokens.length; i += 1) {
     const token = tokens[i];
@@ -96,7 +124,7 @@ function walk(
 
     switch (token.type) {
       case "text":
-        processText(token.text, path, config, prevLen, charCounter, entries);
+        processText(token.text, path, config, prevLen, charCounter, entries, pending);
         break;
       case "emphasis":
       case "strong":
@@ -104,7 +132,7 @@ function walk(
       case "link":
       case "text-directive":
       case "html-element":
-        walk(token.children, `${path}.`, config, prevLen, charCounter, entries);
+        walk(token.children, `${path}.`, config, prevLen, charCounter, entries, pending);
         break;
       default:
         // code, inline-math, html, break, footnote-reference, image — skip
@@ -120,6 +148,7 @@ function processText(
   prevLen: number,
   charCounter: CharCounter,
   entries: Map<string, WordMeta[]>,
+  pending: PendingWord[],
 ): void {
   if (!text.trim()) {
     charCounter.count += text.length;
@@ -128,21 +157,32 @@ function processText(
   }
 
   const parts = config.sep === "char" ? splitIntoChars(text) : splitIntoWords(text);
-  const meta: WordMeta[] = parts.map((part) => {
+  const meta: WordMeta[] = [];
+
+  for (const part of parts) {
     const partStart = charCounter.count;
     charCounter.count += part.length;
+
     if (isWhitespaceOnly(part)) {
-      return { text: part, delay: 0, duration: 0, isWhitespace: true };
+      meta.push({ text: part, delay: 0, duration: 0, isWhitespace: true });
+      continue;
     }
+
     const skipAnimation = prevLen > 0 && partStart < prevLen;
-    const delay = skipAnimation ? 0 : charCounter.newIndex++ * config.stagger;
-    return {
-      text: part,
-      delay,
-      duration: skipAnimation ? 0 : config.duration,
-      isWhitespace: false,
-    };
-  });
+    if (skipAnimation) {
+      meta.push({ text: part, delay: 0, duration: 0, isWhitespace: false });
+    } else {
+      const index = charCounter.newIndex++;
+      const wordMeta: WordMeta = {
+        text: part,
+        delay: 0,
+        duration: config.duration,
+        isWhitespace: false,
+      };
+      pending.push({ meta: wordMeta, index });
+      meta.push(wordMeta);
+    }
+  }
 
   entries.set(path, meta);
 }

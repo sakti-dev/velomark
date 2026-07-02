@@ -160,6 +160,8 @@ export interface AnimateOptions {
   easing?: string;
   sep?: "word" | "char";
   stagger?: number;
+  /** Cap the total cascade span (ms) by compressing stagger for large batches. */
+  maxStaggerWindow?: number;
 }
 
 export interface VelomarkContainerRendererProps {
