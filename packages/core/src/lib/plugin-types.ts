@@ -5,7 +5,7 @@ export interface HighlightToken {
   color?: string;
   content: string;
   htmlAttrs?: Record<string, string>;
-  htmlStyle?: Record<string, string>;
+  htmlStyle?: string;
   offset?: number;
 }
 

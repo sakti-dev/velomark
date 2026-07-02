@@ -25,8 +25,8 @@ export type HighlightResult = TokensResult;
  */
 export interface HighlightOptions {
   code: string;
-  language: BundledLanguage;
-  themes: [ThemeInput, ThemeInput];
+  language: string;
+  themes: [unknown, unknown];
 }
 
 /**
@@ -36,11 +36,11 @@ export interface CodeHighlighterPlugin {
   /**
    * Get list of supported languages
    */
-  getSupportedLanguages: () => BundledLanguage[];
+  getSupportedLanguages: () => string[];
   /**
    * Get the configured themes
    */
-  getThemes: () => [ThemeInput, ThemeInput];
+  getThemes: () => [unknown, unknown];
   /**
    * Highlight code and return tokens
    * Returns null if highlighting not ready yet (async loading)
@@ -54,7 +54,7 @@ export interface CodeHighlighterPlugin {
   /**
    * Check if language is supported
    */
-  supportsLanguage: (language: BundledLanguage) => boolean;
+  supportsLanguage: (language: string) => boolean;
   type: "code-highlighter";
 }
 
@@ -103,8 +103,8 @@ const tokensCache = new Map<string, TokensResult>();
 // Subscribers for async token updates
 const subscribers = new Map<string, Set<(result: TokensResult) => void>>();
 
-const getThemeName = (theme: ThemeInput): string =>
-  typeof theme === "string" ? theme : (theme.name ?? "custom");
+const getThemeName = (theme: unknown): string =>
+  typeof theme === "string" ? theme : ((theme as ThemeRegistrationAny)?.name ?? "custom");
 
 const getHighlighterCacheKey = (
   language: BundledLanguage | SpecialLanguage,
@@ -149,16 +149,16 @@ export function createCodePlugin(options: CodePluginOptions = {}): CodeHighlight
     name: "shiki",
     type: "code-highlighter",
 
-    supportsLanguage(language: BundledLanguage): boolean {
+    supportsLanguage(language: string): boolean {
       const resolvedLanguage = normalizeLanguage(language);
       return languageNames.has(resolvedLanguage as BundledLanguage);
     },
 
-    getSupportedLanguages(): BundledLanguage[] {
+    getSupportedLanguages(): string[] {
       return Array.from(languageNames);
     },
 
-    getThemes(): [ThemeInput, ThemeInput] {
+    getThemes(): [unknown, unknown] {
       return defaultThemes;
     },
 
@@ -167,6 +167,7 @@ export function createCodePlugin(options: CodePluginOptions = {}): CodeHighlight
       callback?: (result: HighlightResult) => void,
     ): HighlightResult | null {
       const resolvedLanguage = normalizeLanguage(language);
+      const typedThemes = themes as [ThemeInput, ThemeInput];
       const themeNames: [string, string] = [getThemeName(themes[0]), getThemeName(themes[1])];
       const tokensCacheKey = getTokensCacheKey(code, resolvedLanguage, themeNames);
 
@@ -192,7 +193,7 @@ export function createCodePlugin(options: CodePluginOptions = {}): CodeHighlight
         : "text";
 
       // Start highlighting in background
-      getHighlighter(safeLanguage, themes)
+      getHighlighter(safeLanguage, typedThemes)
         .then((highlighter) => {
           const availableLangs = highlighter.getLoadedLanguages();
           const langToUse = (
@@ -222,7 +223,7 @@ export function createCodePlugin(options: CodePluginOptions = {}): CodeHighlight
           }
         })
         .catch((error) => {
-          console.error("[Streamdown Code] Failed to highlight code:", error);
+          console.error("[Velomark Code] Failed to highlight code:", error);
           subscribers.delete(tokensCacheKey);
         });
 

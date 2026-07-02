@@ -2,12 +2,12 @@ import type { MermaidConfig } from "mermaid";
 import mermaidLib from "mermaid";
 
 export interface MermaidInstance {
-  initialize: (config: MermaidConfig) => void;
+  initialize: (config: unknown) => void;
   render: (id: string, source: string) => Promise<{ svg: string }>;
 }
 
 export interface DiagramPlugin {
-  getMermaid: (config?: MermaidConfig) => MermaidInstance;
+  getMermaid: (config?: unknown) => MermaidInstance;
   language: string;
   name: "mermaid";
   type: "diagram";
@@ -30,8 +30,8 @@ export function createMermaidPlugin(options: MermaidPluginOptions = {}): Diagram
   let currentConfig: MermaidConfig = { ...defaultConfig, ...options.config };
 
   const mermaidInstance: MermaidInstance = {
-    initialize(config: MermaidConfig) {
-      currentConfig = { ...defaultConfig, ...options.config, ...config };
+    initialize(config: unknown) {
+      currentConfig = { ...defaultConfig, ...options.config, ...(config as MermaidConfig) };
       mermaidLib.initialize(currentConfig);
       initialized = true;
     },
@@ -48,7 +48,7 @@ export function createMermaidPlugin(options: MermaidPluginOptions = {}): Diagram
     name: "mermaid",
     type: "diagram",
     language: "mermaid",
-    getMermaid(config?: MermaidConfig) {
+    getMermaid(config?: unknown) {
       if (config) {
         mermaidInstance.initialize(config);
       }

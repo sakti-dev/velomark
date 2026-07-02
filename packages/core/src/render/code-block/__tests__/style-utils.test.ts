@@ -38,7 +38,7 @@ describe("buildTokenStyle", () => {
   it("redirects htmlStyle.color to --vm-c and passes --shiki-dark through (dual-theme)", () => {
     const result = buildTokenStyle({
       content: "x",
-      htmlStyle: { color: "#D73A49", "--shiki-dark": "#F97583" },
+      htmlStyle: "color:#D73A49;--shiki-dark:#F97583",
     });
     expect(result).toEqual({
       "--vm-c": "#D73A49",
@@ -50,7 +50,7 @@ describe("buildTokenStyle", () => {
     const result = buildTokenStyle({
       content: "x",
       bgColor: "#fff",
-      htmlStyle: { "background-color": "#eee", "--shiki-dark-bg": "#333" },
+      htmlStyle: "background-color:#eee;--shiki-dark-bg:#333",
     });
     expect(result).toEqual({
       "--vm-tbg": "#eee",
@@ -61,7 +61,7 @@ describe("buildTokenStyle", () => {
   it("passes through non-color htmlStyle properties as-is", () => {
     const result = buildTokenStyle({
       content: "x",
-      htmlStyle: { "font-weight": "bold", "--shiki-dark": "#F97583" },
+      htmlStyle: "font-weight:bold;--shiki-dark:#F97583",
     });
     expect(result).toEqual({
       "--shiki-dark": "#F97583",

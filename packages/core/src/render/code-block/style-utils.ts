@@ -26,7 +26,7 @@ export function buildTokenStyle(token: HighlightToken): Record<string, string> {
   if (token.color) style["--vm-c"] = token.color;
   if (token.bgColor) style["--vm-tbg"] = token.bgColor;
   if (token.htmlStyle) {
-    for (const [key, value] of Object.entries(token.htmlStyle)) {
+    for (const [key, value] of Object.entries(parseShikiStyle(token.htmlStyle, "color"))) {
       if (key === "color") style["--vm-c"] = value;
       else if (key === "background-color") style["--vm-tbg"] = value;
       else style[key] = value;
