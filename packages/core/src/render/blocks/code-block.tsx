@@ -1,4 +1,4 @@
-import type { Component } from "solid-js";
+import { type Component, Switch, Match } from "solid-js";
 import { Dynamic } from "solid-js/web";
 
 import type { CodeBlockData } from "../../lib/parser/block-boundaries";
@@ -15,29 +15,7 @@ export const CodeBlockView: Component = () => {
   const data = () => block.data as CodeBlockData;
   const language = () => data().language?.trim() || undefined;
   const customRenderer = () => (language() ? vm.codeBlockRenderers?.[language() ?? ""] : undefined);
-  const resolvedCustomRenderer = customRenderer();
-
-  if (resolvedCustomRenderer) {
-    return <Dynamic code={data().code} component={resolvedCustomRenderer} language={language()} />;
-  }
-
   const mermaidPlugin = () => vm.plugins.mermaid;
-
-  if (language() === "mermaid" && mermaidPlugin()) {
-    console.log("[CodeBlockView] mermaid block", {
-      status: block.status,
-      codeLen: data().code.length,
-      first50: data().code.slice(0, 50),
-    });
-    return (
-      <MermaidPluginView
-        block={block as RenderBlock<CodeBlockData>}
-        debug={vm.debug}
-        index={index}
-        plugin={mermaidPlugin() as NonNullable<ReturnType<typeof mermaidPlugin>>}
-      />
-    );
-  }
 
   const effectiveLineNumbers = () => vm.codeBlockOptions?.lineNumbers ?? vm.lineNumbers;
   const options = () =>
@@ -51,20 +29,35 @@ export const CodeBlockView: Component = () => {
   const showLineNumbers = () => options().lineNumbers && fenceMeta().lineNumbers;
 
   return (
-    <CodeBlock
-      code={data().code}
-      copyButton={options().copyButton}
-      data-velomark-block-id={vm.debug ? block.id : undefined}
-      data-velomark-block-index={index}
-      data-velomark-block-kind={block.kind}
-      data-velomark-incomplete={block.status === "streaming" ? "" : undefined}
-      highlight={options().highlight}
-      language={language()}
-      languageLabel={options().languageLabel}
-      codePlugin={codePlugin() ?? undefined}
-      isIncomplete={block.status === "streaming"}
-      lineNumbers={showLineNumbers()}
-      startLine={fenceMeta().startLine}
-    />
+    <Switch>
+      <Match when={customRenderer()} keyed>
+        {(renderer) => <Dynamic code={data().code} component={renderer} language={language()} />}
+      </Match>
+      <Match when={language() === "mermaid" && mermaidPlugin()}>
+        <MermaidPluginView
+          block={block as RenderBlock<CodeBlockData>}
+          debug={vm.debug}
+          index={index}
+          plugin={mermaidPlugin() as NonNullable<ReturnType<typeof mermaidPlugin>>}
+        />
+      </Match>
+      <Match when={true}>
+        <CodeBlock
+          code={data().code}
+          copyButton={options().copyButton}
+          data-velomark-block-id={vm.debug ? block.id : undefined}
+          data-velomark-block-index={index}
+          data-velomark-block-kind={block.kind}
+          data-velomark-incomplete={block.status === "streaming" ? "" : undefined}
+          highlight={options().highlight}
+          language={language()}
+          languageLabel={options().languageLabel}
+          codePlugin={codePlugin() ?? undefined}
+          isIncomplete={block.status === "streaming"}
+          lineNumbers={showLineNumbers()}
+          startLine={fenceMeta().startLine}
+        />
+      </Match>
+    </Switch>
   );
 };

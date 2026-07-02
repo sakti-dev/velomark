@@ -44,22 +44,10 @@ export const MermaidDiagram: Component<MermaidDiagramProps> = (props) => {
     const renderToken = (activeRenderToken += 1);
     setIsLoading(true);
 
-    console.log("[MermaidDiagram] render attempt", {
-      token: renderToken,
-      len: source.length,
-      first50: source.slice(0, 50),
-      isIncomplete: props.isIncomplete,
-    });
-
     props.plugin
       .getMermaid()
       .render(generateChartId(source), source)
       .then(({ svg: rendered }) => {
-        console.log("[MermaidDiagram] render OK", {
-          token: renderToken,
-          stale: activeRenderToken !== renderToken,
-          svgLen: rendered.length,
-        });
         if (activeRenderToken !== renderToken) {
           return;
         }
@@ -68,11 +56,6 @@ export const MermaidDiagram: Component<MermaidDiagramProps> = (props) => {
         setError(null);
       })
       .catch((err: unknown) => {
-        console.log("[MermaidDiagram] render FAIL", {
-          token: renderToken,
-          stale: activeRenderToken !== renderToken,
-          msg: err instanceof Error ? err.message.slice(0, 120) : String(err).slice(0, 120),
-        });
         if (activeRenderToken !== renderToken) {
           return;
         }
