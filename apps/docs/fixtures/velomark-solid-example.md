@@ -1,10 +1,10 @@
-# 🚀 Incremark SolidJS Example
+# 🚀 Velomark SolidJS Example
 
-Welcome to **Incremark**! An incremental Markdown parser designed for AI streaming output.
+Welcome to **Velomark**! An incremental Markdown parser designed for AI streaming output.
 
 ## 📋 Features
 
-Incremark provides rich features to support AI streaming output scenarios:
+Velomark provides rich features to support AI streaming output scenarios:
 
 - ⚡ **Incremental Parsing** - Only parse new content, saving 90%+ CPU overhead
 - 🔄 **Streaming Friendly** - Support char-by-char/line-by-line input with real-time rendering
@@ -22,7 +22,7 @@ Incremark provides rich features to support AI streaming output scenarios:
 
 ## 📐 Math Formulas
 
-Incremark supports LaTeX math formulas, including inline and block formulas.
+Velomark supports LaTeX math formulas, including inline and block formulas.
 
 Inline formula: The mass-energy equation $E = mc^2$ is one of the most famous formulas in physics.
 
@@ -40,7 +40,7 @@ $$
 
 ## 📊 Mermaid Charts
 
-Incremark has built-in support for Mermaid chart rendering, supporting flowcharts, sequence diagrams, and more.
+Velomark has built-in support for Mermaid chart rendering, supporting flowcharts, sequence diagrams, and more.
 
 ### Flowchart
 
@@ -169,7 +169,7 @@ pie title Renderer focus
 
 ## 📝 GFM Features
 
-Incremark supports all GitHub Flavored Markdown (GFM) features.
+Velomark supports all GitHub Flavored Markdown (GFM) features.
 
 ### Tables
 
@@ -201,7 +201,7 @@ This is ~~deleted text~~, and this is normal text.
 
 ## 🎨 Custom Containers
 
-Incremark supports custom containers using the `::: container` syntax. Here are some examples:
+Velomark supports custom containers using the `::: container` syntax. Here are some examples:
 
 :::warning
 This is a **warning** container. Use it to highlight important warnings or cautions to users.
@@ -232,16 +232,16 @@ All of these can be in the same container!
 
 ### How to Create Custom Container Components
 
-In SolidJS, you can create custom container components and pass them to `Incremark`:
+In SolidJS, you can create custom container components and pass them to `Velomark`:
 
 ```tsx
-import { useIncremark, Incremark } from "@incremark/solid";
+import { useVelomark, Velomark } from "@velomark/core";
 import { CustomWarningContainer } from "./CustomWarningContainer";
 import { CustomInfoContainer } from "./CustomInfoContainer";
 import { CustomTipContainer } from "./CustomTipContainer";
 
 function App() {
-  const incremark = useIncremark({
+  const velomark = useVelomark({
     gfm: true,
     containers: true, // Enable container support
   });
@@ -253,7 +253,7 @@ function App() {
     tip: CustomTipContainer,
   };
 
-  return <Incremark incremark={incremark} customContainers={customContainers} />;
+  return <Velomark velomark={velomark} customContainers={customContainers} />;
 }
 ```
 
@@ -287,7 +287,7 @@ export const CustomWarningContainer: React.FC<CustomWarningContainerProps> = ({
 
 ## 📊 Custom Code Blocks
 
-Incremark supports custom code block rendering components. For example, you can configure custom rendering for the `echarts` language:
+Velomark supports custom code block rendering components. For example, you can configure custom rendering for the `echarts` language:
 
 ```echarts
 {
@@ -310,21 +310,21 @@ Incremark supports custom code block rendering components. For example, you can 
 
 ### How to Create Custom Code Block Components
 
-In SolidJS, you can create custom code block components and pass them to `Incremark`:
+In SolidJS, you can create custom code block components and pass them to `Velomark`:
 
 ```tsx
-import { useIncremark, Incremark } from "@incremark/solid";
+import { useVelomark, Velomark } from "@velomark/core";
 import { CustomEchartCodeBlock } from "./CustomEchartCodeBlock";
 
 function App() {
-  const incremark = useIncremark({ gfm: true });
+  const velomark = useVelomark({ gfm: true });
 
   // Define custom code block mapping
   const customCodeBlocks = {
     echarts: CustomEchartCodeBlock,
   };
 
-  return <Incremark incremark={incremark} customCodeBlocks={customCodeBlocks} />;
+  return <Velomark velomark={velomark} customCodeBlocks={customCodeBlocks} />;
 }
 ```
 
@@ -397,7 +397,7 @@ export const CustomEchartCodeBlock: React.FC<CustomEchartCodeBlockProps> = ({ co
 
 ## 🔗 HTML Support
 
-When the `htmlTree` option is enabled, Incremark can parse and render HTML elements. Here are some HTML fragment examples:
+When the `htmlTree` option is enabled, Velomark can parse and render HTML elements. Here are some HTML fragment examples:
 
 <div style="background: #f0f9ff; padding: 1rem; border-radius: 6px; border-left: 4px solid #3b82f6; margin: 1em 0;">
   <p style="margin: 0; color: #1e40af;"><strong>HTML Element Example</strong></p>
@@ -413,13 +413,13 @@ When the `htmlTree` option is enabled, Incremark can parse and render HTML eleme
 
 ## 💻 Code Highlighting
 
-Incremark uses Shiki for code highlighting, supporting multiple programming languages:
+Velomark uses Shiki for code highlighting, supporting multiple programming languages:
 
 ```typescript
-import { useIncremark, Incremark } from '@incremark/solid'
+import { useVelomark, Velomark } from '@velomark/core'
 
 function App() {
-  const incremark = useIncremark({
+  const velomark = useVelomark({
     gfm: true,
     containers: true,
     htmlTree: true,  // Enable HTML support
@@ -436,8 +436,8 @@ function App() {
   }
 
   return (
-    <Incremark
-      incremark={incremark}
+    <Velomark
+      velomark={velomark}
       customContainers={customContainers}
       customCodeBlocks={customCodeBlocks}
     />
@@ -447,7 +447,7 @@ function App() {
 
 ## ⌨️ Typewriter Effect
 
-Incremark has built-in typewriter effect support for character-by-character display:
+Velomark has built-in typewriter effect support for character-by-character display:
 
 - **Character-by-character display**: Control the number of characters displayed each time
 - **Adjustable speed**: Adjust tick interval for different speeds
@@ -456,9 +456,9 @@ Incremark has built-in typewriter effect support for character-by-character disp
 
 ## 📊 Performance Comparison
 
-Incremark's incremental parsing strategy brings significant performance improvements:
+Velomark's incremental parsing strategy brings significant performance improvements:
 
-| Metric       | Traditional | Incremark  | Improvement |
+| Metric       | Traditional | Velomark   | Improvement |
 | ------------ | ----------- | ---------- | ----------- |
 | Parse Volume | ~500K chars | ~50K chars | 90% ↓       |
 | CPU Usage    | High        | Low        | 80% ↓       |
@@ -466,17 +466,17 @@ Incremark's incremental parsing strategy brings significant performance improvem
 
 ## 📝 Blockquote Example
 
-> 💡 **Tip**: Incremark's core advantage is **parsing-level incrementalization**, not just render-level optimization.
+> 💡 **Tip**: Velomark's core advantage is **parsing-level incrementalization**, not just render-level optimization.
 >
 > This means parsing performance remains stable even with very long content.
 
 ## 🔗 Links and Images
 
-This is a [link example](https://www.incremark.com/) pointing to the Incremark website.
+This is a [link example](https://www.velomark.dev/) pointing to the Velomark website.
 
 ## 📜 Footnote Support
 
-Incremark supports complete footnote functionality[^1], including footnote references and definitions.
+Velomark supports complete footnote functionality[^1], including footnote references and definitions.
 
 [^1]: This is the footnote content. Footnotes can contain any Markdown content, including **bold**, _italic_, and `code`.
 
@@ -487,4 +487,4 @@ Incremark supports complete footnote functionality[^1], including footnote refer
 - **Streaming Input**: Support char-by-char or block-by-block input
 - **Type Safety**: Complete TypeScript type definitions
 
-**Thanks for using Incremark!** 🙏
+**Thanks for using Velomark!** 🙏

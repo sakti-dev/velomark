@@ -46,7 +46,7 @@ describe("playground stream controls", () => {
     expect(container.textContent).not.toContain("Flowchart");
 
     await vi.advanceTimersByTimeAsync(100);
-    expect(container.textContent).toContain("Incremark SolidJS Example");
+    expect(container.textContent).toContain("Velomark SolidJS Example");
     expect(container.textContent).toContain("Flowchart");
 
     dispose();

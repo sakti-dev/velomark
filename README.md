@@ -8,36 +8,93 @@
 
 Solid-only Markdown rendering built for streamed AI responses.[^incremark]
 
-`velomark` is a public npm package for apps that need Markdown rendering to stay responsive while content is still arriving. It is optimized for append-heavy streams, stable DOM identity for already-rendered blocks, and a restrained Solid-first API that is easy to integrate into product code.
+`@velomark/core` is a Solid.js component for apps that need Markdown rendering to stay responsive while content is still arriving. It is optimized for append-heavy streams, stable DOM identity for already-rendered blocks, and a restrained Solid-first API that is easy to integrate into product code.
 
-## Why use velomark?
+## Overview
 
-- Streaming-first rendering instead of snapshot-first repainting
-- Stable block reuse so earlier content keeps its DOM identity when later content grows
-- Solid-only package surface with no framework abstraction layer
-- Strong built-in syntax surface for the Markdown features common in coding-agent output
-- Built-in defaults for code blocks, Mermaid, math, footnotes, directives, tables, and HTML
-- First-class theming with semantic tokens, light and dark presets, and partial overrides
+Formatting Markdown is easy, but when you tokenize and stream it, new challenges arise. Velomark is built specifically to handle the unique requirements of streaming Markdown content from AI models, providing seamless formatting even with incomplete or unterminated Markdown blocks.
 
-## Requirements
+Velomark powers the [playground](https://velomark.vercel.app) but can be installed as a standalone package for your own streaming needs.
 
-- `solid-js` `^1.9.10`
-- Node.js `>=18`
-- A stylesheet import from `velomark/styles.css`
+## Features
 
-## Install
+- **Streaming-optimized** — Handles incomplete Markdown gracefully via `remend`
+- **Plugin system** — Code highlighting (Shiki), Math (KaTeX), and Mermaid diagrams as optional plugins
+- **Animation support** — Fade-in, blur-in, and slide-up animations for streaming content
+- **Code blocks** — Syntax highlighting, copy button, language label, line numbers, download
+- **GitHub Flavored Markdown** — Tables, task lists, and strikethrough support
+- **Math rendering** — LaTeX equations via KaTeX plugin
+- **Mermaid diagrams** — Render Mermaid diagrams with pan/zoom/fullscreen controls
+- **Container directives** — Custom callouts, warnings, and info blocks
+- **Link safety** — Optional confirmation modal for external links
+- **Internationalization** — Built-in translation support with English defaults
+- **Accessibility** — RTL/LTR direction support
+- **Security-first** — Sanitize your Markdown before passing it to Velomark
+
+## Installation
 
 ```bash
-pnpm add velomark solid-js
+pnpm add @velomark/core solid-js
 ```
 
-You can also use `npm` or `yarn` if that is what your app already uses.
+Then import the stylesheet in your app:
+
+```css
+@import "@velomark/core/styles.css";
+```
+
+### Optional plugins
+
+Velomark's full power comes from its plugin ecosystem. Install only what you need:
+
+```bash
+pnpm add @velomark/code    # Shiki-based code highlighting
+pnpm add @velomark/math    # KaTeX math rendering
+pnpm add @velomark/mermaid # Mermaid diagram rendering
+```
+
+### CSS Custom Properties
+
+Velomark components rely on shadcn/ui-style CSS custom properties for colors, border radius, and spacing. Add the following to your global CSS if you don't already have them:
+
+```css
+:root {
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.145 0 0);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.145 0 0);
+  --muted: oklch(0.97 0 0);
+  --muted-foreground: oklch(0.556 0 0);
+  --border: oklch(0.922 0 0);
+  --input: oklch(0.922 0 0);
+  --primary: oklch(0.205 0 0);
+  --primary-foreground: oklch(0.985 0 0);
+  --radius: 0.625rem;
+}
+
+.dark {
+  --background: oklch(0.145 0 0);
+  --foreground: oklch(0.985 0 0);
+  --card: oklch(0.205 0 0);
+  --card-foreground: oklch(0.985 0 0);
+  --muted: oklch(0.269 0 0);
+  --muted-foreground: oklch(0.708 0 0);
+  --border: oklch(0.269 0 0);
+  --input: oklch(0.269 0 0);
+  --primary: oklch(0.985 0 0);
+  --primary-foreground: oklch(0.205 0 0);
+  --radius: 0.625rem;
+}
+```
 
 ## Quick start
 
 ```tsx
 import { Velomark } from "@velomark/core";
-import "velomark/styles.css";
+import { createCodePlugin } from "@velomark/code";
+import "@velomark/core/styles.css";
+
+const code = createCodePlugin();
 
 const markdown = `# Hello
 
@@ -49,18 +106,21 @@ const answer = 42;
 `;
 
 export function Example() {
-  return <Velomark markdown={markdown} />;
+  return <Velomark markdown={markdown} plugins={{ code }} />;
 }
 ```
 
 ## Common integration examples
 
-### Render a live stream
+### Render a live stream with animation
 
 ```tsx
 import { createSignal } from "solid-js";
 import { Velomark } from "@velomark/core";
-import "velomark/styles.css";
+import { createCodePlugin } from "@velomark/code";
+import "@velomark/core/styles.css";
+
+const code = createCodePlugin();
 
 export function StreamingExample() {
   const [markdown, setMarkdown] = createSignal("# Thinking");
@@ -72,58 +132,29 @@ export function StreamingExample() {
   return (
     <>
       <button onClick={() => append("\n\nMore content arrived.")}>Append</button>
-      <Velomark markdown={markdown()} />
+      <Velomark animated caret="block" markdown={markdown()} plugins={{ code }} />
     </>
   );
 }
 ```
 
-### Use the built-in dark theme
+### With math and Mermaid
 
 ```tsx
 import { Velomark } from "@velomark/core";
-import "velomark/styles.css";
+import { createCodePlugin } from "@velomark/code";
+import { createMathPlugin } from "@velomark/math";
+import { createMermaidPlugin } from "@velomark/mermaid";
+import "@velomark/core/styles.css";
 
-export function DarkExample(props: { markdown: string }) {
-  return <Velomark markdown={props.markdown} theme="dark" />;
-}
-```
+const code = createCodePlugin();
+const math = createMathPlugin();
+const mermaid = createMermaidPlugin();
 
-### Override part of the theme
-
-```tsx
-import { Velomark } from "@velomark/core";
-import "velomark/styles.css";
-
-export function BrandedExample(props: { markdown: string }) {
+export function FullExample(props: { markdown: string }) {
   return (
-    <Velomark
-      markdown={props.markdown}
-      theme={{
-        color: {
-          text: {
-            accent: "#0f62fe",
-          },
-          diagram: {
-            primary: "#0f62fe",
-            secondary: "#78a9ff",
-          },
-        },
-      }}
-    />
+    <Velomark markdown={props.markdown} plugins={{ code, math, mermaid }} animated caret="block" />
   );
-}
-```
-
-### Apply a theme to a host element
-
-```ts
-import { applyTheme } from "@velomark/core";
-
-const host = document.querySelector(".markdown-preview");
-
-if (host instanceof HTMLElement) {
-  applyTheme(host, "dark");
 }
 ```
 
@@ -132,7 +163,10 @@ if (host instanceof HTMLElement) {
 ```tsx
 import type { VelomarkCodeBlockRendererProps } from "@velomark/core";
 import { Velomark } from "@velomark/core";
-import "velomark/styles.css";
+import { createCodePlugin } from "@velomark/code";
+import "@velomark/core/styles.css";
+
+const code = createCodePlugin();
 
 function JsonBlock(props: VelomarkCodeBlockRendererProps) {
   return (
@@ -145,10 +179,9 @@ function JsonBlock(props: VelomarkCodeBlockRendererProps) {
 export function CustomCodeExample(props: { markdown: string }) {
   return (
     <Velomark
-      codeBlockRenderers={{
-        json: JsonBlock,
-      }}
+      codeBlockRenderers={{ json: JsonBlock }}
       markdown={props.markdown}
+      plugins={{ code }}
     />
   );
 }
@@ -159,7 +192,7 @@ export function CustomCodeExample(props: { markdown: string }) {
 ```tsx
 import type { VelomarkContainerRendererProps } from "@velomark/core";
 import { Velomark } from "@velomark/core";
-import "velomark/styles.css";
+import "@velomark/core/styles.css";
 
 function Callout(props: VelomarkContainerRendererProps) {
   return (
@@ -171,13 +204,30 @@ function Callout(props: VelomarkContainerRendererProps) {
 }
 
 export function CustomContainerExample(props: { markdown: string }) {
+  return <Velomark containers={{ info: Callout, warning: Callout }} markdown={props.markdown} />;
+}
+```
+
+### Use with AI SDK
+
+```tsx
+import { Velomark } from "@velomark/core";
+import { createCodePlugin } from "@velomark/code";
+import { createMathPlugin } from "@velomark/math";
+import { createMermaidPlugin } from "@velomark/mermaid";
+import "@velomark/core/styles.css";
+
+const code = createCodePlugin();
+const math = createMathPlugin();
+const mermaid = createMermaidPlugin();
+
+export function ChatMessage(props: { text: string; isStreaming: boolean }) {
   return (
     <Velomark
-      containers={{
-        info: Callout,
-        warning: Callout,
-      }}
-      markdown={props.markdown}
+      animated
+      caret={props.isStreaming ? "block" : undefined}
+      markdown={props.text}
+      plugins={{ code, math, mermaid }}
     />
   );
 }
@@ -190,12 +240,12 @@ export function CustomContainerExample(props: { markdown: string }) {
 - Paragraphs and headings
 - Ordered, unordered, nested, and task lists
 - Blockquotes
-- Fenced code blocks with syntax highlighting
-- Mermaid fences rendered as diagrams
+- Fenced code blocks with syntax highlighting (via plugin)
+- Mermaid fences rendered as diagrams (via plugin)
 - Tables with column alignment
 - Thematic breaks
 - Footnote definitions
-- Math blocks
+- Math blocks (via plugin)
 - Raw HTML blocks and structured HTML elements
 - Container, leaf, and text directives
 
@@ -205,7 +255,7 @@ export function CustomContainerExample(props: { markdown: string }) {
 - Links and images
 - Hard line breaks
 - Footnote references
-- Inline math
+- Inline math (via plugin)
 - Raw inline HTML and structured inline HTML elements
 - Reference-style links and images, including collapsed and shortcut forms
 
@@ -218,74 +268,102 @@ export function CustomContainerExample(props: { markdown: string }) {
 
 For the full status matrix, see [docs/feature-matrix.md](./docs/feature-matrix.md).
 
-## Code blocks and Mermaid
+## Plugin system
 
-`velomark` ships generic built-in code block behavior by default:
+Velomark's plugin system lets you add optional rendering capabilities without bloating the core package.
 
-- syntax highlighting for supported fenced languages
-- a floating copy button for standard code fences
-- a floating language badge when a language exists
-- theme-aware colors for code surfaces
+| Package             | Export                  | Purpose                         |
+| ------------------- | ----------------------- | ------------------------------- |
+| `@velomark/code`    | `createCodePlugin()`    | Shiki-based syntax highlighting |
+| `@velomark/math`    | `createMathPlugin()`    | KaTeX math rendering            |
+| `@velomark/mermaid` | `createMermaidPlugin()` | Mermaid diagram rendering       |
 
-Mermaid uses its own dedicated rendering path:
+Each plugin factory accepts optional configuration. Pass the result to `<Velomark plugins={{...}}>`:
 
-- successful Mermaid fences render as diagrams, not as generic code blocks
-- incomplete streaming fences stay in plain code mode until the fence is complete
-- invalid diagrams fall back to source rendering instead of failing the whole block
-- diagram colors are derived from the active `VelomarkTheme`
+```tsx
+<Velomark
+  markdown={text}
+  plugins={{
+    code: createCodePlugin({
+      /* options */
+    }),
+    math: createMathPlugin({
+      /* options */
+    }),
+    mermaid: createMermaidPlugin({
+      /* options */
+    }),
+  }}
+/>
+```
 
-You can tune standard code blocks with `codeBlockOptions`:
+You can also write custom renderers for specific fenced code languages via `codeBlockRenderers` or custom containers via the `containers` prop.
+
+## Code blocks
+
+When the `code` plugin is installed, Velomark provides:
+
+- Syntax highlighting via Shiki for supported languages
+- A floating copy button
+- A language badge
+- Line numbers
+- Download button
+- Theme-aware colors via highlighted tokens
+
+Configure with `codeBlockOptions`:
 
 ```tsx
 <Velomark
   codeBlockOptions={{
     copyButton: true,
+    downloadButton: false,
     highlight: true,
-    highlightTheme: "github-dark",
     languageLabel: true,
+    lineNumbers: false,
   }}
   markdown={markdown}
+  plugins={{ code: createCodePlugin() }}
 />
 ```
 
-## Theming
+## Animation
 
-`velomark` uses semantic theme tokens instead of ad hoc component color props.
+Velomark supports per-block entrance animations for streaming content:
 
-Built-in presets:
-
-- `default`
-- `dark`
-
-Public theme utilities:
-
-```ts
-import {
-  applyTheme,
-  darkTheme,
-  defaultTheme,
-  generateCssVars,
-  mergeTheme,
-  resolveTheme,
-  velomarkColors,
-  velomarkThemePresets,
-  velomarkTokens,
-} from "@velomark/core";
+```tsx
+<Velomark
+  animated // boolean or AnimateOptions
+  caret="block" // "block" | "circle" | undefined
+  onAnimationEnd={callback}
+  onAnimationStart={callback}
+  markdown={text}
+/>
 ```
 
-The public contract is:
+`AnimateOptions`:
 
-- use `theme="default"` or `theme="dark"`
-- pass a partial `VelomarkTheme` object when you need to override specific semantic tokens
-- use `applyTheme` or `generateCssVars` when you need container-scoped control outside the component
+| Field       | Type                                | Description                       |
+| ----------- | ----------------------------------- | --------------------------------- |
+| `animation` | `"fadeIn" \| "blurIn" \| "slideUp"` | Animation style                   |
+| `duration`  | `number`                            | Duration in ms                    |
+| `easing`    | `string`                            | CSS easing function               |
+| `sep`       | `"word" \| "char"`                  | Animate by word or character      |
+| `stagger`   | `number`                            | Stagger delay in ms between items |
 
-Theme coverage includes:
+## Controls
 
-- text and link colors
-- code blocks, inline code, copy controls, and language badges
-- blockquotes, tables, and math fallback surfaces
-- Mermaid diagram theme variables
-- typography, radius, shadow, and spacing tokens
+Granular control over copy, download, and fullscreen buttons per content type:
+
+```tsx
+<Velomark
+  controls={{
+    code: { copy: true, download: false },
+    mermaid: { download: true, fullscreen: true, panZoom: true },
+    table: { copy: true, download: false, fullscreen: false },
+  }}
+  markdown={text}
+/>
+```
 
 ## Public API
 
@@ -293,21 +371,28 @@ Theme coverage includes:
 
 ```ts
 interface VelomarkProps {
+  allowedTags?: AllowedTags;
+  animated?: AnimateOptions | boolean;
+  caret?: "block" | "circle";
+  children?: JSX.Element;
   class?: string;
-  codeBlockOptions?: {
-    copyButton?: boolean;
-    defaultView?: "preview" | "source";
-    highlight?: boolean;
-    highlightTheme?: string;
-    languageLabel?: boolean;
-    previewToggle?: boolean;
-  };
-  codeBlockRenderers?: Record;
-  containers?: Record;
+  codeBlockOptions?: VelomarkCodeBlockOptions;
+  codeBlockRenderers?: Record<string, Component<VelomarkCodeBlockRendererProps>>;
+  containers?: Record<string, Component<VelomarkContainerRendererProps>>;
+  controls?: ControlsConfig;
   debug?: boolean;
+  dir?: "auto" | "ltr" | "rtl";
+  icons?: Partial<IconMap>;
+  lineNumbers?: boolean;
+  linkSafety?: boolean;
+  literalTagContent?: string[];
   markdown: string;
+  onAnimationEnd?: () => void;
+  onAnimationStart?: () => void;
   onDebugMetrics?: (metrics: VelomarkDebugMetrics) => void;
-  theme?: "default" | "dark" | Partial;
+  plugins?: PluginConfig;
+  remend?: RemendOptions;
+  translations?: Partial<VelomarkTranslations>;
 }
 ```
 
@@ -315,26 +400,41 @@ interface VelomarkProps {
 
 ```ts
 import type {
+  AnimateOptions,
+  ControlsConfig,
   InlineToken,
-  PartialVelomarkTheme,
+  PluginConfig,
   RenderBlock,
   RenderDocument,
+  VelomarkCaret,
   VelomarkCodeBlockOptions,
   VelomarkCodeBlockRendererProps,
   VelomarkContainerRendererProps,
+  VelomarkDebugMetrics,
   VelomarkProps,
-  VelomarkTheme,
-  VelomarkThemeName,
 } from "@velomark/core";
 ```
 
-### Parser export
+### Context providers
 
-`parseInline` is exported for advanced consumers that need inline-token parsing outside the component.
+```ts
+import { VelomarkProvider, useVelomark } from "@velomark/core";
+import { BlockProvider, useBlock } from "@velomark/core";
+```
+
+### Utilities
+
+```ts
+import { parseInline, LinkSafetyModal } from "@velomark/core";
+import { defaultTranslations } from "@velomark/core";
+import { defaultIcons } from "@velomark/core";
+```
 
 ## Security and trust model
 
-`velomark` supports raw HTML and structured HTML rendering. If your Markdown source is untrusted, sanitize it before you pass it into `Velomark`.
+Velomark supports raw HTML and structured HTML rendering. If your Markdown source is untrusted, sanitize it before you pass it into `Velomark`.
+
+For link safety, enable the `linkSafety` prop to show a confirmation modal before navigating to external URLs.
 
 This package focuses on rendering and streaming behavior. It does not try to be an HTML sanitizer.
 
@@ -345,16 +445,19 @@ This package focuses on rendering and streaming behavior. It does not try to be 
 You probably forgot the stylesheet import:
 
 ```ts
-import "velomark/styles.css";
+import "@velomark/core/styles.css";
 ```
+
+Also ensure your Tailwind v4 setup includes the `@source` directive for Velomark's dist output.
 
 ### Code fences render without syntax highlighting
 
 Check these first:
 
+- the `@velomark/code` plugin is installed and passed in `plugins`
 - the fence has a language, for example ` ```ts `
 - `codeBlockOptions.highlight` is not disabled
-- the requested language is supported by the active highlighter setup
+- the requested language is supported by Shiki
 
 Unlabeled fences intentionally render as plain code.
 
@@ -362,9 +465,14 @@ Unlabeled fences intentionally render as plain code.
 
 That is expected when:
 
+- the `@velomark/mermaid` plugin is not installed
 - the fence is still streaming and incomplete
 - the Mermaid source is invalid
 - Mermaid cannot finish rendering the diagram
+
+### Math does not render
+
+Make sure the `@velomark/math` plugin is installed and passed in `plugins`.
 
 ### The consumer gets a Solid peer dependency warning
 
@@ -374,40 +482,46 @@ Make sure the app uses `solid-js` `^1.9.10` or newer within the supported major 
 
 ### Is Velomark a full CommonMark or GFM engine?
 
-Not in the abstract “everything Markdown supports” sense. It targets the syntax and rendered surface that matter most for streamed AI and coding-assistant output, and it has strong coverage for that subset.
+Not in the abstract "everything Markdown supports" sense. It targets the syntax and rendered surface that matter most for streamed AI and coding-assistant output, and it has strong coverage for that subset.
 
 ### Does it support React, Vue, or Svelte?
 
-No. `velomark` is intentionally Solid-only.
+No. Velomark is intentionally Solid-only.
 
 ### Can I override rendering?
 
-Yes, but the public API is intentionally restrained. Today the main extension seams are:
+Yes, via:
 
-- `codeBlockRenderers`
-- `containers`
-- theme overrides
-- `onDebugMetrics`
+- `codeBlockRenderers` — custom renderers for specific fenced code languages
+- `containers` — custom renderers for directive containers
+- `plugins.renderers` — custom fenced-code renderers (alternate API)
+- Theme overrides via CSS custom properties
+- `onDebugMetrics` — observe rendering performance
 
-### Is the playground part of the runtime package?
+### How do I handle i18n?
 
-No. The dev playground exists to inspect streamed behavior and theme previews during package development. It is not a runtime dependency of published consumers.
+Pass a `translations` object with your translated strings, or extend the `defaultTranslations`:
+
+```tsx
+<Velomark
+  markdown={text}
+  translations={{
+    copy: "Copier",
+    copied: "Copié",
+  }}
+/>
+```
 
 ## Development
 
 ```bash
-pnpm install --ignore-workspace
-pnpm exec vitest run
-pnpm run lint:types
-pnpm run lint:code
-pnpm run build
-pnpm run test:packed-consumer
+pnpm install
+vp dev apps/docs     # start the playground dev server
+vp run -r test       # run tests across all packages
+vp check             # format, lint, and type-check
+vp run -r build      # build all packages
 ```
 
-To inspect the local playground:
-
-```bash
-pnpm run dev
-```
+The playground runs on port 3000 and includes fixture presets, stream simulation, benchmarking, and theme previews.
 
 [^incremark]: Velomark is inspired by the renderer goals and streaming ergonomics explored in Incremark, while keeping a smaller Solid-only public surface.
